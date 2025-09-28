@@ -40,7 +40,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FavoriteButton from "@/components/FavoriteButton";
 import Loading from "@/components/Loading";
-export const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
+export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 const featureIconMap = {
   "واي فاي": Wifi,

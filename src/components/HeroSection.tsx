@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 
 // تم استعادة الطريقة الصحيحة لتعريف متغيرات البيئة في Vite
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 const HeroSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
