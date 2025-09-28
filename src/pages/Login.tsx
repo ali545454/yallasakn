@@ -26,7 +26,7 @@ import Footer from "@/components/Footer";
 
 
 // تأكد من أن هذا المتغير معرف بشكل صحيح في ملف .env.local
-export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
+export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app`;
 
 // أيقونات SVG لـ Google و Facebook
 const GoogleIcon = () => (

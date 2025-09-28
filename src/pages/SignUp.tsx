@@ -28,7 +28,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useUser } from "@/context/UserContext";
 
-export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
+export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app`;
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const SignUp = () => {
     email: "",
     phone: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: "",  
     birthDate: "",
     gender: "",
     university: "",
