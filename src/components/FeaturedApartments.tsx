@@ -39,7 +39,7 @@ const FeaturedApartments = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/api/v1/apartments/featured")
+      .get("https://web-production-33f69.up.railway.app/api/v1/apartments/featured")
       .then((res) => {
         setApartments(res.data);
       })
