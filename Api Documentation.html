@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توثيق واجهة برمجة التطبيقات (API)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #e9ecef;
+            --background-color: #f8f9fa;
+            --text-color: #212529;
+            --white-color: #fff;
+            --border-color: #dee2e6;
+            --code-bg: #212529;
+            --code-text: #f8f9fa;
+            --success-color: #198754;
+            --error-color: #dc3545;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Cairo', sans-serif; line-height: 1.7; background-color: var(--background-color); color: var(--text-color); margin: 0; display: flex; }
+        .sidebar { width: 320px; background-color: var(--white-color); border-left: 1px solid var(--border-color); height: 100vh; position: fixed; top: 0; right: 0; overflow-y: auto; padding: 20px; box-shadow: -2px 0 5px rgba(0,0,0,0.05); }
+        .sidebar h2 { color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; margin-top: 0; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar h3 { margin-top: 25px; font-size: 1.1em; color: #555; padding-bottom: 5px; border-bottom: 1px solid #eee; }
+        .sidebar li a { display: block; padding: 8px 10px; color: var(--text-color); text-decoration: none; border-radius: 4px; transition: background-color 0.3s; font-size: 0.95em; word-break: break-all; }
+        .sidebar li a:hover { background-color: var(--secondary-color); }
+        .sidebar li .method-tag { font-weight: bold; display: inline-block; width: 55px; text-align: center; margin-left: 8px; border-radius: 3px; font-size: 0.8em; padding: 2px 0; }
+        .tag-post { color: #007bff; } .tag-get { color: #28a745; } .tag-patch { color: #ffc107; } .tag-delete { color: #dc3545; }
+        .content { margin-right: 360px; padding: 30px; width: calc(100% - 360px); }
+        h1, h2, h3, h4, h5, h6 { color: var(--primary-color); padding-bottom: 10px; }
+        h2 { border-bottom: 2px solid var(--secondary-color); }
+        h4 { border-bottom: none; color: #343a40; margin-top: 25px; font-size: 1.3em; }
+        h5 { color: #495057; margin-top:20px; font-size: 1.1em; }
+        h6 { color: #6c757d; margin: 15px 0 5px 0; font-size: 1em; }
+        .endpoint { margin-bottom: 40px; padding: 25px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--white-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .endpoint-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .method { padding: 5px 15px; border-radius: 5px; color: var(--white-color); font-weight: bold; font-size: 1.1em; flex-shrink: 0; }
+        .method-post { background-color: #007bff; } .method-get { background-color: #28a745; } .method-patch { background-color: #ffc107; color: #333; } .method-delete { background-color: #dc3545; }
+        .route { font-family: 'Courier New', Courier, monospace; background-color: var(--secondary-color); padding: 8px 12px; border-radius: 3px; font-size: 1.2em; color: #495057; word-break: break-all; }
+        code { font-family: 'Courier New', Courier, monospace; background-color: #f1f1f1; padding: 2px 5px; border-radius: 3px; }
+        pre { background-color: var(--code-bg); color: var(--code-text); padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; text-align: left; direction: ltr; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border: 1px solid var(--border-color); text-align: right; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .required { color: #dc3545; font-weight: bold; }
+        .auth-required { background-color: #fff3cd; border-right: 5px solid #ffc107; padding: 15px; margin-top: 15px; border-radius: 4px; }
+        .response-section ul { padding-right: 20px; list-style-type: '❌'; padding-right: 20px; }
+        .response-section li { padding-right: 10px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>قائمة الـ API</h2>
+        <ul>
+            <h3>Authentication API</h3>
+            <li><a href="#register"><span class="method-tag tag-post">POST</span> /auth/register</a></li>
+            <li><a href="#login"><span class="method-tag tag-post">POST</span> /auth/login</a></li>
+            <li><a href="#profile"><span class="method-tag tag-get">GET</span> /auth/profile</a></li>
+            
+            <h3>Apartments API</h3>
+            <li><a href="#create-apartment"><span class="method-tag tag-post">POST</span> /apartments/create</a></li>
+            <li><a href="#get-all-apartments"><span class="method-tag tag-get">GET</span> /apartments/all_apartments</a></li>
+            <li><a href="#get-apartment-by-id"><span class="method-tag tag-get">GET</span> /apartments/&lt;id&gt;</a></li>
+            
+            <h3>Images API</h3>
+            <li><a href="#upload-image"><span class="method-tag tag-post">POST</span> /upload-image/&lt;id&gt;</a></li>
+            <li><a href="#get-image-file"><span class="method-tag tag-get">GET</span> /uploads/&lt;filename&gt;</a></li>
+            
+            <h3>Neighborhoods API</h3>
+            <li><a href="#create-neighborhood"><span class="method-tag tag-post">POST</span> /neighborhoods/create</a></li>
+            <li><a href="#get-all-neighborhoods"><span class="method-tag tag-get">GET</span> /neighborhoods</a></li>
+            <li><a href="#delete-neighborhood"><span class="method-tag tag-delete">DELETE</span> /neighborhoods/&lt;id&gt;/delete</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>توثيق واجهة برمجة التطبيقات (API)</h1>
+        <p>هذه الصفحة توضح مسارات الـ API الخاصة بالنظام. استخدم القائمة الجانبية للتنقل بين نقاط النهاية المختلفة. البادئة العامة لجميع المسارات هي <code>/api/v1</code> أو <code>/apiv1</code>.</p>
+        
+        <h2> http://127.0.0.1:5000</h2>
+      
+        <h2 id="models-section">قسم النماذج (Models)</h2>
+        <p>هذا القسم يوضح بالتفصيل هيكل كائنات البيانات الأساسية التي يتم استخدامها في جميع استجابات الـ API.</p>
+        
+        <div id="apartment-model" class="endpoint">
+            <div class="endpoint-header"><h3 class="route" style="font-size: 1.5em;">Apartment Model</h3></div>
+            <p>هيكل كائن الشقة الذي يتم إرجاعه في معظم نقاط النهاية المتعلقة بالشقق.</p>
+            <h4>هيكل الكائن (Object Structure)</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>الحقل (Field)</th>
+                        <th>النوع (Type)</th>
+                        <th>الوصف (Description)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>id</code></td><td>Integer</td><td>المعرف الرقمي الفريد للشقة.</td></tr>
+                    <tr><td><code>title</code></td><td>String</td><td>عنوان الإعلان عن الشقة.</td></tr>
+                    <tr><td><code>description</code></td><td>String</td><td>وصف تفصيلي للشقة.</td></tr>
+                    <tr><td><code>address</code></td><td>String</td><td>العنوان الفعلي للشقة.</td></tr>
+                    <tr><td><code>price</code></td><td>Float</td><td>سعر الإيجار.</td></tr>
+                    <tr><td><code>rooms</code></td><td>Integer</td><td>عدد الغرف.</td></tr>
+                    <tr><td><code>bathrooms</code></td><td>Integer</td><td>عدد الحمامات.</td></tr>
+                    <tr><td><code>kitchens</code></td><td>Integer</td><td>عدد المطابخ.</td></tr>
+                    <tr><td><code>total_beds</code></td><td>Integer</td><td>إجمالي عدد الأسرّة في الشقة.</td></tr>
+                    <tr><td><code>available_beds</code></td><td>Integer</td><td>عدد الأسرّة المتاحة حالياً.</td></tr>
+                    <tr><td><code>residence_type</code></td><td>String</td><td>نوع السكن (مثال: "شباب", "عائلات").</td></tr>
+                    <tr><td><code>whatsapp_number</code></td><td>String</td><td>رقم الواتساب للتواصل.</td></tr>
+                    <tr><td><code>owner_id</code></td><td>Integer</td><td>معرف مالك الشقة.</td></tr>
+                    <tr><td><code>neighborhood_id</code></td><td>Integer</td><td>معرف الحي الذي تقع فيه الشقة.</td></tr>
+                    <tr><td><code>neighborhood_name</code></td><td>String</td><td>اسم الحي (يتم جلبه من العلاقة).</td></tr>
+                    <tr><td><code>is_verified</code></td><td>Boolean</td><td><code>true</code> إذا تم تأكيد الشقة من قبل المشرف، وإلا <code>false</code>.</td></tr>
+                    <tr><td><code>images</code></td><td>Array of Image Objects</td><td>قائمة بكائنات الصور الخاصة بالشقة. انظر <a href="#image-model">Image Model</a>.</td></tr>
+                    <tr><td><code>first_image</code></td><td>String</td><td>رابط URL لأول صورة في القائمة لتسهيل العرض.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="user-model" class="endpoint">
+             <div class="endpoint-header"><h3 class="route" style="font-size: 1.5em;">User Model</h3></div>
+             <p>هيكل كائن المستخدم.</p>
+             <table><thead><tr><th>الحقل</th><th>النوع</th><th>الوصف</th></tr></thead><tbody><tr><td><code>id</code></td><td>Integer</td><td>المعرف الرقمي للمستخدم.</td></tr><tr><td><code>uuid</code></td><td>String</td><td>المعرف النصي الفريد للمستخدم (يستخدم في المصادقة).</td></tr><tr><td><code>full_name</code></td><td>String</td><td>الاسم الكامل.</td></tr><tr><td><code>email</code></td><td>String</td><td>البريد الإلكتروني.</td></tr><tr><td><code>role</code></td><td>String</td><td>صلاحية المستخدم (مثال: "student", "admin").</td></tr></tbody></table>
+        </div>
+
+        <div id="image-model" class="endpoint">
+             <div class="endpoint-header"><h3 class="route" style="font-size: 1.5em;">Image Model</h3></div>
+             <p>هيكل كائن الصورة.</p>
+             <table><thead><tr><th>الحقل</th><th>النوع</th><th>الوصف</th></tr></thead><tbody><tr><td><code>id</code></td><td>Integer</td><td>المعرف الرقمي للصورة.</td></tr><tr><td><code>url</code></td><td>String</td><td>اسم ملف الصورة (يستخدم لتكوين الرابط الكامل).</td></tr><tr><td><code>apartment_id</code></td><td>Integer</td><td>معرف الشقة التي تنتمي إليها الصورة.</td></tr></tbody></table>
+        </div>
+        <h2 id="auth-api">قسم المصادقة (Authentication API)</h2>
+        
+        <div id="register" class="endpoint">
+            <div class="endpoint-header"><span class="method method-post">POST</span><h3 class="route">/api/v1/auth/register</h3></div>
+            <p><strong>الوصف:</strong> إنشاء حساب مستخدم جديد.</p>
+            
+            <h4>المدخلات (What it takes)</h4>
+            <h5>محتوى الطلب (Request Body) - <code>Content-Type: application/json</code></h5>
+            <table><thead><tr><th>الحقل</th><th>النوع</th><th>مطلوب؟</th><th>الوصف</th></tr></thead><tbody><tr><td><code>fullName</code></td><td>String</td><td><span class="required">نعم</span></td><td>الاسم الكامل للمستخدم.</td></tr><tr><td><code>email</code></td><td>String</td><td><span class="required">نعم</span></td><td>البريد الإلكتروني (فريد).</td></tr><tr><td><code>password</code></td><td>String</td><td><span class="required">نعم</span></td><td>كلمة المرور.</td></tr><tr><td><code>birthDate</code></td><td>String</td><td><span class="required">نعم</span></td><td>تاريخ الميلاد بالصيغة <code>YYYY-MM-DD</code>.</td></tr></tbody></table>
+            <h6>مثال على الطلب:</h6><pre><code>{
+    "fullName": "علي محمد",
+    "email": "ali@example.com",
+    "password": "password123",
+    "birthDate": "2002-05-15"
+}</code></pre>
+
+            <h4>المخرجات (What it returns)</h4>
+            <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+            <p><strong>Status Code:</strong> 201 Created</p>
+            <h6>مثال على الاستجابة:</h6><pre><code>{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "uuid": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6"
+}</code></pre>
+            
+            <div class="response-section">
+                <h5>❌ الاستجابات الخاطئة (Error Responses)</h5>
+                <ul>
+                    <li><strong>400 Bad Request:</strong> عند نقص حقول مطلوبة. <pre><code>{"error": "الحقول المطلوبة غير مكتملة", "missing": ["email"]}</code></pre></li>
+                    <li><strong>400 Bad Request:</strong> عند استخدام بريد إلكتروني مسجل مسبقاً. <pre><code>{"error": "البريد الإلكتروني مستخدم بالفعل"}</code></pre></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="login" class="endpoint">
+            <div class="endpoint-header"><span class="method method-post">POST</span><h3 class="route">/api/v1/auth/login</h3></div>
+            <p><strong>الوصف:</strong> تسجيل دخول مستخدم موجود والحصول على Token.</p>
+            
+            <h4>المدخلات (What it takes)</h4>
+            <h5>محتوى الطلب (Request Body) - <code>Content-Type: application/json</code></h5>
+            <table><thead><tr><th>الحقل</th><th>النوع</th><th>مطلوب؟</th><th>الوصف</th></tr></thead><tbody><tr><td><code>email</code></td><td>String</td><td><span class="required">نعم</span></td><td>البريد الإلكتروني للمستخدم.</td></tr><tr><td><code>password</code></td><td>String</td><td><span class="required">نعم</span></td><td>كلمة مرور المستخدم.</td></tr></tbody></table>
+
+            <h4>المخرجات (What it returns)</h4>
+            <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+            <p><strong>Status Code:</strong> 200 OK</p>
+            <pre><code>{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+        "uuid": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6",
+        "full_name": "علي محمد",
+        "email": "ali@example.com",
+        "role": "student"
+    }
+}</code></pre>
+
+            <div class="response-section">
+                <h5>❌ الاستجابات الخاطئة (Error Responses)</h5>
+                <ul>
+                    <li><strong>401 Unauthorized:</strong> في حالة كان البريد الإلكتروني أو كلمة المرور غير صحيحة.<pre><code>{"error": "Invalid email or password"}</code></pre></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="profile" class="endpoint">
+            <div class="endpoint-header"><span class="method method-get">GET</span><h3 class="route">/api/v1/auth/profile</h3></div>
+            <p><strong>الوصف:</strong> جلب بيانات الملف الشخصي للمستخدم الذي قام بتسجيل الدخول.</p>
+
+            <h4>المدخلات (What it takes)</h4>
+            <div class="auth-required"><strong>ترويسة الطلب (Header):</strong> يجب إرسال <code>access_token</code> كالتالي: <br><code>Authorization: Bearer &lt;YOUR_JWT_TOKEN&gt;</code></div>
+            
+            <h4>المخرجات (What it returns)</h4>
+            <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+            <p><strong>Status Code:</strong> 200 OK</p>
+            <pre><code>{
+    "uuid": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6",
+    "full_name": "علي محمد",
+    "email": "ali@example.com",
+    "role": "student"
+}</code></pre>
+            <div class="response-section">
+                <h5>❌ الاستجابات الخاطئة (Error Responses)</h5>
+                <ul>
+                    <li><strong>401 Unauthorized:</strong> عند عدم إرسال Token أو كان غير صالح.<pre><code>{"msg": "Missing Authorization Header"}</code></pre></li>
+                </ul>
+            </div>
+        </div>
+        
+        <h2 id="apartments-api">قسم الشقق (Apartments API)</h2>
+
+        <div id="create-apartment" class="endpoint">
+            <div class="endpoint-header"><span class="method method-post">POST</span><h3 class="route">/api/v1/apartments/create</h3></div>
+            <p><strong>الوصف:</strong> إنشاء شقة جديدة.</p>
+            
+            <h4>المدخلات (What it takes)</h4>
+            <div class="auth-required"><strong>ترويسة الطلب (Header):</strong> <code>Authorization: Bearer &lt;YOUR_JWT_TOKEN&gt;</code></div>
+            <h5>محتوى الطلب (Request Body) - <code>Content-Type: multipart/form-data</code></h5>
+             <table><thead><tr><th>الحقل</th><th>النوع</th><th>مطلوب؟</th><th>الوصف</th></tr></thead><tbody><tr><td><code>title</code></td><td>String</td><td><span class="required">نعم</span></td><td>عنوان الإعلان.</td></tr><tr><td><code>price</code></td><td>Float</td><td><span class="required">نعم</span></td><td>السعر.</td></tr><tr><td><code>images</code></td><td>File</td><td>لا</td><td>ملفات الصور (يمكن رفع أكثر من ملف).</td></tr></tbody></table>
+
+            <h4>المخرجات (What it returns)</h4>
+            <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+            <p><strong>Status Code:</strong> 201 Created</p>
+            <pre><code>{ "message": "Apartment created successfully", "apartment_id": 1 }</code></pre>
+            <div class="response-section"><h5>❌ الاستجابات الخاطئة (Error Responses)</h5><ul><li><strong>401 Unauthorized:</strong> عند عدم إرسال Token أو كان غير صالح.</li><li><strong>500 Internal Server Error:</strong> عند حدوث خطأ في الخادم.</li></ul></div>
+        </div>
+        
+        <div id="get-all-apartments" class="endpoint">
+             <div class="endpoint-header"><span class="method method-get">GET</span><h3 class="route">/api/v1/apartments/all_apartments</h3></div>
+             <p><strong>الوصف:</strong> جلب قائمة بجميع الشقق.</p>
+             <h4>المخرجات (What it returns)</h4>
+             <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+             <p><strong>Status Code:</strong> 200 OK</p>
+             <pre><code>[
+    { "id": 1, "title": "شقة رائعة", "price": 5000, ... },
+    { "id": 2, "title": "شقة أخرى", "price": 4500, ... }
+]</code></pre>
+        </div>
+
+        <div id="get-apartment-by-id" class="endpoint">
+            <div class="endpoint-header"><span class="method method-get">GET</span><h3 class="route">/api/v1/apartments/&lt;int:id&gt;</h3></div>
+            <p><strong>الوصف:</strong> جلب بيانات شقة واحدة محددة.</p>
+            <h4>المدخلات (What it takes)</h4>
+            <h5>معاملات المسار (URL Parameters)</h5>
+            <table><thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead><tbody><tr><td><code>id</code></td><td>Integer</td><td>المعرف الرقمي للشقة.</td></tr></tbody></table>
+             <h4>المخرجات (What it returns)</h4>
+             <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+             <p><strong>Status Code:</strong> 200 OK</p>
+             <pre><code>{ "id": 1, "title": "شقة رائعة", "price": 5000, "images": [...] }</code></pre>
+             <div class="response-section"><h5>❌ الاستجابات الخاطئة (Error Responses)</h5><ul><li><strong>404 Not Found:</strong> إذا لم يتم العثور على شقة بالـ ID المحدد.</li></ul></div>
+        </div>
+
+        <h2 id="images-api">قسم الصور (Images API)</h2>
+        <div id="upload-image" class="endpoint">
+            <div class="endpoint-header"><span class="method method-post">POST</span><h3 class="route">/apiv1/upload-image/&lt;int:apartment_id&gt;</h3></div>
+            <p><strong>الوصف:</strong> رفع ملف صورة وربطه بشقة معينة.</p>
+             <h4>المدخلات (What it takes)</h4>
+            <div class="auth-required"><strong>ترويسة الطلب (Header):</strong> <code>Authorization: Bearer &lt;YOUR_JWT_TOKEN&gt;</code></div>
+             <h5>معاملات المسار (URL Parameters)</h5>
+            <table><thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead><tbody><tr><td><code>apartment_id</code></td><td>Integer</td><td>المعرف الرقمي للشقة لربط الصورة بها.</td></tr></tbody></table>
+            <h5>محتوى الطلب (Request Body) - <code>Content-Type: multipart/form-data</code></h5>
+            <table><thead><tr><th>الحقل</th><th>النوع</th><th>مطلوب؟</th><th>الوصف</th></tr></thead><tbody><tr><td><code>image</code></td><td>File</td><td><span class="required">نعم</span></td><td>ملف الصورة (png, jpg, jpeg, gif).</td></tr></tbody></table>
+
+            <h4>المخرجات (What it returns)</h4>
+             <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+             <p><strong>Status Code:</strong> 201 Created</p>
+             <pre><code>{
+    "message": "تم رفع الصورة بنجاح",
+    "image_url": "http://127.0.0.1:5000/uploads/c5b1a2d3.jpeg"
+}</code></pre>
+            <div class="response-section"><h5>❌ الاستجابات الخاطئة (Error Responses)</h5><ul><li><strong>400 Bad Request:</strong> إذا لم يتم إرسال ملف أو كان نوعه غير مدعوم.</li><li><strong>404 Not Found:</strong> إذا كانت الشقة غير موجودة.</li></ul></div>
+        </div>
+        
+        <div id="get-image-file" class="endpoint">
+            <div class="endpoint-header"><span class="method method-get">GET</span><h3 class="route">/apiv1/uploads/&lt;string:filename&gt;</h3></div>
+            <p><strong>الوصف:</strong> عرض ملف الصورة مباشرة عن طريق اسمها.</p>
+            <h4>المخرجات (What it returns)</h4>
+            <p>ترجع هذه النقطة ملف الصورة مباشرة (e.g., <code>Content-Type: image/jpeg</code>) وليس JSON.</p>
+        </div>
+
+        <h2 id="neighborhoods-api">قسم الأحياء (Neighborhoods API)</h2>
+        <div id="create-neighborhood" class="endpoint">
+            <div class="endpoint-header"><span class="method method-post">POST</span><h3 class="route">/api/v1/neighborhoods/create</h3></div>
+            <p><strong>الوصف:</strong> إنشاء حي جديد.</p>
+            <h4>المدخلات (What it takes)</h4>
+            <div class="auth-required"><strong>ترويسة الطلب (Header):</strong> <code>Authorization: Bearer &lt;TOKEN&gt;</code> للمستخدم الذي لديه صلاحية "مشرف".</div>
+            <h5>محتوى الطلب (Request Body) - <code>Content-Type: application/json</code></h5>
+            <pre><code>{ "name": "الدقي" }</code></pre>
+            <h4>المخرجات (What it returns)</h4>
+             <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+             <p><strong>Status Code:</strong> 201 Created</p>
+             <pre><code>{
+    "message": "تم إنشاء الحي بنجاح ✅",
+    "neighborhood": { "id": 5, "name": "الدقي" }
+}</code></pre>
+             <div class="response-section"><h5>❌ الاستجابات الخاطئة (Error Responses)</h5><ul><li><strong>403 Forbidden:</strong> إذا لم يكن المستخدم مشرفاً.</li><li><strong>400 Bad Request:</strong> إذا لم يتم إرسال اسم الحي.</li></ul></div>
+        </div>
+
+        <div id="get-all-neighborhoods" class="endpoint">
+            <div class="endpoint-header"><span class="method method-get">GET</span><h3 class="route">/api/v1/neighborhoods</h3></div>
+            <p><strong>الوصف:</strong> جلب قائمة بجميع الأحياء المتاحة.</p>
+            <h4>المخرجات (What it returns)</h4>
+            <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+             <p><strong>Status Code:</strong> 200 OK</p>
+             <pre><code>[
+    { "id": 1, "name": "المهندسين" },
+    { "id": 2, "name": "الزمالك" }
+]</code></pre>
+        </div>
+        
+        <div id="delete-neighborhood" class="endpoint">
+            <div class="endpoint-header"><span class="method method-delete">DELETE</span><h3 class="route">/api/v1/neighborhoods/&lt;int:id&gt;/delete</h3></div>
+            <p><strong>الوصف:</strong> حذف حي معين.</p>
+             <h4>المدخلات (What it takes)</h4>
+            <div class="auth-required"><strong>ترويسة الطلب (Header):</strong> <code>Authorization: Bearer &lt;TOKEN&gt;</code> للمستخدم الذي لديه صلاحية "مشرف".</div>
+             <h5>معاملات المسار (URL Parameters)</h5>
+            <table><thead><tr><th>المعامل</th><th>النوع</th><th>الوصف</th></tr></thead><tbody><tr><td><code>id</code></td><td>Integer</td><td>المعرف الرقمي للحي.</td></tr></tbody></table>
+            <h4>المخرجات (What it returns)</h4>
+             <h5>✅ الاستجابة الناجحة (Success Response)</h5>
+             <p><strong>Status Code:</strong> 200 OK</p>
+             <pre><code>{ "message": "تم حذف الحي بنجاح" }</code></pre>
+             <div class="response-section"><h5>❌ الاستجابات الخاطئة (Error Responses)</h5><ul><li><strong>403 Forbidden:</strong> إذا لم يكن المستخدم مشرفاً.</li><li><strong>404 Not Found:</strong> إذا كان الحي غير موجود.</li></ul></div>
+        </div>
+    </div>
+</body>
+</html>
