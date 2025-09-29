@@ -390,7 +390,7 @@ const Profile = () => {
                           <InfoField
                             icon={<Calendar className="text-slate-400" />}
                             label="السنة"
-                            value={userData.year}
+                            value={userData.academicYear}
                           />
                         </>
                       )}
