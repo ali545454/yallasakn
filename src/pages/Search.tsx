@@ -346,7 +346,7 @@ const SearchPage = () => {
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredApartments.map((apartment) => (
                 <Card
-                  key={apartment.id}
+                  key={apartment.uuid}
                   className="overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
                 >
                   <div className="relative">
@@ -361,9 +361,11 @@ const SearchPage = () => {
                     />
 
                     {/* ضع القلب كـ absolute في أعلى اليمين */}
-                    <div className="absolute top-2 right-2">
-                      <FavoriteButton apartment={{ uuid: apartment.uuid }} />
-                    </div>
+<div className="absolute top-2 right-2">
+  <FavoriteButton apartment={apartment} /> 
+  {/* مرر الـ apartment كله مش uuid بس */}
+</div>
+
 
                     {apartment.isVerified && (
                       <Badge className="absolute top-2 left-2 flex items-center gap-1">

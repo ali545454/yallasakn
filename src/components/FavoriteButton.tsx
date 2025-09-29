@@ -6,7 +6,7 @@ import { useFavorites } from "@/context/FavoritesContext";
 
 interface FavoriteButtonProps {
   apartment: {
-    uuid: string; // UUID
+    uuid: string; 
     title?: string;
     price?: number;
     address?: string;
@@ -14,7 +14,7 @@ interface FavoriteButtonProps {
 }
 
 const FavoriteButton = ({ apartment }: FavoriteButtonProps) => {
-  const { favorites, toggleFavorite, setFavorites } = useFavorites();
+  const { favorites, toggleFavorite } = useFavorites();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,11 +26,11 @@ const FavoriteButton = ({ apartment }: FavoriteButtonProps) => {
 
     try {
       if (isFavorite) {
-        // 🗑️ حذف من السيرفر
+        // 🗑️ حذف من المفضلة
         await axiosInstance.delete(`/api/v1/favorite/remove/${apartment.uuid}`);
         toggleFavorite(apartment.uuid);
       } else {
-        // ➕ إضافة للسيرفر
+        // ➕ إضافة للمفضلة
         const res = await axiosInstance.post(`/api/v1/favorite/add`, {
           apartment_id: apartment.uuid,
         });
@@ -40,12 +40,11 @@ const FavoriteButton = ({ apartment }: FavoriteButtonProps) => {
       }
     } catch (err) {
       console.error("Error toggling favorite:", err);
-      setError("حدث خطأ في الاتصال. حاول مرة أخرى.");
+      setError("⚠️ حدث خطأ، حاول مرة أخرى.");
     } finally {
       setLoading(false);
     }
   };
-  console.log("Apartment in FavoriteButton:", apartment);
 
   return (
     <div className="flex flex-col items-center">
