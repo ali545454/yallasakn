@@ -45,6 +45,7 @@ const FavoriteButton = ({ apartment }: FavoriteButtonProps) => {
       setLoading(false);
     }
   };
+  console.log("Apartment in FavoriteButton:", apartment);
 
   return (
     <div className="flex flex-col items-center">
