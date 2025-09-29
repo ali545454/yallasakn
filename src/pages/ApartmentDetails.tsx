@@ -387,7 +387,7 @@ useEffect(() => {
                 <div className="flex items-center gap-3">
                   <ShieldCheck
                     className={`w-6 h-6 flex-shrink-0 ${
-                      apartment.is_verified ? "text-green-600" : "text-red-400"
+                      apartment.is_verified ? "text-green-600" : "text-red-100"
                     }`}
                   />
                   <span>
