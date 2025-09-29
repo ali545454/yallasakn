@@ -25,6 +25,7 @@ import {
   CookingPot,
   ShieldCheck,
   Calendar,
+  CircleChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,7 +47,7 @@ const featureIconMap = {
   "واي فاي": Wifi,
   تكييف: Snowflake,
   بلكونة: Wind,
-  مصعد: ChevronUp,
+  مصعد: CircleChevronUp,
   مطبخ: Utensils,
   غسالة: WashingMachine,
   "غاز طبيعي": Flame,
