@@ -26,6 +26,7 @@ import {
   ShieldCheck,
   Calendar,
   CircleChevronUp,
+  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -369,7 +370,7 @@ useEffect(() => {
 
                 {/* متاح لـ */}
                 <div className="flex items-center gap-3">
-                  <Hash className="w-6 h-6 text-gray-700 flex-shrink-0" />
+                  <Building2 className="w-6 h-6 text-gray-700 flex-shrink-0" />
                   <span>
                     <span className="font-medium"> نوع السكن: </span>
                     {apartment.residenceType || "الجميع"}
