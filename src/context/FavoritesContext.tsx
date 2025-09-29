@@ -3,7 +3,7 @@ import axiosInstance from "@/utils/axiosInstance";
 
 interface FavoritesContextType {
   favorites: string[];
-  toggleFavorite: (id: string) => void;
+  toggleFavorite: (uuid: string) => void;
   setFavorites: (favs: string[]) => void;
 }
 
@@ -22,9 +22,10 @@ export const FavoritesProvider = ({
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await axiosInstance.get("/api/v1/favorites");
+        const res = await axiosInstance.get("/api/v1/favorite"); // endpoint بيجيب المفضلة
         if (res.status === 200) {
-          const favs = res.data.apartments.map((a: any) => a.id);
+          // 🟢 ناخد uuid بدل id
+          const favs = res.data.apartments.map((a: any) => a.uuid);
           setFavorites(favs);
           localStorage.setItem("favorites", JSON.stringify(favs));
         }
@@ -46,9 +47,11 @@ export const FavoritesProvider = ({
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
-  const toggleFavorite = (id: string) => {
+  const toggleFavorite = (uuid: string) => {
     setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id]
+      prev.includes(uuid)
+        ? prev.filter((favId) => favId !== uuid)
+        : [...prev, uuid]
     );
   };
 
