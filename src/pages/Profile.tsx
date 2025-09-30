@@ -205,19 +205,20 @@ const Profile = () => {
           {/* Profile Header Card */}
           <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-slate-50">
             <CardContent className="p-6 flex flex-col md:flex-row items-center gap-6 text-center md:text-right">
-              <Avatar className="h-28 w-28 border-4 border-white shadow-md">
-                <AvatarImage
-                  src={userData.avatar || ""}
-                  alt={userData.full_name}
-                />
-                <AvatarFallback className="text-3xl bg-primary text-primary-foreground">
-                  {userData.full_name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .slice(0, 2)
-                    .join("")}
-                </AvatarFallback>
-              </Avatar>
+<Avatar className="h-28 w-28 border-4 border-white shadow-md">
+  <AvatarImage
+    src={userData.role === "student" ? "https://cdn.pixabay.com/photo/2020/05/26/17/56/student-5224089_1280.jpg" : userData.avatar || ""}
+    alt={userData.full_name}
+  />
+  <AvatarFallback className="text-3xl bg-primary text-primary-foreground">
+    {userData.full_name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")}
+  </AvatarFallback>
+</Avatar>
+
 
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-center md:justify-between">
@@ -300,13 +301,14 @@ const Profile = () => {
             onValueChange={setSelectedTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-3">
-              <TabsTrigger value="info">المعلومات الشخصية</TabsTrigger>
-              {userData.role !== "student" && (
-                <TabsTrigger value="my-apartments">شقق قمت بعرضها</TabsTrigger>
-              )}
-              <TabsTrigger value="favorites">المفضلة</TabsTrigger>
-            </TabsList>
+<TabsList className="flex w-full gap-2 overflow-x-auto">
+  <TabsTrigger value="info" className="flex-shrink-0">المعلومات الشخصية</TabsTrigger>
+  {userData.role !== "student" && (
+    <TabsTrigger value="my-apartments" className="flex-shrink-0">شقق قمت بعرضها</TabsTrigger>
+  )}
+  <TabsTrigger value="favorites" className="flex-shrink-0">المفضلة</TabsTrigger>
+</TabsList>
+
 
             {/* Info Tab */}
             <TabsContent value="info">
