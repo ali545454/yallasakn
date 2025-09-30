@@ -118,7 +118,7 @@ useEffect(() => {
     if (phoneIntl.startsWith("0")) {
       phoneIntl = "20" + phoneIntl.slice(1);
     }
-    const message = `مرحباً، أنا مهتم بالإعلان الخاص بـ "${apartment.title}" على منصة YallaSakn.`;
+    const message = `"، أنا مهتم بالإعلان الخاص بـ "${apartment.title}" على منصة YallaSakn.com`;
     const waLink = `https://wa.me/${phoneIntl}?text=${encodeURIComponent(
       message
     )}`;
