@@ -99,15 +99,15 @@ const Dashboard = () => {
               >
                 {/* الصورة */}
                 {property.main_image ? (
-                  <img
-                    src={property.main_image}
-                    alt={property.title}
-                    className="w-full h-48 object-cover"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "/placeholder.svg";
-                    }}
-                  />
+<img
+  src={property.main_image}
+  alt={property.title}
+  className="w-full h-48 object-cover"
+  onError={(e) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.src = "/placeholder.svg";
+  }}
+/>
                 ) : (
                   <img
                     src="/placeholder.svg"
