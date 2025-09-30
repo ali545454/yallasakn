@@ -20,15 +20,21 @@ const Footer = () => {
               منصة موثوقة لإيجاد السكن المناسب للطلاب في أسيوط. نربط بين الطلاب وأصحاب السكن بأمان وسهولة.
             </p>
             <div className="flex items-center gap-2">
-              <Button size="icon" variant="ghost" className="h-8 w-8">
-                <Facebook className="h-4 w-4" />
-              </Button>
-              <Button size="icon" variant="ghost" className="h-8 w-8">
+<a
+  href="https://www.facebook.com/yallasakn87"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <Button size="icon" variant="ghost" className="h-8 w-8">
+    <Facebook className="h-4 w-4" />
+  </Button>
+</a>
+              {/* <Button size="icon" variant="ghost" className="h-8 w-8">
                 <Twitter className="h-4 w-4" />
-              </Button>
-              <Button size="icon" variant="ghost" className="h-8 w-8">
+              </Button> */}
+              {/* <Button size="icon" variant="ghost" className="h-8 w-8">
                 <Instagram className="h-4 w-4" />
-              </Button>
+              </Button> */}
               <Button size="icon" variant="ghost" className="h-8 w-8">
                 <Linkedin className="h-4 w-4" />
               </Button>
@@ -85,11 +91,11 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4" />
-                <span>01234567890</span>
+                <span>01006371321</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4" />
-                <span>info@studentshousing.com</span>
+                <span>info@yallasakn.com</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
@@ -114,10 +120,12 @@ const Footer = () => {
         <Separator className="my-8" />
 
         {/* Bottom Footer */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-4">
-            <span>© 2024 سكن الطلاب. جميع الحقوق محفوظة.</span>
-          </div>
+<div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+  <div className="flex items-center gap-4">
+    <span>© {new Date().getFullYear()} يلا سكن. جميع الحقوق محفوظة.</span>
+  </div>
+</div>
+
           <div className="flex items-center gap-4">
             <Link to="/terms" className="hover:text-primary transition-colors">
               الشروط والأحكام
