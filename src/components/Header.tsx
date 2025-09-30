@@ -227,12 +227,13 @@ const handleLogout = async () => {
         <Menu className="h-6 w-6" />
       </Button>
     </SheetTrigger>
-    <SheetContent side="right" className="w-72">
-      <SheetHeader className="mb-6 text-right">
-        <SheetTitle className="p-4 pt-6">القائمة</SheetTitle>
+    <SheetContent side="right" className="w-72 flex flex-col">
+      <SheetHeader className="text-right p-4 pt-6">
+        <SheetTitle className="pl-4">القائمة</SheetTitle> {/* padding left لتباعد عن X */}
       </SheetHeader>
 
-      <div className="flex flex-col gap-4 text-right h-full">
+      <div className="flex-1 flex flex-col gap-4 text-right overflow-y-auto">
+        {/* معلومات المستخدم */}
         {isLoggedIn ? (
           <div className="flex flex-col items-end border-b pb-4">
             <Avatar className="h-12 w-12 mb-2">
@@ -257,6 +258,7 @@ const handleLogout = async () => {
           </div>
         )}
 
+        {/* روابط التنقل */}
         <nav className="flex flex-col gap-1">
           {navLinks.map((link) => (
             <Link
@@ -286,28 +288,28 @@ const handleLogout = async () => {
             </Link>
           )}
         </nav>
+      </div>
 
-        {/* أزرار أسفل القائمة */}
-        <div className="mt-auto pb-6 px-4 space-y-2">
-          {isLoggedIn && user?.role?.toLowerCase() === "owner" && (
-            <Link to="/dashboard/add-apartment">
-              <Button className="w-full">
-                <Plus className="h-4 w-4 ml-2" />
-                أضف عقارك
-              </Button>
-            </Link>
-          )}
-
-          {isLoggedIn && (
-            <Button
-              variant="destructive"
-              className="w-full"
-              onClick={handleLogout} // توحيد تسجيل الخروج
-            >
-              تسجيل الخروج
+      {/* أزرار أسفل القائمة دائمًا */}
+      <div className="flex flex-col gap-2 p-4 border-t">
+        {isLoggedIn && user?.role?.toLowerCase() === "owner" && (
+          <Link to="/dashboard/add-apartment">
+            <Button className="w-full">
+              <Plus className="h-4 w-4 ml-2" />
+              أضف عقارك
             </Button>
-          )}
-        </div>
+          </Link>
+        )}
+
+        {isLoggedIn && (
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={handleLogout}
+          >
+            تسجيل الخروج
+          </Button>
+        )}
       </div>
     </SheetContent>
   </Sheet>
