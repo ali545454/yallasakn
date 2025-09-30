@@ -535,16 +535,12 @@ const Profile = () => {
                               {" "}
                               {/* <-- هنا */}
                               <div className="relative">
-                                <img
-                                  src={
-                                    apt.images?.[0] ||
-                                    `https://placehold.co/600x400/ef4444/white?text=${encodeURIComponent(
-                                      apt.title || "شقة"
-                                    )}`
-                                  }
-                                  alt={apt.title || "شقة"}
-                                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                                />
+<img
+  src={apt.main_image || `https://placehold.co/600x400/ef4444/white?text=${encodeURIComponent(apt.title || "شقة")}`}
+  alt={apt.title || "شقة"}
+  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+/>
+
                                 <div className="absolute top-2 right-2 bg-background/80 p-2 rounded-lg font-bold text-primary">
                                   {apt.price ?? 0} جنيه
                                 </div>
