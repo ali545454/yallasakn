@@ -50,7 +50,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"; // For better UX
-
 export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 // A small component for displaying info fields, making the main component cleaner
