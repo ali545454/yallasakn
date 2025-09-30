@@ -109,7 +109,7 @@ useEffect(() => {
   };
 
   const handleWhatsAppContact = () => {
-    const phone = apartment.whatsapp_number || apartment.owner?.phone;
+    const phone = apartment.whatsapp_number ;
     if (!phone) {
       alert("رقم الواتساب غير متاح حاليًا.");
       return;
