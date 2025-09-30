@@ -212,105 +212,108 @@ const handleLogout = async () => {
           )}
         </div>
 
-        {/* === قائمة الموبايل === */}
-        <div className="md:hidden flex items-center w-full justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <img
-              src="/yallasakn.png"
-              alt="YallaSakn Logo"
-              className="h-7 object-contain"
-            />
-          </Link>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-72">
-              <SheetHeader className="mb-6 text-right">
-                <SheetTitle>القائمة</SheetTitle>
-              </SheetHeader>
-              <div className="flex flex-col gap-4 text-right h-full">
-                {isLoggedIn ? (
-                  <div className="flex flex-col items-end border-b pb-4">
-                    <Avatar className="h-12 w-12 mb-2">
-                      <AvatarImage src={user?.avatar || ""} />
-                      <AvatarFallback className="bg-primary/10 text-lg">
-                        {getInitials(user?.full_name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p className="font-semibold">{user?.full_name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {user?.email}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-2 border-b pb-4">
-                    <Link to="/signup">
-                      <Button className="w-full">حساب جديد</Button>
-                    </Link>
-                    <Link to="/login">
-                      <Button variant="outline" className="w-full">
-                        دخول
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-
-                <nav className="flex flex-col gap-1">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
-                  {isLoggedIn && user.role === "owner" && (
-                    <Link
-                      to="/dashboard"
-                      className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
-                    >
-                      لوحة التحكم
-                    </Link>
-                  )}
-                  {isLoggedIn && (
-                    <Link
-                      to="/profile"
-                      className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
-                    >
-                      حسابي
-                    </Link>
-                  )}
-                </nav>
-
-                {/* إظهار فقط لأصحاب العقارات */}
-                {isLoggedIn && user.role === "OWNER" && (
-                  <Link to="/dashboard/add-apartment">
-                    <Button className="w-full mt-4">
-                      <Plus className="h-4 w-4 ml-2" />
-                      أضف عقارك
-                    </Button>
-                  </Link>
-                )}
-
-                <div className="mt-auto pb-4">
-              {isLoggedIn && user.role?.toLowerCase() === "owner" && (
-  <Link to="/dashboard/add-apartment">
-    <Button className="w-full mt-4">
-      <Plus className="h-4 w-4 ml-2" />
-      أضف عقارك
-    </Button>
+{/* === قائمة الموبايل === */}
+<div className="md:hidden flex items-center w-full justify-between">
+  <Link to="/" className="flex items-center gap-2">
+    <img
+      src="/yallasakn.png"
+      alt="YallaSakn Logo"
+      className="h-7 object-contain"
+    />
   </Link>
-)}
+  <Sheet>
+    <SheetTrigger asChild>
+      <Button variant="ghost" size="icon">
+        <Menu className="h-6 w-6" />
+      </Button>
+    </SheetTrigger>
+    <SheetContent side="right" className="w-72">
+      <SheetHeader className="mb-6 text-right">
+        <SheetTitle className="p-4 pt-6">القائمة</SheetTitle>
+      </SheetHeader>
 
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+      <div className="flex flex-col gap-4 text-right h-full">
+        {isLoggedIn ? (
+          <div className="flex flex-col items-end border-b pb-4">
+            <Avatar className="h-12 w-12 mb-2">
+              <AvatarImage src={user?.avatar || ""} />
+              <AvatarFallback className="bg-primary/10 text-lg">
+                {getInitials(user?.full_name)}
+              </AvatarFallback>
+            </Avatar>
+            <p className="font-semibold">{user?.full_name}</p>
+            <p className="text-sm text-muted-foreground">{user?.email}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2 border-b pb-4">
+            <Link to="/signup">
+              <Button className="w-full">حساب جديد</Button>
+            </Link>
+            <Link to="/login">
+              <Button variant="outline" className="w-full">
+                دخول
+              </Button>
+            </Link>
+          </div>
+        )}
+
+        <nav className="flex flex-col gap-1">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
+            >
+              {link.name}
+            </Link>
+          ))}
+
+          {isLoggedIn && user?.role === "owner" && (
+            <Link
+              to="/dashboard"
+              className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
+            >
+              لوحة التحكم
+            </Link>
+          )}
+
+          {isLoggedIn && (
+            <Link
+              to="/profile"
+              className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
+            >
+              حسابي
+            </Link>
+          )}
+        </nav>
+
+        {/* أزرار أسفل القائمة */}
+        <div className="mt-auto pb-6 px-4 space-y-2">
+          {isLoggedIn && user?.role?.toLowerCase() === "owner" && (
+            <Link to="/dashboard/add-apartment">
+              <Button className="w-full">
+                <Plus className="h-4 w-4 ml-2" />
+                أضف عقارك
+              </Button>
+            </Link>
+          )}
+
+          {isLoggedIn && (
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={handleLogout} // توحيد تسجيل الخروج
+            >
+              تسجيل الخروج
+            </Button>
+          )}
         </div>
+      </div>
+    </SheetContent>
+  </Sheet>
+</div>
+
+
       </div>
     </header>
   );
