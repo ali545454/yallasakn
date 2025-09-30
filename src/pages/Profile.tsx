@@ -431,16 +431,12 @@ const Profile = () => {
                               to={`/apartments/${apt.uuid}`}
                               className="block"
                             >
-                              <img
-                                src={
-                                  apt.images?.[0] ||
-                                  `https://placehold.co/600x400/3b82f6/white?text=${encodeURIComponent(
-                                    apt.title
-                                  )}`
-                                }
-                                alt={apt.title}
-                                className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                              />
+<img
+  src={apt.main_image || `https://placehold.co/600x400/3b82f6/white?text=${encodeURIComponent(apt.title)}`}
+  alt={apt.title}
+  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+/>
+
                             </Link>
                             <div className="p-4 space-y-3">
                               <h3 className="font-bold text-lg truncate">
