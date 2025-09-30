@@ -495,75 +495,146 @@ const Profile = () => {
               </TabsContent>
             )}
 
-            {/* Favorites Tab */}
-            {/* Favorites Tab */}
-<Card
-  key={apt.uuid}
-  className="overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 group relative bg-white"
->
-  {/* زر إزالة من المفضلة */}
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="destructive"
-          size="icon"
-          className="absolute top-2 right-2 z-10"
-          onClick={() => handleRemoveFavorite(apt.uuid)}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>إزالة من المفضلة</p>
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-
-  {/* الصورة */}
-  <Link to={`/apartments/${apt.uuid}`}>
-    <div className="relative">
-      <img
-        src={
-          apt.main_image ||
-          `https://placehold.co/600x400/ef4444/white?text=${encodeURIComponent(
-            apt.title || "شقة"
-          )}`
-        }
-        alt={apt.title || "شقة"}
-        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-      />
-      <div className="absolute top-2 left-2 bg-primary/80 text-white px-3 py-1 rounded-lg font-bold text-sm">
-        {apt.price ?? 0} جنيه
-      </div>
-    </div>
-
-    {/* تفاصيل الشقة */}
-    <div className="p-4">
-      <h3 className="font-semibold text-lg truncate">{apt.title || "غير محدد"}</h3>
-      <p className="text-sm text-muted-foreground truncate">{apt.address || "غير محدد"}</p>
-
-      {/* بعض المميزات البسيطة */}
-      {apt.features && apt.features.length > 0 && (
-        <div className="mt-2 flex flex-wrap gap-2">
-          {apt.features.slice(0, 3).map((feat, idx) => (
-            <span
-              key={idx}
-              className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full"
+<TabsContent value="favorites">
+  <Card>
+    <CardHeader>
+      <CardTitle>الشقق المفضلة ({favoriteCount})</CardTitle>
+      <CardDescription>
+        قائمة بالشقق التي قمت بحفظها للعودة إليها لاحقًا.
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      {paginatedFavorites.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {paginatedFavorites.map((apt) => (
+            <Card
+              key={apt.uuid}
+              className="overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 group relative bg-white"
             >
-              {feat}
-            </span>
+              {/* زر إزالة من المفضلة */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2 z-10"
+                      onClick={() => handleRemoveFavorite(apt.uuid)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>إزالة من المفضلة</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              {/* الصورة */}
+              <Link to={`/apartments/${apt.uuid}`}>
+                <div className="relative">
+                  <img
+                    src={
+                      apt.main_image ||
+                      `https://placehold.co/600x400/ef4444/white?text=${encodeURIComponent(
+                        apt.title || "شقة"
+                      )}`
+                    }
+                    alt={apt.title || "شقة"}
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute top-2 left-2 bg-primary/80 text-white px-3 py-1 rounded-lg font-bold text-sm">
+                    {apt.price ?? 0} جنيه
+                  </div>
+                </div>
+
+                {/* تفاصيل الشقة */}
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg truncate">
+                    {apt.title || "غير محدد"}
+                  </h3>
+                  <p className="text-sm text-muted-foreground truncate">
+                    {apt.address || "غير محدد"}
+                  </p>
+
+                  {apt.features && apt.features.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {apt.features.slice(0, 3).map((feat, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full"
+                        >
+                          {feat}
+                        </span>
+                      ))}
+                      {apt.features.length > 3 && (
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                          +{apt.features.length - 3} أخرى
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            </Card>
           ))}
-          {apt.features.length > 3 && (
-            <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-              +{apt.features.length - 3} أخرى
-            </span>
-          )}
+        </div>
+      ) : (
+        <div className="text-center py-16">
+          <HeartOff className="mx-auto h-20 w-20 text-slate-300" />
+          <h3 className="mt-4 text-xl font-semibold">قائمة المفضلة فارغة</h3>
+          <p className="mt-2 text-muted-foreground">
+            لم تقم بإضافة أي شقق إلى قائمتك المفضلة بعد.
+          </p>
+          <Button className="mt-6" onClick={() => navigate("/search")}>
+            تصفح الشقق الآن
+          </Button>
         </div>
       )}
-    </div>
-  </Link>
-</Card>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination className="mt-8">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage((p) => Math.max(1, p - 1));
+                }}
+              />
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  href="#"
+                  isActive={currentPage === i + 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(i + 1);
+                  }}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage((p) => Math.min(totalPages, p + 1));
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </CardContent>
+  </Card>
+</TabsContent>
+
 
           </Tabs>
         </main>
