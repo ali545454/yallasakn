@@ -610,7 +610,7 @@ const Profile = () => {
                       </p>
                       <Button
                         className="mt-6"
-                        onClick={() => navigate("/apartments")}
+                        onClick={() => navigate("/search")}
                       >
                         تصفح الشقق الآن
                       </Button>
