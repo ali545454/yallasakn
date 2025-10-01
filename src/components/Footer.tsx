@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Building, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -13,31 +13,32 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-
-              <a href="/"><img src="/public/yallasakn.png" alt="" className='w-[120px]' /></a>
+              <a href="/">
+                <img src="/yallasakn.png" alt="Yalla Sakan Logo" className="w-[120px]" />
+              </a>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
               منصة موثوقة لإيجاد السكن المناسب للطلاب في أسيوط. نربط بين الطلاب وأصحاب السكن بأمان وسهولة.
             </p>
             <div className="flex items-center gap-2">
-<a
-  href="https://www.facebook.com/yallasakn87"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  <Button size="icon" variant="ghost" className="h-8 w-8">
-    <Facebook className="h-4 w-4" />
-  </Button>
-</a>
-              {/* <Button size="icon" variant="ghost" className="h-8 w-8">
-                <Twitter className="h-4 w-4" />
-              </Button> */}
-              {/* <Button size="icon" variant="ghost" className="h-8 w-8">
-                <Instagram className="h-4 w-4" />
-              </Button> */}
-              <Button size="icon" variant="ghost" className="h-8 w-8">
-                <Linkedin className="h-4 w-4" />
-              </Button>
+              <a
+                href="https://www.facebook.com/yallasakn87"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="icon" variant="ghost" className="h-8 w-8">
+                  <Facebook className="h-4 w-4" />
+                </Button>
+              </a>
+              <a
+                href="https://linkedin.com/company/yallasakn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="icon" variant="ghost" className="h-8 w-8">
+                  <Linkedin className="h-4 w-4" />
+                </Button>
+              </a>
             </div>
           </div>
 
@@ -108,6 +109,8 @@ const Footer = () => {
               <div className="flex gap-2">
                 <Input
                   type="email"
+                  name="newsletter"
+                  aria-label="البريد الإلكتروني للاشتراك"
                   placeholder="بريدك الإلكتروني"
                   className="text-right text-sm"
                 />
@@ -120,12 +123,8 @@ const Footer = () => {
         <Separator className="my-8" />
 
         {/* Bottom Footer */}
-<div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-  <div className="flex items-center gap-4">
-    <span>© {new Date().getFullYear()} يلا سكن. جميع الحقوق محفوظة.</span>
-  </div>
-</div>
-
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <span>© {new Date().getFullYear()} يلا سكن. جميع الحقوق محفوظة.</span>
           <div className="flex items-center gap-4">
             <Link to="/terms" className="hover:text-primary transition-colors">
               الشروط والأحكام
