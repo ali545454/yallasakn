@@ -49,8 +49,7 @@ import {
 } from "lucide-react";
 
 
-export const API_URL = `https://web-production-33f69.up.railway.app
-`;
+export const API_URL = `https://web-production-33f69.up.railway.app`;
 const features = [
   { id: "has_wifi", label: "واي فاي", icon: <Wifi size={24} /> },
   { id: "has_ac", label: "تكييف", icon: <Wind size={24} /> },
