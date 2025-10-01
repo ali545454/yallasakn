@@ -26,16 +26,16 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button size="icon" variant="ghost" className="h-8 w-8">
+                <Button size="icon"  className="h-8 w-8">
                   <Facebook className="h-4 w-4" />
                 </Button>
               </a>
               <a
-                href="https://linkedin.com/company/yallasakn"
+                href="https://www.linkedin.com/company/yallaskan/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Button size="icon" variant="ghost" className="h-8 w-8">
+                <Button size="icon"  className="h-8 w-8">
                   <Linkedin className="h-4 w-4" />
                 </Button>
               </a>
