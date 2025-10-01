@@ -124,7 +124,7 @@ const Footer = () => {
 
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <span>© {new Date().getFullYear()} يلا سكن. جميع الحقوق محفوظة.</span>
+          <span>جميع الحقوق محفوظة لدي يلا سكن © {new Date().getFullYear()} </span>
           <div className="flex items-center gap-4">
             <Link to="/terms" className="hover:text-primary transition-colors">
               الشروط والأحكام
