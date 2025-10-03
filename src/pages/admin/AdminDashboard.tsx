@@ -188,7 +188,7 @@ export default function AdminDashboard() {
                       }`}>{u.role}</span>
                     </TableCell>
                     <TableCell>
-                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.id)}>
+                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.uuid)}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
                     <TableCell>{a.address}</TableCell>
                     <TableCell>{a.price} ج.م</TableCell>
                     <TableCell>
-                      <Button variant="destructive" size="sm" onClick={() => deleteApartment(a.id)}>
+                      <Button variant="destructive" size="sm" onClick={() => deleteApartment(a.uuid)}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>
