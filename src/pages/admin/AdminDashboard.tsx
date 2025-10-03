@@ -7,14 +7,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { API_URL } from "@/pages/ApartmentDetails";
 
 interface User {
-  id: string; // UUID string
+  id: string; // UUID
   full_name: string;
   email: string;
   role: "student" | "owner" | "admin";
 }
 
 interface Apartment {
-  id: string;  // UUID
+  id: string; // UUID
   title: string;
   address: string;
   price: number;
@@ -77,11 +77,16 @@ export default function AdminDashboard() {
     const token = getToken();
     if (!token) return;
 
-    await fetch(`${API_URL}/api/admin/users/${id}`, { 
-      method: "DELETE", 
-      headers: { Authorization: `Bearer ${token}` } 
-    });
-    setUsers(users.filter((u) => u.id !== id));
+    try {
+      const res = await fetch(`${API_URL}/api/admin/users/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("فشل حذف المستخدم");
+      setUsers(users.filter(u => u.id !== id));
+    } catch (err) {
+      alert((err as Error).message);
+    }
   };
 
   const deleteApartment = async (id: string) => {
@@ -98,7 +103,7 @@ export default function AdminDashboard() {
         const errMsg = await res.text();
         throw new Error("فشل حذف الشقة: " + errMsg);
       }
-      setApartments(apartments.filter((a) => a.id !== id));
+      setApartments(apartments.filter(a => a.id !== id));
     } catch (err) {
       alert((err as Error).message);
     }
@@ -106,14 +111,6 @@ export default function AdminDashboard() {
 
   const filteredUsers = users.filter(u => u.full_name.toLowerCase().includes(searchUser.toLowerCase()));
   const filteredApartments = apartments.filter(a => a.title.toLowerCase().includes(searchApartment.toLowerCase()));
-
-  const extendedStatsData = stats ? [
-    { name: "إجمالي المستخدمين", value: stats.users_count },
-    { name: "إجمالي الشقق", value: stats.apartments_count },
-    { name: "التقييمات", value: stats.reviews_count },
-    { name: "الإعجابات", value: stats.favorites_count },
-    { name: "الأحياء", value: stats.neighborhoods_count },
-  ] : [];
 
   return (
     <div className="p-6 md:p-10 bg-gray-50 min-h-screen">
@@ -188,7 +185,7 @@ export default function AdminDashboard() {
                       }`}>{u.role}</span>
                     </TableCell>
                     <TableCell>
-                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.uuid)}>
+                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.id)}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>
@@ -224,7 +221,7 @@ export default function AdminDashboard() {
                     <TableCell>{a.address}</TableCell>
                     <TableCell>{a.price} ج.م</TableCell>
                     <TableCell>
-                      <Button variant="destructive" size="sm" onClick={() => deleteApartment(a.uuid)}>
+                      <Button variant="destructive" size="sm" onClick={() => deleteApartment(a.id)}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>
