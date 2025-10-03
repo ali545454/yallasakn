@@ -63,13 +63,14 @@ export default function AdminDashboard() {
       .then(setStats);
   }, []);
 
-  const deleteUser = async (uuid: number) => {
+  const deleteUser = async (uuid: string) => {
     if (!confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
     const token = getToken();
     if (!token) return;
 
     await fetch(`${API_URL}/api/admin/users/${uuid}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-    setUsers(users.filter((u) => u.id !== id));
+    setUsers(users.filter((u) => u.uuid !== uuid));
+
   };
 
  const deleteApartment = async (id: string) => {
