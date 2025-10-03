@@ -67,19 +67,25 @@ export default function AdminDashboard() {
     setUsers(users.filter((u) => u.id !== id));
   };
 
-  const deleteApartment = async (id: number) => {
-    if (!confirm("هل أنت متأكد من حذف هذه الشقة؟")) return;
-    const token = getToken();
-    if (!token) return;
+ const deleteApartment = async (id: string) => {
+  if (!confirm("هل أنت متأكد من حذف هذه الشقة؟")) return;
+  const token = getToken();
+  if (!token) return;
 
-    try {
-      const res = await fetch(`${API_URL}/api/admin/apartments/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-      if (!res.ok) throw new Error("فشل حذف الشقة");
-      setApartments(apartments.filter((a) => a.id !== id));
-    } catch (err) {
-      alert((err as Error).message);
+  try {
+    const res = await fetch(`${API_URL}/api/admin/apartments/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const errMsg = await res.text();
+      throw new Error("فشل حذف الشقة: " + errMsg);
     }
-  };
+    setApartments(apartments.filter((a) => a.id !== id));
+  } catch (err) {
+    alert((err as Error).message);
+  }
+};
 
   const filteredUsers = users.filter(u => u.name.toLowerCase().includes(searchUser.toLowerCase()));
   const filteredApartments = apartments.filter(a => a.title.toLowerCase().includes(searchApartment.toLowerCase()));
