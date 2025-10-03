@@ -8,7 +8,12 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 
 import { API_URL } from "@/pages/ApartmentDetails";
 
 interface User { id: number; name: string; email: string; role: "student" | "owner" | "admin"; }
-interface Apartment { id: number; title: string; address: string; price: number; }
+interface Apartment {
+  id: string;  // UUID
+  title: string;
+  address: string;
+  price: number;
+}
 interface Stats { total_users: number; total_students: number; total_owners: number; total_apartments: number; avg_apartment_price?: number; active_apartments?: number; }
 
 const PRIMARY_COLOR = "#1c7cf2";
