@@ -10,6 +10,7 @@ import { API_URL } from "@/pages/ApartmentDetails";
 interface User { id: number; name: string; email: string; role: "student" | "owner" | "admin"; }
 interface Apartment {
   id: string;  // UUID
+  uuid: string; 
   title: string;
   address: string;
   price: number;
@@ -58,12 +59,12 @@ export default function AdminDashboard() {
       .then(setStats);
   }, []);
 
-  const deleteUser = async (id: number) => {
+  const deleteUser = async (uuid: number) => {
     if (!confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
     const token = getToken();
     if (!token) return;
 
-    await fetch(`${API_URL}/api/admin/users/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+    await fetch(`${API_URL}/api/admin/users/${uuid}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
     setUsers(users.filter((u) => u.id !== id));
   };
 
@@ -171,9 +172,10 @@ export default function AdminDashboard() {
                       }`}>{u.role}</span>
                     </TableCell>
                     <TableCell>
-                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.id)}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+<Button variant="destructive" size="sm" onClick={() => deleteUser(u.uuid)}>
+  <Trash2 className="w-4 h-4" />
+</Button>
+
                     </TableCell>
                   </TableRow>
                 ))}
