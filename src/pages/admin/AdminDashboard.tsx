@@ -7,7 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
 import { API_URL } from "@/pages/ApartmentDetails";
 
-interface User { id: number; name: string; email: string; role: "student" | "owner" | "admin"; }
+interface User {
+   id: number; name: string; email: string; role: "student" | "owner" | "admin"; 
+  uuid: string; 
+
+  }
 interface Apartment {
   id: string;  // UUID
   uuid: string; 
