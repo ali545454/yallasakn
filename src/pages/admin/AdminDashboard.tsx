@@ -4,22 +4,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Users, Home, Building2, TrendingUp } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
 import { API_URL } from "@/pages/ApartmentDetails";
 
 interface User {
-   id: number; name: string; email: string; role: "student" | "owner" | "admin"; 
-  uuid: string; 
+  id: string; // UUID string
+  full_name: string;
+  email: string;
+  role: "student" | "owner" | "admin";
+}
 
-  }
 interface Apartment {
   id: string;  // UUID
-  uuid: string; 
   title: string;
   address: string;
   price: number;
 }
-interface Stats { total_users: number; total_students: number; total_owners: number; total_apartments: number; avg_apartment_price?: number; active_apartments?: number; }
+
+interface Stats {
+  users_count: number;
+  apartments_count: number;
+  reviews_count: number;
+  favorites_count: number;
+  neighborhoods_count: number;
+}
 
 const PRIMARY_COLOR = "#1c7cf2";
 const SECONDARY_COLOR = "#10b77f";
@@ -45,7 +52,7 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Fetch البيانات مع التوكن
+    // Fetch Users
     fetch(`${API_URL}/api/admin/users`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         if (!res.ok) throw new Error("Invalid token");
@@ -54,54 +61,58 @@ export default function AdminDashboard() {
       .then(setUsers)
       .catch(() => navigate("/admin/login"));
 
+    // Fetch Apartments
     fetch(`${API_URL}/api/admin/apartments`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => res.json())
       .then(setApartments);
 
+    // Fetch Stats
     fetch(`${API_URL}/api/admin/stats`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => res.json())
       .then(setStats);
   }, []);
 
-  const deleteUser = async (uuid: string) => {
+  const deleteUser = async (id: string) => {
     if (!confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
     const token = getToken();
     if (!token) return;
 
-    await fetch(`${API_URL}/api/admin/users/${uuid}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-    setUsers(users.filter((u) => u.uuid !== uuid));
-
+    await fetch(`${API_URL}/api/admin/users/${id}`, { 
+      method: "DELETE", 
+      headers: { Authorization: `Bearer ${token}` } 
+    });
+    setUsers(users.filter((u) => u.id !== id));
   };
 
- const deleteApartment = async (id: string) => {
-  if (!confirm("هل أنت متأكد من حذف هذه الشقة؟")) return;
-  const token = getToken();
-  if (!token) return;
+  const deleteApartment = async (id: string) => {
+    if (!confirm("هل أنت متأكد من حذف هذه الشقة؟")) return;
+    const token = getToken();
+    if (!token) return;
 
-  try {
-    const res = await fetch(`${API_URL}/api/admin/apartments/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) {
-      const errMsg = await res.text();
-      throw new Error("فشل حذف الشقة: " + errMsg);
+    try {
+      const res = await fetch(`${API_URL}/api/admin/apartments/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const errMsg = await res.text();
+        throw new Error("فشل حذف الشقة: " + errMsg);
+      }
+      setApartments(apartments.filter((a) => a.id !== id));
+    } catch (err) {
+      alert((err as Error).message);
     }
-    setApartments(apartments.filter((a) => a.id !== id));
-  } catch (err) {
-    alert((err as Error).message);
-  }
-};
+  };
 
-  const filteredUsers = users.filter(u => u.name.toLowerCase().includes(searchUser.toLowerCase()));
+  const filteredUsers = users.filter(u => u.full_name.toLowerCase().includes(searchUser.toLowerCase()));
   const filteredApartments = apartments.filter(a => a.title.toLowerCase().includes(searchApartment.toLowerCase()));
+
   const extendedStatsData = stats ? [
-    { name: "المستخدمين", value: stats.total_users },
-    { name: "الطلاب", value: stats.total_students },
-    { name: "أصحاب السكن", value: stats.total_owners },
-    { name: "الشقق", value: stats.total_apartments },
-    { name: "متوسط سعر الشقق", value: stats.avg_apartment_price ?? 0 },
-    { name: "شقق مفعلّة", value: stats.active_apartments ?? 0 },
+    { name: "إجمالي المستخدمين", value: stats.users_count },
+    { name: "إجمالي الشقق", value: stats.apartments_count },
+    { name: "التقييمات", value: stats.reviews_count },
+    { name: "الإعجابات", value: stats.favorites_count },
+    { name: "الأحياء", value: stats.neighborhoods_count },
   ] : [];
 
   return (
@@ -113,34 +124,34 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <Card className="shadow-lg border-l-4" style={{ borderColor: PRIMARY_COLOR }}>
             <CardHeader className="flex items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">إجمالي المستخدمين</CardTitle>
+              <CardTitle className="text-sm font-medium">المستخدمين</CardTitle>
               <Users className="h-7 w-7" style={{ color: PRIMARY_COLOR }} />
             </CardHeader>
-            <CardContent><div className="text-2xl font-bold">{stats.total_users}</div></CardContent>
+            <CardContent><div className="text-2xl font-bold">{stats.users_count}</div></CardContent>
           </Card>
 
           <Card className="shadow-lg border-l-4" style={{ borderColor: SECONDARY_COLOR }}>
             <CardHeader className="flex items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">الطلاب</CardTitle>
+              <CardTitle className="text-sm font-medium">الشقق</CardTitle>
               <Home className="h-7 w-7" style={{ color: SECONDARY_COLOR }} />
             </CardHeader>
-            <CardContent><div className="text-2xl font-bold">{stats.total_students}</div></CardContent>
+            <CardContent><div className="text-2xl font-bold">{stats.apartments_count}</div></CardContent>
           </Card>
 
           <Card className="shadow-lg border-l-4" style={{ borderColor: "#f59e0b" }}>
             <CardHeader className="flex items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">أصحاب السكن</CardTitle>
+              <CardTitle className="text-sm font-medium">التقييمات</CardTitle>
               <Building2 className="h-7 w-7" style={{ color: "#f59e0b" }} />
             </CardHeader>
-            <CardContent><div className="text-2xl font-bold">{stats.total_owners}</div></CardContent>
+            <CardContent><div className="text-2xl font-bold">{stats.reviews_count}</div></CardContent>
           </Card>
 
           <Card className="shadow-lg border-l-4" style={{ borderColor: "#8b5cf6" }}>
             <CardHeader className="flex items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">الشقق</CardTitle>
+              <CardTitle className="text-sm font-medium">الأحياء</CardTitle>
               <TrendingUp className="h-7 w-7" style={{ color: "#8b5cf6" }} />
             </CardHeader>
-            <CardContent><div className="text-2xl font-bold">{stats.total_apartments}</div></CardContent>
+            <CardContent><div className="text-2xl font-bold">{stats.neighborhoods_count}</div></CardContent>
           </Card>
         </div>
       )}
@@ -167,7 +178,7 @@ export default function AdminDashboard() {
                 {filteredUsers.map(u => (
                   <TableRow key={u.id} className="hover:bg-gray-50">
                     <TableCell>{u.id}</TableCell>
-                    <TableCell>{u.name}</TableCell>
+                    <TableCell>{u.full_name}</TableCell>
                     <TableCell>{u.email}</TableCell>
                     <TableCell>
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -177,10 +188,9 @@ export default function AdminDashboard() {
                       }`}>{u.role}</span>
                     </TableCell>
                     <TableCell>
-<Button variant="destructive" size="sm" onClick={() => deleteUser(u.uuid)}>
-  <Trash2 className="w-4 h-4" />
-</Button>
-
+                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.id)}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
