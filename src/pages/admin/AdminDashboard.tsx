@@ -7,14 +7,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { API_URL } from "@/pages/ApartmentDetails";
 
 interface User {
-  id: string; // UUID
+  uuid: string; // UUID
   full_name: string;
   email: string;
   role: "student" | "owner" | "admin";
 }
 
 interface Apartment {
-  id: string; // UUID
+  uuid: string; // UUID
   title: string;
   address: string;
   price: number;
@@ -72,30 +72,30 @@ export default function AdminDashboard() {
       .then(setStats);
   }, []);
 
-  const deleteUser = async (id: string) => {
+  const deleteUser = async (uuid: string) => {
     if (!confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
     const token = getToken();
     if (!token) return;
 
     try {
-      const res = await fetch(`${API_URL}/api/admin/users/${id}`, {
+      const res = await fetch(`${API_URL}/api/admin/users/${uuid}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("فشل حذف المستخدم");
-      setUsers(users.filter(u => u.id !== id));
+      setUsers(users.filter(u => u.uuid !== uuid));
     } catch (err) {
       alert((err as Error).message);
     }
   };
 
-  const deleteApartment = async (id: string) => {
+  const deleteApartment = async (uuid: string) => {
     if (!confirm("هل أنت متأكد من حذف هذه الشقة؟")) return;
     const token = getToken();
     if (!token) return;
 
     try {
-      const res = await fetch(`${API_URL}/api/admin/apartments/${id}`, {
+      const res = await fetch(`${API_URL}/api/admin/apartments/${uuid}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
         const errMsg = await res.text();
         throw new Error("فشل حذف الشقة: " + errMsg);
       }
-      setApartments(apartments.filter(a => a.id !== id));
+      setApartments(apartments.filter(a => a.uuid !== uuid));
     } catch (err) {
       alert((err as Error).message);
     }
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
             <Table className="border">
               <TableHeader>
                 <TableRow className="bg-gray-100">
-                  <TableHead>ID</TableHead>
+                  <TableHead>UUID</TableHead>
                   <TableHead>الاسم</TableHead>
                   <TableHead>الإيميل</TableHead>
                   <TableHead>الدور</TableHead>
@@ -173,8 +173,8 @@ export default function AdminDashboard() {
               </TableHeader>
               <TableBody>
                 {filteredUsers.map(u => (
-                  <TableRow key={u.id} className="hover:bg-gray-50">
-                    <TableCell>{u.id}</TableCell>
+                  <TableRow key={u.uuid} className="hover:bg-gray-50">
+                    <TableCell>{u.uuid}</TableCell>
                     <TableCell>{u.full_name}</TableCell>
                     <TableCell>{u.email}</TableCell>
                     <TableCell>
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
                       }`}>{u.role}</span>
                     </TableCell>
                     <TableCell>
-                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.id)}>
+                      <Button variant="destructive" size="sm" onClick={() => deleteUser(u.uuid)}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
             <Table className="border">
               <TableHeader>
                 <TableRow className="bg-gray-100">
-                  <TableHead>ID</TableHead>
+                  <TableHead>UUID</TableHead>
                   <TableHead>العنوان</TableHead>
                   <TableHead>المكان</TableHead>
                   <TableHead>السعر</TableHead>
@@ -215,13 +215,13 @@ export default function AdminDashboard() {
               </TableHeader>
               <TableBody>
                 {filteredApartments.map(a => (
-                  <TableRow key={a.id} className="hover:bg-gray-50">
-                    <TableCell>{a.id}</TableCell>
+                  <TableRow key={a.uuid} className="hover:bg-gray-50">
+                    <TableCell>{a.uuid}</TableCell>
                     <TableCell>{a.title}</TableCell>
                     <TableCell>{a.address}</TableCell>
                     <TableCell>{a.price} ج.م</TableCell>
                     <TableCell>
-                      <Button variant="destructive" size="sm" onClick={() => deleteApartment(a.id)}>
+                      <Button variant="destructive" size="sm" onClick={() => deleteApartment(a.uuid)}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>
