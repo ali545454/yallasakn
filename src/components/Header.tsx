@@ -212,7 +212,7 @@ const Header = () => {
                 )}
 
                 {/* روابط القائمة */}
-                <nav className="flex flex-col gap-1 w-full">
+                <nav className="flex flex-col gap-1 w-full flex-start">
                   {navLinks.map((link) => (
                     <Link
                       key={link.path}
