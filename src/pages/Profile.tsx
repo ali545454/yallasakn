@@ -301,13 +301,29 @@ const Profile = () => {
             onValueChange={setSelectedTab}
             className="w-full"
           >
-<TabsList className="flex w-full gap-2 overflow-x-auto">
-  <TabsTrigger value="info" className="flex-shrink-0">المعلومات الشخصية</TabsTrigger>
+<TabsList className="flex w-full gap-1 overflow-x-auto no-scrollbar">
+  <TabsTrigger
+    value="info"
+    className="flex-shrink-0 text-sm sm:text-base px-2 sm:px-4 py-1 sm:py-2"
+  >
+    المعلومات الشخصية
+  </TabsTrigger>
   {userData.role !== "student" && (
-    <TabsTrigger value="my-apartments" className="flex-shrink-0">شقق قمت بعرضها</TabsTrigger>
+    <TabsTrigger
+      value="my-apartments"
+      className="flex-shrink-0 text-sm sm:text-base px-2 sm:px-4 py-1 sm:py-2"
+    >
+      شقق قمت بعرضها
+    </TabsTrigger>
   )}
-  <TabsTrigger value="favorites" className="flex-shrink-0">المفضلة</TabsTrigger>
+  <TabsTrigger
+    value="favorites"
+    className="flex-shrink-0 text-sm sm:text-base px-2 sm:px-4 py-1 sm:py-2"
+  >
+    المفضلة
+  </TabsTrigger>
 </TabsList>
+
 
 
             {/* Info Tab */}
