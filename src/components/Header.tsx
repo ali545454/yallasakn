@@ -68,33 +68,32 @@ const Header = () => {
             className="h-8 object-contain"
           />
         </Link>
-        {/* === روابط سريعة بجانب الشعار === */}
-<div className="hidden md:flex items-center gap-4 text-sm">
-  <Link
-    to="/search"
-    className="flex items-center gap-1 hover:text-primary"
-  >
-    <Search className="h-4 w-4" />
-    البحث
-  </Link>
 
-  <Link
-    to="/support"
-    className="flex items-center gap-1 hover:text-primary"
-  >
-    <HelpCircle className="h-4 w-4" />
-    الدعم
-  </Link>
-
-  <Link
-    to="/privacy"
-    className="flex items-center gap-1 hover:text-primary"
-  >
-    <Shield className="h-4 w-4" />
-    الخصوصية
-  </Link>
-</div>
-
+// === روابط سريعة بجانب الشعار كـ DropMenu ===
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="ghost" size="sm" className="flex items-center gap-1">
+      القائمة السريعة <ChevronDown className="h-4 w-4" />
+    </Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="start" className="text-right">
+    <DropdownMenuItem asChild>
+      <Link to="/search" className="flex items-center gap-2">
+        <Search className="h-4 w-4" /> البحث
+      </Link>
+    </DropdownMenuItem>
+    <DropdownMenuItem asChild>
+      <Link to="/support" className="flex items-center gap-2">
+        <HelpCircle className="h-4 w-4" /> الدعم
+      </Link>
+    </DropdownMenuItem>
+    <DropdownMenuItem asChild>
+      <Link to="/privacy" className="flex items-center gap-2">
+        <Shield className="h-4 w-4" /> الخصوصية
+      </Link>
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
         {/* === شريط البحث (للديسكتوب فقط) === */}
         <form
           onSubmit={handleSearch}
