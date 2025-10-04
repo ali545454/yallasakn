@@ -69,7 +69,6 @@ const Header = () => {
           />
         </Link>
 
-// === روابط سريعة بجانب الشعار كـ DropMenu ===
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
     <Button variant="ghost" size="sm" className="flex items-center gap-1">
