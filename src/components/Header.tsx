@@ -244,7 +244,7 @@ const Header = () => {
               {/* الأزرار السفلية */}
               <div className="flex flex-col gap-2 p-4 border-t w-full flex-center">
                 {isLoggedIn && user?.role?.toLowerCase() === "owner" && (
-                  <Link to="/dashboard/add-apartment">
+                  <Link to="/add-apartment">
                     <Button className="w-full">
                       <Plus className="h-4 w-4 ml-2" />
                       أضف عقارك
