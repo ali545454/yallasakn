@@ -52,18 +52,85 @@ import {
 } from "@/components/ui/tooltip"; // For better UX
 export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
+import { useFavorites } from "@/context/FavoritesContext";
+
 // A small component for displaying info fields, making the main component cleaner
 const InfoField = ({ icon, label, value }) => (
-  <div className="flex items-center gap-4 text-right">
-    <div className="flex-grow bg-slate-100 p-3 rounded-md text-slate-800">
-      {value || <span className="text-slate-400">غير محدد</span>}
-    </div>
-    <div className="flex items-center gap-2 justify-end min-w-[120px]">
-      <span className="font-medium text-slate-600">{label}</span>
-      {icon}
-    </div>
-  </div>
-);
+// ...existing code...
+const Profile = () => {
+  const { user, setUser } = useUser();
+  const { favorites, toggleFavorite } = useFavorites(); // ✨ نستخدم الكونتكست مباشرة
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const roleMap = {
+// ...existing code...
+  const [userData, setUserData] = useState(user || null);
+  const [isLoading, setIsLoading] = useState(!user);
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempData, setTempData] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const apartmentsPerPage = 4; // Increased for better layout
+
+  const hash = location.hash.replace("#", "");
+// ...existing code...
+      }
+    };
+    fetchProfileData();
+  }, [navigate, user, setUser]);
+
+  // ❌ لم نعد بحاجة لجلب المفضلة بشكل منفصل هنا
+  // const fetchFavorites = useCallback(async () => {
+  //   try {
+  //     const res = await axios.get(`${API_URL}/api/v1/favorites`, {
+  //       withCredentials: true,
+  //     });
+  //     setFavorites(res.data.apartments || []);
+  //   } catch (err) {
+  //     console.error("Error fetching favorites:", err);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (userData) {
+  //     // Fetch favorites only after user data is available
+  //     fetchFavorites();
+  //   }
+  // }, [userData, fetchFavorites]);
+
+  const handleEdit = () => {
+    setTempData({
+// ...existing code...
+      // Replace alert with a proper notification/toast component in a real app
+    }
+  };
+  const handleRemoveFavorite = async (apartmentUuid) => {
+    try {
+      await axios.delete(`${API_URL}/api/v1/favorites/remove/${apartmentUuid}`, {
+        withCredentials: true,
+      });
+      // ✨ نستخدم دالة التبديل من الكونتكست لتحديث الحالة العامة
+      toggleFavorite(apartmentUuid);
+    } catch (err) {
+      console.error("Failed to remove favorite:", err);
+    }
+  };
+
+  const handleCancel = () => setIsEditing(false);
+  const handleInputChange = (field, value) =>
+// ...existing code...
+  const favoriteCount = favorites.length;
+  const apartmentsOwnedCount = userData?.apartments?.length || 0;
+  // ✨ فلترة الشقق المفضلة من بيانات الشقق الكاملة التي لدينا
+  const favoriteApartments = userData?.apartments?.filter(apt => favorites.includes(apt.uuid)) || [];
+  const totalPages = Math.ceil(favoriteApartments.length / apartmentsPerPage);
+  const paginatedFavorites = favoriteApartments.slice(
+    (currentPage - 1) * apartmentsPerPage,
+    currentPage * apartmentsPerPage
+  );
+
+  if (isLoading) return <Loading />;
+  if (!userData) return <div>لم يتم العثور على بيانات المستخدم.</div>;
 
 const Profile = () => {
   const { user, setUser } = useUser();
