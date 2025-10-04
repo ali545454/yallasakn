@@ -128,7 +128,7 @@ const Profile = () => {
   // Fetch favorites data
   const fetchFavorites = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/v1/favorite/favorites`, {
+      const res = await axios.get(`${API_URL}/api/v1/favorites`, {
         withCredentials: true,
       });
       setFavorites(res.data.apartments || []);
@@ -172,7 +172,7 @@ const Profile = () => {
   };
   const handleRemoveFavorite = async (apartmentUuid) => {
     try {
-      await axios.delete(`${API_URL}/api/v1/favorite/remove/${apartmentUuid}`, {
+      await axios.delete(`${API_URL}/api/v1/favorites/remove/${apartmentUuid}`, {
         withCredentials: true,
       });
       setFavorites((prev) => prev.filter((fav) => fav.uuid !== apartmentUuid));
