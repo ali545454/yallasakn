@@ -49,12 +49,7 @@ const Footer = () => {
               <Link to="/search" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                 البحث عن شقق
               </Link>
-              <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                لوحة تحكم المالك
-              </Link>
-              <Link to="/profile" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                الملف الشخصي
-              </Link>
+
               <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                 الشروط والأحكام
               </Link>

@@ -76,6 +76,32 @@ const Header = () => {
             className="h-8 object-contain"
           />
         </Link>
+        {/* === روابط سريعة بجانب الشعار === */}
+<div className="hidden md:flex items-center gap-4 text-sm">
+  <Link
+    to="/search"
+    className="flex items-center gap-1 hover:text-primary"
+  >
+    <Search className="h-4 w-4" />
+    البحث
+  </Link>
+
+  <Link
+    to="/support"
+    className="flex items-center gap-1 hover:text-primary"
+  >
+    <HelpCircle className="h-4 w-4" />
+    الدعم
+  </Link>
+
+  <Link
+    to="/privacy"
+    className="flex items-center gap-1 hover:text-primary"
+  >
+    <Shield className="h-4 w-4" />
+    الخصوصية
+  </Link>
+</div>
 
         {/* === شريط البحث (للديسكتوب فقط) === */}
         <form
