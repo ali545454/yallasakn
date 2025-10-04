@@ -85,7 +85,6 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/safety" element={<SafetyPage />} />
-                <Route path="/messages/:ownerId" element={<MessagesPage />} />
                 <Route path="/cookies" element={<CookiePolicyPage />} />
                 <Route
                   path="/apartments/:apartmentUuid"
