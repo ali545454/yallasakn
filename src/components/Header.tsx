@@ -186,7 +186,7 @@ const Header = () => {
                 <SheetTitle className="text-lg font-semibold">القائمة</SheetTitle>
               </SheetHeader>
 
-              <div className="flex-1 flex flex-col gap-4 w-full items-end overflow-y-auto">
+              <div className="flex-1 flex flex-col gap-4 w-full items-start overflow-y-auto">
                 {isLoggedIn ? (
                   <div className="flex flex-col items-end border-b pb-4 w-full text-right">
                     <Avatar className="h-12 w-12 mb-2">
@@ -242,7 +242,7 @@ const Header = () => {
               </div>
 
               {/* الأزرار السفلية */}
-              <div className="flex flex-col gap-2 p-4 border-t w-full">
+              <div className="flex flex-col gap-2 p-4 border-t w-full flex-center">
                 {isLoggedIn && user?.role?.toLowerCase() === "owner" && (
                   <Link to="/dashboard/add-apartment">
                     <Button className="w-full">
