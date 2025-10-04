@@ -23,7 +23,7 @@ import HelpPage from "./pages/Help";
 import Privacy from "./pages/Privacy";
 import SafetyPage from "./pages/SafetyPage";
 import CookiePolicyPage from "./pages/CookiePolicyPage"; //  ⬅️ استيراد الصفحة الجديدة
-import MessagesPage from "./pages/MessagesPage";
+import ForgotPassword from "./pages/ForgotPassword";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import { LoadingProvider } from "@/context/LoadingContext";
@@ -46,6 +46,7 @@ const App = () => (
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route
                   path="/search"
                   element={
