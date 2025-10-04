@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  User,
-  Search,
-  Plus,
-  LogOut,
-  Menu,
-  Building,
-  ChevronDown,
-} from "lucide-react";
+import { User, Search, Plus, LogOut, Menu, Building, HelpCircle, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
