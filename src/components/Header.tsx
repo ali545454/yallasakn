@@ -69,30 +69,33 @@ const Header = () => {
           />
         </Link>
 
-<DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button variant="ghost" size="sm" className="flex items-center gap-1">
-      القائمة السريعة <ChevronDown className="h-4 w-4" />
-    </Button>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent align="start" className="text-right">
-    <DropdownMenuItem asChild>
-      <Link to="/search" className="flex items-center gap-2">
-        <Search className="h-4 w-4" /> البحث
-      </Link>
-    </DropdownMenuItem>
-    <DropdownMenuItem asChild>
-      <Link to="/support" className="flex items-center gap-2">
-        <HelpCircle className="h-4 w-4" /> الدعم
-      </Link>
-    </DropdownMenuItem>
-    <DropdownMenuItem asChild>
-      <Link to="/privacy" className="flex items-center gap-2">
-        <Shield className="h-4 w-4" /> الخصوصية
-      </Link>
-    </DropdownMenuItem>
-  </DropdownMenuContent>
-</DropdownMenu>
+<div className="hidden md:flex items-center">
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="ghost" size="sm" className="flex items-center gap-1">
+        القائمة السريعة <ChevronDown className="h-4 w-4" />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="start" className="text-right">
+      <DropdownMenuItem asChild>
+        <Link to="/search" className="flex items-center gap-2">
+          <Search className="h-4 w-4" /> البحث
+        </Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <Link to="/support" className="flex items-center gap-2">
+          <HelpCircle className="h-4 w-4" /> الدعم
+        </Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <Link to="/privacy" className="flex items-center gap-2">
+          <Shield className="h-4 w-4" /> الخصوصية
+        </Link>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</div>
+
         {/* === شريط البحث (للديسكتوب فقط) === */}
         <form
           onSubmit={handleSearch}
