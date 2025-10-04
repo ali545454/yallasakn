@@ -28,7 +28,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useUser } from "@/context/UserContext";
 
-export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app`;
+export const API_URL =
+  import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app`;
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const SignUp = () => {
     email: "",
     phone: "",
     password: "",
-    confirmPassword: "",  
+    confirmPassword: "",
     birthDate: "",
     gender: "",
     university: "",
@@ -52,21 +53,80 @@ const SignUp = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [passwordStrengthMsg, setPasswordStrengthMsg] = useState<string>("");
+  const [passwordStrong, setPasswordStrong] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "password") {
+      const { strong, message } = checkPasswordStrength(value);
+      setPasswordStrengthMsg(message);
+      setPasswordStrong(strong);
+    }
+  };
+
+  // --- XSS protection (frontend) ---
+  // stripTags removes any HTML tags, then escape special chars.
+  const stripTags = (str: string) => {
+    if (!str) return "";
+    // remove tags
+    const withoutTags = str.replace(/<\/?[^>]+(>|$)/g, "");
+    // escape special chars to be safe when echoing back into DOM
+    return withoutTags
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  };
+
+  // sanitize all string fields in payload
+  const sanitizePayload = (payload: Record<string, any>) => {
+    const out: Record<string, any> = {};
+    Object.keys(payload).forEach((k) => {
+      const v = payload[k];
+      if (typeof v === "string") out[k] = stripTags(v.trim());
+      else out[k] = v;
+    });
+    return out;
+  };
+
+  // --- password strength checker ---
+  const checkPasswordStrength = (pw: string) => {
+    const minLength = 8;
+    const checks = [
+      { re: /[a-z]/, label: "حرف صغير" },
+      { re: /[A-Z]/, label: "حرف كبير" },
+      { re: /[0-9]/, label: "رقم" },
+      { re: /[^A-Za-z0-9]/, label: "رمز خاص" },
+    ];
+    const passed = checks.reduce((acc, c) => acc + (c.re.test(pw) ? 1 : 0), 0);
+    if (pw.length < minLength) {
+      return { strong: false, message: `ضعيفة — يجب ألا تقل عن ${minLength} حروف` };
+    }
+    if (passed < 3) {
+      return { strong: false, message: "متوسطة — أضف أحرف كبيرة/أرقام/رموز" };
+    }
+    return { strong: true, message: "قوية ✅" };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
+    // basic frontend checks
     if (formData.password !== formData.confirmPassword) {
       setError("كلمتا المرور غير متطابقتين");
       return;
     }
     if (!agreeToTerms) {
       setError("يجب الموافقة على الشروط والأحكام");
+      return;
+    }
+    // check password strength again
+    const { strong } = checkPasswordStrength(formData.password);
+    if (!strong) {
+      setError("كلمة المرور ضعيفة — الرجاء اختيار كلمة مرور أقوى.");
       return;
     }
 
@@ -85,32 +145,47 @@ const SignUp = () => {
       university: userType === "student" ? formData.university : undefined,
     };
 
-try {
-  const response = await fetch(`${API_URL}/api/v1/auth/register`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(apiPayload),
-  credentials: "include",
-});
-  const data = await response.json();
-  console.log("Response:", data);
+    // sanitize before sending
+    const sanitized = sanitizePayload(apiPayload);
 
-  if (response.ok && data.user) {
-    setUser(data.user);       // 👈 خزّن بيانات المستخدم في الـ Context
-    navigate("/profile");     // 👈 روح على صفحة البروفايل
-  } else {
-    setError(data.message || "فشل التسجيل. برجاء المحاولة مرة أخرى.");
-  }
-} catch (err) {
-  console.error("Error while registering:", err);
-  setError("حدث خطأ أثناء الاتصال بالخادم.");
-} finally {
-  setIsLoading(false);
-}
+    try {
+      const response = await fetch(`${API_URL}/api/v1/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sanitized),
+        credentials: "include",
+      });
+      const data = await response.json();
+      console.log("Response:", data);
 
-  }
+      if (response.ok && data.user) {
+        setUser(data.user); // خزّن بيانات المستخدم في الـ Context
+        navigate("/profile"); // روح على صفحة البروفايل
+      } else {
+        setError(data.message || "فشل التسجيل. برجاء المحاولة مرة أخرى.");
+      }
+    } catch (err) {
+      console.error("Error while registering:", err);
+      setError("حدث خطأ أثناء الاتصال بالخادم.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
+      {/* CSS صغير لإخفاء مؤشر التقويم الافتراضي في المتصفحات WebKit/Chrome وتهيئة العنصر لعرض أيقونة مخصصة */}
+      <style>{`
+        /* إخفاء المؤشر الافتراضي لتاريخ (WebKit) */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          display: none;
+          -webkit-appearance: none;
+        }
+        /* لإخفاء زر المسح في بعض المتصفحات */
+        input[type="date"]::-webkit-clear-button { display: none; }
+        /* Mozilla may still show indicator; we keep appearance-none */
+      `}</style>
+
       <Header />
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
         <Card className="w-full max-w-2xl shadow-xl">
@@ -118,9 +193,7 @@ try {
             <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
               <User className="h-10 w-10 text-primary" />
             </div>
-            <CardTitle className="text-3xl font-bold">
-              إنشاء حساب جديد
-            </CardTitle>
+            <CardTitle className="text-3xl font-bold">إنشاء حساب جديد</CardTitle>
             <CardDescription>
               انضم إلينا واكتشف أفضل خيارات السكن الطلابي
             </CardDescription>
@@ -184,12 +257,14 @@ try {
                   </div>
                 </div>
               </div>
+
               {/* Personal Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="birthDate">تاريخ الميلاد</Label>
                   <div className="relative">
-                    <Calendar className="absolute right-3 top-3 h-5 w-5 text-muted-foreground" />
+                    {/* أيقونة مخصصة ظاهرة دائماً */}
+                    <Calendar className="absolute right-3 top-3 h-5 w-5 text-muted-foreground pointer-events-none" />
                     <Input
                       id="birthDate"
                       type="date"
@@ -197,7 +272,7 @@ try {
                       onChange={(e) =>
                         handleInputChange("birthDate", e.target.value)
                       }
-                      className="pr-10 h-12 text-right"
+                      className="pr-10 h-12 text-right appearance-none"
                       required
                     />
                   </div>
@@ -221,6 +296,7 @@ try {
                   </div>
                 </div>
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email">البريد الإلكتروني</Label>
                 <div className="relative">
@@ -236,6 +312,7 @@ try {
                   />
                 </div>
               </div>
+
               {userType === "student" && (
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -290,6 +367,7 @@ try {
                   </div>
                 </div>
               )}
+
               {/* Password Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -321,7 +399,16 @@ try {
                       )}
                     </Button>
                   </div>
+                  {/* Password strength helper */}
+                  <p
+                    className={`text-sm mt-1 ${
+                      passwordStrong ? "text-green-600" : "text-yellow-600"
+                    }`}
+                  >
+                    {formData.password ? passwordStrengthMsg : "استخدم كلمة مرور قوية (8+ أحرف، أحرف كبيرة وصغيرة، أرقام، رموز)"}
+                  </p>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
                   <div className="relative">
@@ -355,11 +442,13 @@ try {
                   </div>
                 </div>
               </div>
+
               {error && (
                 <p className="text-sm font-medium text-red-500 text-center">
                   {error}
                 </p>
               )}
+
               <div className="flex items-center space-x-2 space-x-reverse">
                 <Checkbox
                   id="terms"
@@ -386,14 +475,16 @@ try {
                   </Link>
                 </Label>
               </div>
+
               <Button
                 type="submit"
                 className="w-full h-12 text-base"
-                disabled={isLoading || !agreeToTerms}
+                disabled={isLoading || !agreeToTerms || !passwordStrong}
               >
                 {isLoading ? "جاري الإنشاء..." : "إنشاء الحساب"}
               </Button>
             </form>
+
             <Separator />
             <div className="text-center">
               <p className="text-muted-foreground">
