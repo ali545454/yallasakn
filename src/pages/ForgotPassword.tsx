@@ -1,72 +1,52 @@
 import React, { useState } from "react";
-import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setMessage("✅ تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الإلكتروني.");
-      } else {
-        setMessage(`❌ ${data.message || "حدث خطأ أثناء الإرسال."}`);
-      }
-    } catch (err) {
-      setMessage("❌ فشل الاتصال بالسيرفر.");
-    } finally {
-      setLoading(false);
-    }
+    // هنا لاحقاً هتضيف كود الاتصال بالباك اند
+    setSubmitted(true);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted/30">
-      <Card className="w-full max-w-md shadow-xl border rounded-2xl">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">نسيت كلمة السر؟</CardTitle>
-          <p className="text-muted-foreground text-sm mt-1">
-            أدخل البريد الإلكتروني المسجل وسنرسل لك رابط لإعادة التعيين.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 text-muted-foreground" size={18} />
+    <div className="flex items-center justify-center min-h-screen bg-muted/20">
+      <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md">
+        {!submitted ? (
+          <>
+            <h2 className="text-2xl font-semibold mb-4 text-center">
+              نسيت كلمة المرور؟
+            </h2>
+            <p className="text-sm text-gray-500 text-center mb-6">
+              أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.
+            </p>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 type="email"
                 placeholder="البريد الإلكتروني"
-                className="pl-10"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "جارٍ الإرسال..." : "إرسال الرابط"}
-            </Button>
-          </form>
-          {message && (
-            <p className="text-center text-sm mt-4">
-              {message}
+              <Button type="submit" className="w-full">
+                إرسال الرابط
+              </Button>
+            </form>
+          </>
+        ) : (
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2">
+              تحقق من بريدك الإلكتروني
+            </h2>
+            <p className="text-gray-500">
+              لقد أرسلنا لك رابطًا لإعادة تعيين كلمة المرور.
             </p>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
