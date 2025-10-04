@@ -22,7 +22,7 @@ export const FavoritesProvider = ({
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await axiosInstance.get("/api/v1/favorite"); // endpoint بيجيب المفضلة
+        const res = await axiosInstance.get("/api/v1/favorites"); // endpoint بيجيب المفضلة
         if (res.status === 200) {
           // 🟢 ناخد uuid بدل id
           const favs = res.data.apartments.map((a: any) => a.uuid);
