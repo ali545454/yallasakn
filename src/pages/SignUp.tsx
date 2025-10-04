@@ -115,10 +115,19 @@ const SignUp = () => {
     setError(null);
 
     // basic frontend checks
-    if (formData.password !== formData.confirmPassword) {
-      setError("كلمتا المرور غير متطابقتين");
-      return;
-    }
+if (
+  !formData.fullName ||
+  !formData.email ||
+  !formData.password ||
+  !formData.confirmPassword ||
+  !formData.birthDate ||
+  (userType === "student" &&
+    (!formData.faculty || !formData.academicYear || !formData.university))
+) {
+  setError("من فضلك املأ كل الحقول المطلوبة");
+  return;
+}
+
     if (!agreeToTerms) {
       setError("يجب الموافقة على الشروط والأحكام");
       return;
@@ -148,11 +157,23 @@ const SignUp = () => {
     // sanitize before sending
     const sanitized = sanitizePayload(apiPayload);
 
+
+    const cleanPayload = Object.fromEntries(
+  Object.entries(apiPayload).filter(
+    ([, value]) => value !== "" && value !== null && value !== undefined
+  )
+);
+
+    if (formData.password !== formData.confirmPassword) {
+  setError("كلمتا المرور غير متطابقتين");
+  return;
+}
+
     try {
       const response = await fetch(`${API_URL}/api/v1/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sanitized),
+        body: JSON.stringify(cleanPayload),
         credentials: "include",
       });
       const data = await response.json();
@@ -262,20 +283,19 @@ const SignUp = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="birthDate">تاريخ الميلاد</Label>
-                  <div className="relative">
-                    {/* أيقونة مخصصة ظاهرة دائماً */}
-                    <Calendar className="absolute right-3 top-3 h-5 w-5 text-muted-foreground pointer-events-none" />
-                    <Input
-                      id="birthDate"
-                      type="date"
-                      value={formData.birthDate}
-                      onChange={(e) =>
-                        handleInputChange("birthDate", e.target.value)
-                      }
-                      className="pr-10 h-12 text-right appearance-none"
-                      required
-                    />
-                  </div>
+                <div className="relative">
+  <Calendar className="absolute right-3 top-3 h-5 w-5 text-muted-foreground pointer-events-none" />
+
+  <input
+    id="birthDate"
+    type="date"
+    value={formData.birthDate}
+    onChange={(e) => handleInputChange("birthDate", e.target.value)}
+    className="pr-10 h-12 text-right w-full border rounded-md focus:ring-2 focus:ring-primary/20"
+    required
+  />
+</div>
+
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="gender">الجنس (اختياري)</Label>
