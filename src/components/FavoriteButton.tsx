@@ -27,11 +27,11 @@ const FavoriteButton = ({ apartment }: FavoriteButtonProps) => {
     try {
       if (isFavorite) {
         // 🗑️ حذف من المفضلة
-        await axiosInstance.delete(`/api/v1/favorite/remove/${apartment.uuid}`);
+        await axiosInstance.delete(`/api/v1/favorites/remove/${apartment.uuid}`);
         toggleFavorite(apartment.uuid);
       } else {
         // ➕ إضافة للمفضلة
-        const res = await axiosInstance.post(`/api/v1/favorite/add`, {
+        const res = await axiosInstance.post(`/api/v1/favorites/add`, {
           apartment_id: apartment.uuid,
         });
         if (res.status === 201 || res.status === 409) {
