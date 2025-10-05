@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Trash2, Wifi, Wind, VenetianMask, Warehouse, CookingPot, Flame, MapPin, ArrowLeft, ArrowRight, Loader2, Home, Bed, Bath, Ruler, DollarSign, Users, Hash, ShieldCheck } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 // بيانات وهمية (mockup)
 const mockApartment = {
   uuid: "1234-5678",
