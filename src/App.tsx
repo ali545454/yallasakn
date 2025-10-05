@@ -91,7 +91,7 @@ const App = () => (
                   element={<ApartmentDetails />}
                 />
                 <Route
-                  path="/edit-apartment/"
+                  path="/edit-apartment/:apartmentUuid"
                   element={
                     <ProtectedRoute>
                       <EditApartmentPage />
