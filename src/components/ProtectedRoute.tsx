@@ -26,10 +26,10 @@ useEffect(() => {
 }, []);
 
 
-  if (isAuth === null) {
-      if (loading) return <Loading / >;
+if (isAuth === null) {
+  return <Loading />;
+}
 
-  }
 
   if (!isAuth) {
     return <Navigate to="/login" replace />;
