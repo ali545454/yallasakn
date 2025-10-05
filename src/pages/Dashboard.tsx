@@ -20,7 +20,7 @@ import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
 import axiosInstance from "@/utils/axiosInstance";
 import { motion } from "framer-motion";
-
+import Loading from "@/components/Loading";
 interface Apartment {
   uuid: string;
   id: number;
@@ -80,7 +80,7 @@ const Dashboard = () => {
     }
   };
 
-  if (loading) return <p className="p-4">جاري التحميل...</p>;
+  if (loading) return <Loading / >;
 
   return (
     <div className="min-h-screen bg-background">

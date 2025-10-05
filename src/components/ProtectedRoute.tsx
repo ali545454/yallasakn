@@ -2,7 +2,7 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/axiosInstance";
-
+import Loading from "@/components/Loading";
 interface ProtectedRouteProps {
   children: JSX.Element;
 }
@@ -27,7 +27,8 @@ useEffect(() => {
 
 
   if (isAuth === null) {
-    return <p className="p-4">جاري التحقق من تسجيل الدخول...</p>;
+      if (loading) return <Loading / >;
+
   }
 
   if (!isAuth) {

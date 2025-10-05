@@ -79,7 +79,6 @@ const SearchPage = () => {
 
   const [neighborhoods, setNeighborhoods] = useState<any[]>([]); // الأحياء من الـ API
   const { favorites } = useFavorites();
-
   // جلب الشقق
   useEffect(() => {
     const fetchApartments = async () => {
