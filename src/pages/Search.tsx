@@ -36,7 +36,6 @@ import axios from "axios";
 import FavoriteButton from "@/components/FavoriteButton";
 import Loading from "@/components/Loading";
 import { useFavorites } from "@/context/FavoritesContext";
-
 // ======================= تعريف رابط الـ API =======================
 export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
