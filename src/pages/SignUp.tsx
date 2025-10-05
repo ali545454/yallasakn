@@ -181,7 +181,12 @@ if (
 
       if (response.ok && data.user) {
         setUser(data.user); // خزّن بيانات المستخدم في الـ Context
-        navigate("/profile"); // روح على صفحة البروفايل
+        // إذا كان طالب جديد، وجهه لصفحة الخطة المجانية
+        if (data.user.role === "student") {
+          navigate("/free-plan");
+        } else {
+          navigate("/profile");
+        }
       } else {
         setError(data.message || "فشل التسجيل. برجاء المحاولة مرة أخرى.");
       }
