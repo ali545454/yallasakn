@@ -1,8 +1,16 @@
 import { useState } from "react";
-import { Send, Search, MoreVertical, Phone, Video, MessageCircle } from "lucide-react";
+import {
+  Send,
+  Search,
+  MoreVertical,
+  Phone,
+  Video,
+  MessageCircle,
+  ArrowRight,
+} from "lucide-react";
 
 export default function MessagesPage() {
-  const [selectedChat, setSelectedChat] = useState(1);
+  const [selectedChat, setSelectedChat] = useState<number | null>(null);
   const [messages, setMessages] = useState([
     { id: 1, sender: "me", text: "هل الشقة متاحة؟", time: "14:15", read: true },
     { id: 2, sender: "them", text: "أيوه متاحة يا فندم", time: "14:17", read: true },
@@ -38,7 +46,10 @@ export default function MessagesPage() {
       id: messages.length + 1,
       sender: "me",
       text: inputValue,
-      time: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }),
+      time: new Date().toLocaleTimeString("ar-EG", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       read: false,
     };
     setMessages((prev) => [...prev, newMessage]);
@@ -48,9 +59,13 @@ export default function MessagesPage() {
   const currentChat = mockChats.find((c) => c.id === selectedChat);
 
   return (
-    <div className="flex h-screen bg-white md:bg-gradient-to-br md:from-blue-50 md:to-indigo-50">
-      {/* Sidebar (قائمة المحادثات) */}
-      <div className="w-full md:w-80 border-l border-gray-100 flex flex-col md:shadow-xl">
+    <div className="flex h-[calc(100vh-60px)] bg-white md:bg-gradient-to-br md:from-blue-50 md:to-indigo-50">
+      {/* ✅ القائمة (تختفي في الموبايل عند فتح شات) */}
+      <div
+        className={`w-full md:w-80 border-l border-gray-100 flex flex-col md:shadow-xl transition-all duration-300 ${
+          selectedChat ? "hidden md:flex" : "flex"
+        }`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <h1 className="text-lg md:text-2xl font-semibold text-gray-800">الرسائل</h1>
@@ -100,13 +115,24 @@ export default function MessagesPage() {
         </div>
       </div>
 
-      {/* Chat Area */}
-      <div className="hidden md:flex flex-1 flex-col bg-white">
+      {/* ✅ شاشة المحادثة */}
+      <div
+        className={`flex-1 flex flex-col bg-white transition-all duration-300 ${
+          selectedChat ? "flex" : "hidden md:flex"
+        }`}
+      >
         {currentChat ? (
           <>
             {/* Header */}
-            <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between h-14 md:h-16 px-4 md:px-6 border-b border-gray-200">
+              {/* 🔙 زر الرجوع في الموبايل */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedChat(null)}
+                  className="md:hidden p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <ArrowRight size={20} />
+                </button>
                 <div className="relative">
                   <img
                     src={currentChat.avatar}
@@ -118,13 +144,16 @@ export default function MessagesPage() {
                   )}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-gray-900">{currentChat.name}</h2>
+                  <h2 className="font-semibold text-gray-900 text-sm md:text-base">
+                    {currentChat.name}
+                  </h2>
                   <p className="text-xs text-gray-500">
                     {currentChat.online ? "متصل الآن" : "غير متصل"}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-gray-600">
+
+              <div className="hidden md:flex items-center gap-2 text-gray-600">
                 <button className="p-2 hover:bg-gray-100 rounded-full">
                   <Phone size={18} />
                 </button>
