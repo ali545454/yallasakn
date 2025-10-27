@@ -46,12 +46,12 @@ const MobileMenu = () => {
           </div>
 
           {/* ✅ زر الرئيسية في المنتصف */}
-          <div className="absolute left-1/2 -translate-x-1/2 -top-7">
+          <div className="absolute left-1/2 -translate-x-1/2 -top-5">
             <Link
               to="/"
-              className="bg-blue-600 text-white rounded-full p-3 shadow-xl ring-4 ring-white transition-transform duration-300 hover:scale-105"
+              className="bg-blue-600 text-white rounded-full p-3 shadow-lg ring-2 ring-white transition-transform duration-300 hover:scale-105"
             >
-              <Home size={26} />
+              <Home size={24} />
             </Link>
           </div>
 
