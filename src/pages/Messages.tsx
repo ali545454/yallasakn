@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, UserCircle2 } from "lucide-react";
+import { Send } from "lucide-react";
 
 export default function MessagesPage() {
   const [selectedChat, setSelectedChat] = useState<number | null>(null);
@@ -31,31 +31,16 @@ export default function MessagesPage() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-{/* ✅ Sidebar */}
-<div className="w-full md:w-1/3 border-r border-gray-200 bg-white">
-  <div className="p-4 border-b flex items-center justify-center">
-    {/* 👇 بدل كلمة "الرسائل" بأيقونة */}
-    <div className="flex items-center gap-2 text-blue-600">
-      <Send size={22} />
-      <span className="font-semibold text-base hidden md:inline">الرسائل</span>
-    </div>
-  </div>
-
-  {mockChats.length === 0 ? (
-    <div className="flex items-center justify-center h-full text-gray-400">
-      لا توجد محادثات بعد
-    </div>
-  ) : (
-    <ul>
-      {mockChats.map((chat) => (
-        <li
-          key={chat.id}
-          onClick={() => setSelectedChat(chat.id)}
-          className={`p-3 border-b cursor-pointer hover:bg-gray-100 flex items-center gap-3 ${
-            selectedChat === chat.id ? "bg-gray-100" : ""
-          }`}
-        >
-          <div className="relative">
+      {/* ✅ الشريط الجانبي الصغير - صور الأشخاص فقط */}
+      <div className="w-[70px] border-r border-gray-200 bg-white flex flex-col items-center py-4 gap-4">
+        {mockChats.map((chat) => (
+          <div
+            key={chat.id}
+            onClick={() => setSelectedChat(chat.id)}
+            className={`relative cursor-pointer transition-transform hover:scale-105 ${
+              selectedChat === chat.id ? "ring-2 ring-blue-500 rounded-full" : ""
+            }`}
+          >
             <img
               src={chat.avatar}
               alt={chat.name}
@@ -67,23 +52,11 @@ export default function MessagesPage() {
               </span>
             )}
           </div>
+        ))}
+      </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-center">
-              <h3 className="font-semibold text-sm truncate">{chat.name}</h3>
-              <span className="text-[10px] text-gray-500">{chat.time}</span>
-            </div>
-            <p className="text-xs text-gray-600 truncate">{chat.lastMessage}</p>
-          </div>
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
-
-      {/* ✅ Chat Box */}
-      <div className="hidden md:flex flex-1 flex-col">
+      {/* ✅ الجزء الرئيسي للرسائل */}
+      <div className="flex-1 flex flex-col">
         {selectedChat ? (
           <>
             {/* Header */}
