@@ -1,19 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, Heart, User, HelpCircle } from "lucide-react";
+import { Home, Search, Heart, User, HelpCircle, MessageSquare } from "lucide-react"; // ✅ أضف MessageSquare
 
 const MobileMenu = () => {
   const location = useLocation();
 
   const menuItems = [
     { to: "/search", icon: <Search size={22} />, label: "بحث" },
+    { to: "/messages", icon: <MessageSquare size={22} />, label: "رسائل" }, // ✅ أضف هذا
     { to: "/help", icon: <HelpCircle size={22} />, label: "مساعدة" },
     { to: "/profile#favorites", icon: <Heart size={22} />, label: "مفضلة", hash: "#favorites" },
     { to: "/profile", icon: <User size={22} />, label: "الملف الشخصي" },
   ];
 
-  // دالة صغيرة تتحقق هل المسار الحالي هو اللي في المينيو (مع الهاش أو بدونه)
   const isActive = (item: { to: string; hash?: string }) => {
-    const pathOnly = item.to.split("#")[0]; // "/profile"
+    const pathOnly = item.to.split("#")[0];
     if (item.hash) {
       return location.pathname === pathOnly && location.hash === item.hash;
     }
