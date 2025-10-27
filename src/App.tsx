@@ -26,6 +26,7 @@ import CookiePolicyPage from "./pages/CookiePolicyPage";
 import FreePlanWelcome from "./pages/FreePlanWelcome";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminLogin from "./pages/AdminLogin";
+import Messages from "./pages/Messages";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import { LoadingProvider } from "@/context/LoadingContext";
 import LoadingOverlay from "@/components/LoadingOverlay";
@@ -70,6 +71,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                  <Route
+                  path="/messages"
+                  element={
+                    <ProtectedRoute>
+                      <Messages />
                     </ProtectedRoute>
                   }
                 />
