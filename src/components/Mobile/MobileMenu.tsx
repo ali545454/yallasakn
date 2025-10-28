@@ -4,12 +4,13 @@ import { Home, Search, Heart, User, HelpCircle, MessageCircle } from "lucide-rea
 const MobileMenu = () => {
   const location = useLocation();
 
+  // 1. استخدام اللون الأساسي (الأخضر من الصورة)
+  const PRIMARY_COLOR_CLASSES = "text-green-600";
+  const PRIMARY_BG_CLASSES = "bg-green-600";
+  
   // زيادة حجم الأيقونات إلى 22
   const ICON_SIZE = 22;
-
-  // 💡 تغيير لون التركيز/النشاط إلى برتقالي
-  const PRIMARY_COLOR_CLASSES = "text-orange-600"; // يمكنك تغيير orange-600 إلى لونك الأساسي
-  const INDICATOR_COLOR_CLASSES = "bg-orange-600"; // تغيير bg-blue-600
+  const ACTIVE_ICON_SIZE = 24; // زيادة حجم الأيقونة النشطة قليلاً
 
   const menuItems = [
     { to: "/", icon: <Home size={ICON_SIZE} />, label: "الرئيسية" },
@@ -17,7 +18,8 @@ const MobileMenu = () => {
     { to: "/messages", icon: <MessageCircle size={ICON_SIZE} />, label: "الرسائل" },
     { to: "/profile#favorites", icon: <Heart size={ICON_SIZE} />, label: "مفضلة", hash: "#favorites" },
     { to: "/profile", icon: <User size={ICON_SIZE} />, label: "الملف" },
-    { to: "/help", icon: <HelpCircle size={ICON_SIZE} />, label: "مساعدة" },
+    // **ملاحظة:** تم تقليل عدد العناصر إلى 5 ليتناسب مع النمط الدائري البارز بشكل أفضل
+    // { to: "/help", icon: <HelpCircle size={ICON_SIZE} />, label: "مساعدة" },
   ];
 
   const isActive = (item: { to: string; hash?: string }) => {
@@ -29,40 +31,56 @@ const MobileMenu = () => {
   };
 
   return (
-    // 1. حاوية أكثر عصرية: استخدام ظل أقوى، شفافية خفيفة، وتأثير ضبابي
-    <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm shadow-2xl z-50 md:hidden border-t border-gray-100">
+    // 2. استخدام ظل خفيف ومظهر "مُعلَّق"
+    <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-xl z-50 md:hidden border-t border-gray-200">
       
-      {/* زيادة Padding العمودي (py-3) لتحسين المساحة البيضاء */}
-      <div className="flex justify-around items-center py-3 px-2">
+      {/* 3. زيادة الـ Padding لتحقيق مساحة "الشريحة السفلية" */}
+      <div className="flex justify-around items-center py-2 px-2 h-16"> 
         {menuItems.map((item) => {
           const active = isActive(item);
           return (
-            // جعل رابط Link بـ position: relative ليتموضع مؤشر النشاط (Indicator) داخله
             <Link
               key={item.to}
               to={item.to}
               className={`
-                relative flex flex-col items-center transition-all duration-300
-                text-gray-500 hover:${PRIMARY_COLOR_CLASSES} w-full max-w-[80px]
+                relative flex flex-col items-center justify-start h-full
+                transition-all duration-300 w-full max-w-[80px]
               `}
             >
               
-              {/* 2. مؤشر النشاط العصري (Active Indicator) */}
-              {active && (
-                // 💡 هنا تم تغيير اللون
-                <div className={`absolute top-[-10px] h-0.5 w-6 rounded-full ${INDICATOR_COLOR_CLASSES} transition-opacity duration-300`}></div>
-              )}
-
-              {/* 3. حاوية الأيقونة والنص */}
+              {/* 4. حاوية الأيقونة - التعديل الرئيسي هنا */}
               <div
-                className={`flex flex-col items-center gap-0.5 pt-1 pb-0.5 transition-colors duration-300 ${
-                  // 💡 هنا تم تغيير اللون
-                  active ? PRIMARY_COLOR_CLASSES : "text-gray-500"
-                }`}
+                className={`
+                  flex flex-col items-center gap-0.5 pt-1 pb-0.5 transition-colors duration-300
+                  ${active ? "transform -translate-y-5 transition-transform duration-300" : "pt-1"}
+                `}
               >
-                {item.icon}
-                {/* 4. زيادة حجم ووزن الخط قليلاً */}
-                <span className="text-[11px] font-semibold">{item.label}</span>
+                {active ? (
+                  // العنصر النشط: دائرة بارزة
+                  <div className={`
+                    w-12 h-12 ${PRIMARY_BG_CLASSES} rounded-full 
+                    flex items-center justify-center shadow-lg transform scale-110 
+                    border-4 border-white
+                  `}>
+                    {/* أيقونة بيضاء داخل الدائرة */}
+                    {/* ملاحظة: نستخدم أيقونة Lucide أكبر قليلاً داخل الدائرة */}
+                    {React.cloneElement(item.icon, { size: ACTIVE_ICON_SIZE, color: "white" })}
+                  </div>
+                ) : (
+                  // العناصر غير النشطة: أيقونة ونص
+                  <>
+                    <div className={`
+                        transition-colors duration-300 
+                        ${isActive ? PRIMARY_COLOR_CLASSES : "text-gray-500 hover:text-gray-700"}
+                      `}>
+                      {item.icon}
+                    </div>
+                    {/* 5. إظهار النص فقط للعناصر غير النشطة */}
+                    <span className="text-[10px] font-medium text-gray-500 mt-0.5">
+                      {item.label}
+                    </span>
+                  </>
+                )}
               </div>
             </Link>
           );
