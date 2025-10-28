@@ -7,6 +7,10 @@ const MobileMenu = () => {
   // زيادة حجم الأيقونات إلى 22
   const ICON_SIZE = 22;
 
+  // 💡 تغيير لون التركيز/النشاط إلى برتقالي
+  const PRIMARY_COLOR_CLASSES = "text-orange-600"; // يمكنك تغيير orange-600 إلى لونك الأساسي
+  const INDICATOR_COLOR_CLASSES = "bg-orange-600"; // تغيير bg-blue-600
+
   const menuItems = [
     { to: "/", icon: <Home size={ICON_SIZE} />, label: "الرئيسية" },
     { to: "/search", icon: <Search size={ICON_SIZE} />, label: "بحث" },
@@ -39,19 +43,21 @@ const MobileMenu = () => {
               to={item.to}
               className={`
                 relative flex flex-col items-center transition-all duration-300
-                text-gray-500 hover:text-blue-600 w-full max-w-[80px]
+                text-gray-500 hover:${PRIMARY_COLOR_CLASSES} w-full max-w-[80px]
               `}
             >
               
               {/* 2. مؤشر النشاط العصري (Active Indicator) */}
               {active && (
-                <div className="absolute top-[-10px] h-0.5 w-6 rounded-full bg-blue-600 transition-opacity duration-300"></div>
+                // 💡 هنا تم تغيير اللون
+                <div className={`absolute top-[-10px] h-0.5 w-6 rounded-full ${INDICATOR_COLOR_CLASSES} transition-opacity duration-300`}></div>
               )}
 
               {/* 3. حاوية الأيقونة والنص */}
               <div
                 className={`flex flex-col items-center gap-0.5 pt-1 pb-0.5 transition-colors duration-300 ${
-                  active ? "text-blue-600" : "text-gray-500"
+                  // 💡 هنا تم تغيير اللون
+                  active ? PRIMARY_COLOR_CLASSES : "text-gray-500"
                 }`}
               >
                 {item.icon}
