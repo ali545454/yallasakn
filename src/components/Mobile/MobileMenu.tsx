@@ -30,7 +30,7 @@ const MobileMenu = () => {
     <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-xl z-50 md:hidden border-t border-gray-200">
       <div className="flex justify-around items-center py-2 px-2 h-16 relative">
         
-        {menuItems.map((item, index) => {
+        {menuItems.map((item) => {
           // Home يبقى دائماً في المنتصف
           if (item.to === "/") {
             return (
@@ -50,13 +50,15 @@ const MobileMenu = () => {
             <Link
               key={item.to}
               to={item.to}
-              className="flex flex-col items-center justify-center w-full max-w-[80px]"
+              className="flex flex-col items-center justify-center w-full max-w-[80px] mt-4" // زيادة المسافة عن Home
             >
               <div className="flex flex-col items-center gap-0.5 pt-1 pb-0.5">
-                <div className={`transition-colors duration-300 text-gray-500 hover:text-gray-700`}>
+                <div className={`transition-colors duration-300 ${active ? "text-[#1877F2]" : "text-gray-500 hover:text-gray-700"}`}>
                   {item.icon}
                 </div>
-                <span className="text-[10px] font-medium text-gray-500 mt-0.5">{item.label}</span>
+                <span className={`text-[10px] font-medium mt-0.5 ${active ? "text-[#1877F2]" : "text-gray-500"}`}>
+                  {item.label}
+                </span>
               </div>
             </Link>
           );
