@@ -5,15 +5,17 @@ import { Home, Search, Heart, User, MessageCircle } from "lucide-react";
 const MobileMenu = () => {
   const location = useLocation();
 
-  const PRIMARY_COLOR_CLASSES = "text-green-600";
-  const PRIMARY_BG_CLASSES = "bg-green-600";
+  // اللون الأساسي للموقع (تقدر تغيّره حسب الموقع)
+  const PRIMARY_COLOR_CLASSES = "text-green-600"; 
+  const PRIMARY_BG_CLASSES = "bg-green-600"; 
   const ICON_SIZE = 22;
   const ACTIVE_ICON_SIZE = 24;
 
+  // ترتيب العناصر بحيث Home في النص
   const menuItems = [
-    { to: "/", icon: <Home size={ICON_SIZE} />, label: "الرئيسية" },
     { to: "/search", icon: <Search size={ICON_SIZE} />, label: "بحث" },
     { to: "/messages", icon: <MessageCircle size={ICON_SIZE} />, label: "الرسائل" },
+    { to: "/", icon: <Home size={ICON_SIZE} />, label: "الرئيسية" }, // في النص
     { to: "/profile#favorites", icon: <Heart size={ICON_SIZE} />, label: "مفضلة", hash: "#favorites" },
     { to: "/profile", icon: <User size={ICON_SIZE} />, label: "الملف" },
   ];
@@ -28,7 +30,7 @@ const MobileMenu = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-xl z-50 md:hidden border-t border-gray-200">
-      <div className="flex justify-around items-center py-2 px-2 h-16"> 
+      <div className="flex justify-around items-center py-2 px-2 h-16">
         {menuItems.map((item) => {
           const active = isActive(item);
           return (
