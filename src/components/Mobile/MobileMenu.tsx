@@ -5,17 +5,15 @@ import { Home, Search, Heart, User, MessageCircle } from "lucide-react";
 const MobileMenu = () => {
   const location = useLocation();
 
-  // اللون الأساسي للموقع (تقدر تغيّره حسب الموقع)
-  const PRIMARY_COLOR_CLASSES = "text-green-600"; 
-  const PRIMARY_BG_CLASSES = "bg-green-600"; 
+  const PRIMARY_BG = "#1877F2"; // الأزرق
+  const ICON_ACTIVE_COLOR = "#FFFFFF"; // أبيض
   const ICON_SIZE = 22;
-  const ACTIVE_ICON_SIZE = 24;
+  const HOME_ICON_SIZE = 28; // أيقونة Home أكبر
 
-  // ترتيب العناصر بحيث Home في النص
   const menuItems = [
     { to: "/search", icon: <Search size={ICON_SIZE} />, label: "بحث" },
     { to: "/messages", icon: <MessageCircle size={ICON_SIZE} />, label: "الرسائل" },
-    { to: "/", icon: <Home size={ICON_SIZE} />, label: "الرئيسية" }, // في النص
+    { to: "/", icon: <Home size={HOME_ICON_SIZE} />, label: "الرئيسية" }, // Home في المنتصف
     { to: "/profile#favorites", icon: <Heart size={ICON_SIZE} />, label: "مفضلة", hash: "#favorites" },
     { to: "/profile", icon: <User size={ICON_SIZE} />, label: "الملف" },
   ];
@@ -30,32 +28,40 @@ const MobileMenu = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-xl z-50 md:hidden border-t border-gray-200">
-      <div className="flex justify-around items-center py-2 px-2 h-16">
-        {menuItems.map((item) => {
+      <div className="flex justify-around items-center py-2 px-2 h-16 relative">
+        
+        {menuItems.map((item, index) => {
+          // Home يبقى دائماً في المنتصف
+          if (item.to === "/") {
+            return (
+              <div
+                key={item.to}
+                className="absolute left-1/2 transform -translate-x-1/2 -top-4 w-16 h-16 rounded-full flex items-center justify-center shadow-lg border-4 border-white"
+                style={{ backgroundColor: PRIMARY_BG }}
+              >
+                {React.cloneElement(item.icon, { color: ICON_ACTIVE_COLOR })}
+              </div>
+            );
+          }
+
           const active = isActive(item);
+
           return (
             <Link
               key={item.to}
               to={item.to}
-              className="relative flex flex-col items-center justify-start h-full transition-all duration-300 w-full max-w-[80px]"
+              className="flex flex-col items-center justify-center w-full max-w-[80px]"
             >
-              <div className={`flex flex-col items-center gap-0.5 pt-1 pb-0.5 transition-colors duration-300 ${active ? "transform -translate-y-5 transition-transform duration-300" : "pt-1"}`}>
-                {active ? (
-                  <div className={`w-12 h-12 ${PRIMARY_BG_CLASSES} rounded-full flex items-center justify-center shadow-lg transform scale-110 border-4 border-white`}>
-                    {React.cloneElement(item.icon, { size: ACTIVE_ICON_SIZE, color: "white" })}
-                  </div>
-                ) : (
-                  <>
-                    <div className={`transition-colors duration-300 ${active ? PRIMARY_COLOR_CLASSES : "text-gray-500 hover:text-gray-700"}`}>
-                      {item.icon}
-                    </div>
-                    <span className="text-[10px] font-medium text-gray-500 mt-0.5">{item.label}</span>
-                  </>
-                )}
+              <div className="flex flex-col items-center gap-0.5 pt-1 pb-0.5">
+                <div className={`transition-colors duration-300 text-gray-500 hover:text-gray-700`}>
+                  {item.icon}
+                </div>
+                <span className="text-[10px] font-medium text-gray-500 mt-0.5">{item.label}</span>
               </div>
             </Link>
           );
         })}
+
       </div>
     </div>
   );
