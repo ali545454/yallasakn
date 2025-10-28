@@ -28,10 +28,10 @@ const MobileMenu = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-xl z-50 md:hidden border-t border-gray-200">
-      <div className="flex justify-between items-center py-2 px-4 h-16 relative">
-        
+      <div className="relative flex items-center py-2 px-4 h-16">
+
         {/* الأيقونات على اليسار */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1" style={{ marginRight: "calc(50% + 2px)" }}>
           {menuItems.slice(0, 2).map((item) => {
             const active = isActive(item);
             return (
@@ -60,7 +60,7 @@ const MobileMenu = () => {
         </div>
 
         {/* الأيقونات على اليمين */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1" style={{ marginLeft: "calc(50% + 2px)" }}>
           {menuItems.slice(3).map((item) => {
             const active = isActive(item);
             return (
