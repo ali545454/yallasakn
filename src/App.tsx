@@ -53,9 +53,7 @@ const App = () => (
                 <Route
                   path="/search"
                   element={
-                    <ProtectedRoute>
                       <Search />
-                    </ProtectedRoute>
                   }
                 />
                 <Route
@@ -77,9 +75,7 @@ const App = () => (
                   <Route
                   path="/messages"
                   element={
-                    <ProtectedRoute>
                       <Messages />
-                    </ProtectedRoute>
                   }
                 />
                 <Route

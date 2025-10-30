@@ -29,7 +29,7 @@ import Footer from "@/components/Footer";
 import { useUser } from "@/context/UserContext";
 
 export const API_URL =
-  import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app`;
+  import.meta.env.VITE_API_URL || `http://127.0.0.1:5000`;
 
 const SignUp = () => {
   const navigate = useNavigate();
