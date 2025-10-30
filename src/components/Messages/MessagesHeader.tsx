@@ -18,7 +18,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   onSearch,
 }) => {
   return (
-    <div className="flex items-center justify-between p-3 border-b bg-white shadow-sm">
+    <div className="flex items-center justify-between p-3 border-b bg-white shadow-sm w-full">
       {/* زر الرجوع */}
       <button onClick={onBack} className="p-1 hover:bg-gray-100 rounded">
         <ArrowLeft size={20} />

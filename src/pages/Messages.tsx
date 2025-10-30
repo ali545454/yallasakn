@@ -5,7 +5,7 @@ import ChatWindow from "../components/Messages/ChatWindow";
 
 const MessagesPage: React.FC = () => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen w-full">
       <ConversationsSidebar />
       <ChatWindow />
     </div>

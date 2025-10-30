@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import MessageItem from "./MessageItem";
 import ChatInput from "./ChatInput";
 import { mockMessages } from "../../data/mockMessages";
-
+import MessagesHeader  from "../Messages/MessagesHeader";
 const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState(mockMessages);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -25,9 +25,10 @@ const ChatWindow: React.FC = () => {
   }, [messages]);
 
   return (
-<div className="flex flex-col h-screen" style={{ paddingBottom: BOTTOM_NAV_HEIGHT + 80 }}>
+<div className="flex flex-col w-full items-center" style={{ paddingBottom:  100 }}>
   {/* 80px = ارتفاع ChatInput تقريبا */}
-  <div className="flex-1 overflow-y-auto p-2">
+  <MessagesHeader/>
+  <div className="flex-1  ">
     {messages.map((msg) => (
       <MessageItem
         key={msg.id}
