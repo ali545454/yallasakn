@@ -49,7 +49,7 @@ import {
   Flame,
 } from "lucide-react";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+// map rendering handled by MapPicker
 
 export const API_URL = `https://web-production-33f69.up.railway.app`;
 const features = [
@@ -93,6 +93,9 @@ const AddApartment = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [lat, setLat] = useState(27.18);
   const [lng, setLng] = useState(31.1833);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -177,6 +180,43 @@ const AddApartment = () => {
     e.preventDefault();
     if (e.dataTransfer.files) {
       setImages((prev) => [...prev, ...Array.from(e.dataTransfer.files)]);
+    }
+  };
+
+  const geocodeLocation = async (query: string) => {
+    if (!query || query.trim() === "") {
+      setSearchError("من فضلك اكتب موقعًا للبحث");
+      return;
+    }
+    setSearchError(null);
+    setSearchLoading(true);
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+        query
+      )}&format=json&limit=1`;
+      const res = await fetch(url, {
+        headers: { "Accept-Language": "ar" },
+      });
+      const data = await res.json();
+      if (data && data.length > 0) {
+        const item = data[0];
+        const newLat = Number(item.lat);
+        const newLng = Number(item.lon);
+        setLat(newLat);
+        setLng(newLng);
+        // optionally populate the address field with the returned display name
+        setFormData((prev) => ({
+          ...prev,
+          address: item.display_name || prev.address,
+        }));
+        setSearchError(null);
+      } else {
+        setSearchError("لم يتم العثور على موقع مطابق");
+      }
+    } catch (err) {
+      setSearchError("فشل في البحث. حاول مرة أخرى.");
+    } finally {
+      setSearchLoading(false);
     }
   };
 
@@ -469,11 +509,45 @@ const AddApartment = () => {
                         {/* خريطة تحديد الموقع */}
                         <div className="space-y-2 mt-4">
                           <Label>حدد موقع الشقة على الخريطة *</Label>
-                          <MapPicker
-                            lat={lat}
-                            lng={lng}
-                            onChange={(lat, lng) => setLat(lat) & setLng(lng)}
-                          />
+
+                          <div className="flex gap-2">
+                            <Input
+                              id="location_search"
+                              placeholder="ابحث عن مدينة أو عنوان..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  geocodeLocation(searchQuery);
+                                }
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              onClick={() => geocodeLocation(searchQuery)}
+                              disabled={searchLoading}
+                            >
+                              {searchLoading ? "...جاري البحث" : "ابحث"}
+                            </Button>
+                          </div>
+
+                          {searchError && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {searchError}
+                            </p>
+                          )}
+
+                          <div className="mt-3">
+                            <MapPicker
+                              lat={lat}
+                              lng={lng}
+                              onChange={(newLat, newLng) => {
+                                setLat(newLat);
+                                setLng(newLng);
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
