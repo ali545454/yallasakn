@@ -25,19 +25,19 @@ const posts: Post[] = [
     name: "أحمد سامي",
     faculty: "كلية التجارة",
     text: "واجهت صعوبة في معرفة الشقق المتاحة وتنظيم المواعيد، كل حاجة كانت متأخرة ومربكة.",
-    avatar: "https://images.unsplash.com/photo-1603415526960-f81ee19029e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    avatar: "https://plus.unsplash.com/premium_photo-1702596363777-46a5ff28f644?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
   },
   {
     name: "منة الله حمدي",
     faculty: "كلية العلوم",
     text: "بسبب السماسرة، اتلغى حجز الشقة بعد دفع العربون، تجربة مرعبة فعلاً.",
-    avatar: "https://images.unsplash.com/photo-1614289379479-29f512f1dcdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    avatar: "https://plus.unsplash.com/premium_photo-1661369580170-ed5d3baaab11?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
   },
   {
     name: "ياسر حسن",
     faculty: "كلية الطب",
     text: "الأسعار كانت مضاعفة عن الطبيعي، ومفيش أي تنظيم من الملاك أو الوسطاء.",
-    avatar: "https://images.unsplash.com/photo-1607746882043-944635dfe10f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+    avatar: "https://images.unsplash.com/photo-1626038135427-bd4eb8193ba5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687",
   },
 ];
 

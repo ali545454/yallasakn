@@ -64,7 +64,7 @@ const HeroSection = () => {
         minHeight: "calc(100vh - 64px)",
         // صورة جديدة تعبر عن شقق طلابية فاخرة
         backgroundImage:
-          "url('https://cdn.pixabay.com/photo/2023/11/06/02/21/kitchen-8368678_960_720.jpg')",
+          "url('https://images.unsplash.com/photo-1595330449916-e7c3e1962bd3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1073')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
