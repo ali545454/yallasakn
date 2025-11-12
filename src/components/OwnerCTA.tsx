@@ -3,7 +3,7 @@ import { HomeIcon, ClockIcon, UsersIcon, ShieldCheckIcon } from "lucide-react";
 
 const OwnerCTA = () => {
   return (
-    <section className="bg-gray-50 py-20">
+    <section className=" py-20 p-3" style={{backgroundColor: "#f0f2f3" }}>
       <div className="container mx-auto text-center px-4">
         <h2 className="text-4xl font-extrabold mb-4 text-gray-800">
           عندك شقة للإيجار؟ سجّلها الآن!
@@ -15,21 +15,21 @@ const OwnerCTA = () => {
         {/* مميزات */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <UsersIcon className="w-8 h-8 text-yellow-500 mb-4 mx-auto" />
+            <UsersIcon className="w-8 h-8 bg-blue-600 mb-4 mx-auto" />
             <h3 className="font-semibold text-lg mb-2">وصول مباشر للطلاب</h3>
             <p className="text-gray-500 text-sm">
               اربط شقتك مباشرة بمن يبحث عن سكن دون وسطاء.
             </p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <ClockIcon className="w-8 h-8 text-yellow-500 mb-4 mx-auto" />
+            <ClockIcon className="w-8 h-8 bg-blue-600 mb-4 mx-auto" />
             <h3 className="font-semibold text-lg mb-2">سجل بسرعة</h3>
             <p className="text-gray-500 text-sm">
               نموذج تسجيل سريع وسهل، أضف شقتك في دقائق.
             </p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <ShieldCheckIcon className="w-8 h-8 text-yellow-500 mb-4 mx-auto" />
+            <ShieldCheckIcon className="w-8 h-8 bg-blue-600 mb-4 mx-auto" />
             <h3 className="font-semibold text-lg mb-2">آمن وموثوق</h3>
             <p className="text-gray-500 text-sm">
               إدارة آمنة لعقارك ودعم كامل من فريقنا.
