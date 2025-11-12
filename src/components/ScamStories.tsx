@@ -13,31 +13,31 @@ const posts: Post[] = [
     name: "محمد علي",
     faculty: "كلية الهندسة",
     text: "دفعت عربون كبير واتضح بعدين إن السمسار نصاب، وكنت محتاج وقت طويل لاسترجاع فلوسي.",
-    avatar: "https://unsplash.com/photos/a-young-man-wearing-glasses-standing-in-front-of-a-mountain-MSepzbKFz10",
+    avatar: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   },
   {
     name: "سارة محمود",
     faculty: "كلية الآداب",
     text: "الأسعار كانت أعلى بكتير من اللي مكتوب، والنظام مش منظم خالص، ضاعت عليّ فرص شقق كويسة.",
-    avatar: "https://unsplash.com/photos/woman-in-black-and-white-plaid-blazer-Av4gNsllkyU",
+    avatar: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   },
   {
     name: "أحمد سامي",
     faculty: "كلية التجارة",
     text: "واجهت صعوبة في معرفة الشقق المتاحة وتنظيم المواعيد، كل حاجة كانت متأخرة ومربكة.",
-    avatar: "https://unsplash.com/photos/man-in-black-dress-shirt-wearing-black-framed-eyeglasses-7tbQ9i0iBeQ",
+    avatar: "https://images.unsplash.com/photo-1603415526960-f81ee19029e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   },
   {
     name: "منة الله حمدي",
     faculty: "كلية العلوم",
     text: "بسبب السماسرة، اتلغى حجز الشقة بعد دفع العربون، تجربة مرعبة فعلاً.",
-    avatar: "https://unsplash.com/photos/a-woman-with-long-hair-qAbZLUTnYxY",
+    avatar: "https://images.unsplash.com/photo-1614289379479-29f512f1dcdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   },
   {
     name: "ياسر حسن",
     faculty: "كلية الطب",
     text: "الأسعار كانت مضاعفة عن الطبيعي، ومفيش أي تنظيم من الملاك أو الوسطاء.",
-    avatar: "https://unsplash.com/photos/a-man-is-smiling-while-holding-a-paintbrush-vcItdy3Vqbs",
+    avatar: "https://images.unsplash.com/photo-1607746882043-944635dfe10f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
   },
 ];
 
@@ -63,14 +63,14 @@ const ScamStories = () => {
         قصص نصب وتجارب حقيقية
       </h2>
 
-      <div className="relative max-w-2xl mx-auto bg-gray-50 shadow-xl rounded-xl p-8 transition-all duration-700">
+      <div className="relative max-w-2xl mx-auto bg-gray-50 shadow-xl rounded-xl p-8 transition-all duration-700 min-h-[400px]">
         {/* محتوى البوست الحالي */}
-        <div className="space-y-4 text-center">
+        <div className="space-y-4 text-center flex flex-col items-center justify-center h-full">
           {posts[current].avatar && (
             <img
               src={posts[current].avatar}
               alt={posts[current].name}
-              className="mx-auto w-20 h-20 rounded-full object-cover shadow-md"
+              className="w-20 h-20 rounded-full object-cover shadow-md"
             />
           )}
           <p className="text-lg text-gray-700">{posts[current].text}</p>
