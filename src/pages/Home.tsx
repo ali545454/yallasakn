@@ -3,8 +3,8 @@ import HeroSection from "@/components/HeroSection";
 import HowItWorks from "@/components/HowItWorks";
 import WhyUs from "@/components/WhyUs";
 import ScamStories from "@/components/ScamStories";
-import SubscriptionOffers from "@/components/SubscriptionOffers";
 import FeaturedApartments from "@/components/FeaturedApartments";
+import OwnerCTA from "@/components/OwnerCTA";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LoadingOverlay from "@/components/LoadingOverlay";
@@ -34,7 +34,7 @@ const Home = () => {
       <HowItWorks />
       <WhyUs />
       <ScamStories />
-      <SubscriptionOffers />
+      <OwnerCTA />
       <FeaturedApartments />
       <Footer />
     </div>
