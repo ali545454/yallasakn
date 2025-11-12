@@ -13,31 +13,31 @@ const posts: Post[] = [
     name: "محمد علي",
     faculty: "كلية الهندسة",
     text: "دفعت عربون كبير واتضح بعدين إن السمسار نصاب، وكنت محتاج وقت طويل لاسترجاع فلوسي.",
-    avatar: "/avatars/mohamed.png",
+    avatar: "https://unsplash.com/photos/a-young-man-wearing-glasses-standing-in-front-of-a-mountain-MSepzbKFz10",
   },
   {
     name: "سارة محمود",
     faculty: "كلية الآداب",
     text: "الأسعار كانت أعلى بكتير من اللي مكتوب، والنظام مش منظم خالص، ضاعت عليّ فرص شقق كويسة.",
-    avatar: "/avatars/sara.png",
+    avatar: "https://unsplash.com/photos/woman-in-black-and-white-plaid-blazer-Av4gNsllkyU",
   },
   {
     name: "أحمد سامي",
     faculty: "كلية التجارة",
     text: "واجهت صعوبة في معرفة الشقق المتاحة وتنظيم المواعيد، كل حاجة كانت متأخرة ومربكة.",
-    avatar: "/avatars/ahmed.png",
+    avatar: "https://unsplash.com/photos/man-in-black-dress-shirt-wearing-black-framed-eyeglasses-7tbQ9i0iBeQ",
   },
   {
     name: "منة الله حمدي",
     faculty: "كلية العلوم",
     text: "بسبب السماسرة، اتلغى حجز الشقة بعد دفع العربون، تجربة مرعبة فعلاً.",
-    avatar: "/avatars/menna.png",
+    avatar: "https://unsplash.com/photos/a-woman-with-long-hair-qAbZLUTnYxY",
   },
   {
     name: "ياسر حسن",
     faculty: "كلية الطب",
     text: "الأسعار كانت مضاعفة عن الطبيعي، ومفيش أي تنظيم من الملاك أو الوسطاء.",
-    avatar: "/avatars/yasser.png",
+    avatar: "https://unsplash.com/photos/a-man-is-smiling-while-holding-a-paintbrush-vcItdy3Vqbs",
   },
 ];
 
