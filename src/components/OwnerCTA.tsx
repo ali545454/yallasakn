@@ -38,7 +38,7 @@ const OwnerCTA = () => {
         </div>
 
         <a
-          href="/owner/register"
+          href="/signup"
           className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-1"
         >
           <HomeIcon className="w-5 h-5" />
