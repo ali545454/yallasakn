@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import axiosInstance from "@/utils/axiosInstance";
+import MapPicker from "../components/Map/MapPicker";
 
 import {
   Wifi,
@@ -85,7 +86,8 @@ const AddApartment = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [lat, setLat] = useState(27.1800); // قيمة افتراضية
+  const [lng, setLng] = useState(31.1833); // قيمة افتراضية
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -281,8 +283,12 @@ const handleSubmit = async (e: React.FormEvent) => {
   Object.entries(formData).forEach(([key, value]) => {
     if (typeof value === "boolean") data.append(key, value ? "true" : "false");
     else data.append(key, String(value));
+
   });
+  data.append("latitude", String(lat));
+  data.append("longitude", String(lng));
   images.forEach((image) => data.append("images", image));
+
 try {
   const response = await axiosInstance.post("/api/v1/apartments/create", data);
   navigate("/dashboard?status=success");
@@ -431,6 +437,11 @@ try {
                             {errors.address}
                           </p>
                         </div>
+                            {/* خريطة تحديد الموقع */}
+    <div className="space-y-2 mt-4">
+      <Label>حدد موقع الشقة على الخريطة *</Label>
+      <MapPicker lat={lat} lng={lng} onChange={(lat, lng) => setLat(lat) & setLng(lng)} />
+    </div>
                       </div>
                     </div>
                   )}
