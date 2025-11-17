@@ -17,33 +17,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import axiosInstance from "@/utils/axiosInstance";
 import MapPicker from "../components/Map/MapPicker";
 
-// Icons
 import {
   Wifi,
   Wind,
   Upload,
   Trash2,
+  ShieldCheck,
   Warehouse,
   ArrowRight,
   ArrowLeft,
+  Check,
   VenetianMask,
-  Flame,
+  DollarSign,
+  Home,
+  Bed,
+  Bath,
+  Ruler,
+  Phone,
+  Users,
+  Hash,
   MapPin,
   Loader2,
   CookingPot,
+  Flame,
 } from "lucide-react";
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 export const API_URL = `https://web-production-33f69.up.railway.app`;
-
-// --- Apartment features list (used in step 3) ---
 const features = [
   { id: "has_wifi", label: "واي فاي", icon: <Wifi size={24} /> },
   { id: "has_ac", label: "تكييف", icon: <Wind size={24} /> },
@@ -60,21 +68,31 @@ const features = [
 ];
 
 const AddApartment = () => {
+  const checklistOptions = [
+    "قريب من الجامعة",
+    "مسموح التدخين",
+    "غرف واسعة",
+    "هدوء في المكان",
+    "قريب من الخدمات",
+  ];
+
+  const [notes, setNotes] = useState<string[]>([]);
+
+  const handleNoteChange = (note: string) => {
+    if (notes.includes(note)) {
+      setNotes(notes.filter((n) => n !== note));
+    } else {
+      setNotes([...notes, note]);
+    }
+  };
+
   const navigate = useNavigate();
-
-  // --- Multi-step form state ---
   const [step, setStep] = useState(1);
-
-  // --- Form loading and error states ---
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  // --- Map coordinates state ---
   const [lat, setLat] = useState(27.18);
   const [lng, setLng] = useState(31.1833);
-
-  // --- Form data state ---
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -102,15 +120,11 @@ const AddApartment = () => {
     preferred_tenant_type: "",
   });
 
-  // --- Uploaded images state ---
   const [images, setImages] = useState<File[]>([]);
-
-  // --- Neighborhoods dropdown data ---
   const [neighborhoods, setNeighborhoods] = useState<
     { id: number; name: string }[]
   >([]);
 
-  // --- Fetch neighborhoods from API on mount ---
   useEffect(() => {
     const fetchNeighborhoods = async () => {
       try {
@@ -118,13 +132,19 @@ const AddApartment = () => {
         const data = await res.json();
         setNeighborhoods(data);
       } catch (err) {
-        console.error("Error fetching neighborhoods:", err);
+        console.error("خطأ في جلب الأحياء:", err);
       }
     };
     fetchNeighborhoods();
   }, []);
 
-  // --- Handle form input change ---
+  const escapeInput = (str: string) => {
+    if (!str && str !== "") return "";
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -132,12 +152,14 @@ const AddApartment = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // --- Handle select dropdown changes ---
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // --- Toggle boolean features ---
+  const handleCheckboxChange = (name: string, checked: boolean) => {
+    setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
   const handleFeatureSelect = (featureId: keyof typeof formData) => {
     setFormData((prev) => ({
       ...prev,
@@ -145,14 +167,12 @@ const AddApartment = () => {
     }));
   };
 
-  // --- Handle file upload changes ---
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setImages((prev) => [...prev, ...Array.from(e.target.files)]);
     }
   };
 
-  // --- Handle drag & drop for images ---
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files) {
@@ -160,38 +180,12 @@ const AddApartment = () => {
     }
   };
 
-  // Hundle Search in Map
-  const [searchQuery, setSearchQuery] = useState("");
-  const handleSearch = async () => {
-    if (!searchQuery) return;
-
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-          searchQuery
-        )}&format=json`
-      );
-      const data = await res.json();
-      if (data.length > 0) {
-        // تحديث خط العرض والطول بالخريطة
-        setLat(Number(data[0].lat));
-        setLng(Number(data[0].lon));
-      } else {
-        alert("لم يتم العثور على المكان");
-      }
-    } catch (err) {
-      console.error("Geocoding error:", err);
-    }
-  };
-
   const removeImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  // --- Validate form step before proceeding ---
   const validateStep = () => {
     let newErrors: Record<string, string> = {};
-
     const isNonNegativeInteger = (v: any) => {
       const n = Number(v);
       return Number.isInteger(n) && n >= 0;
@@ -201,77 +195,110 @@ const AddApartment = () => {
     const roomsNum = Number(formData.rooms || 0);
     const totalBedsNum = Number(formData.total_beds || 0);
     const availableBedsNum = Number(formData.available_beds || 0);
+    const areaNum = Number(formData.area || 0);
+    const floorNum = Number(formData.floor_number || 0);
 
-    // --- Step 1 validation ---
     if (step === 1) {
-      if (!formData.title) newErrors.title = "Title is required";
-      if (!formData.description)
-        newErrors.description = "Description is required";
+      if (!formData.title) newErrors.title = "العنوان مطلوب";
+      if (!formData.description) newErrors.description = "الوصف مطلوب";
       if (!formData.neighborhood_id)
-        newErrors.neighborhood_id = "Please select a neighborhood";
-      if (!formData.address) newErrors.address = "Address is required";
+        newErrors.neighborhood_id = "يجب اختيار المنطقة";
+      if (!formData.address) newErrors.address = "العنوان التفصيلي مطلوب";
 
       if (formData.title && formData.title.length > 150)
-        newErrors.title = "Title is too long (max 150 characters)";
+        newErrors.title = "العنوان طويل جدًا (أقصى 150 حرفًا)";
       if (formData.description && formData.description.length > 2000)
-        newErrors.description = "Description is too long (max 2000 characters)";
+        newErrors.description = "الوصف طويل جدًا (أقصى 2000 حرف)";
     }
 
-    // --- Step 2 validation ---
     if (step === 2) {
-      if (!formData.price) newErrors.price = "Price is required";
+      if (!formData.price) newErrors.price = "السعر مطلوب";
       else if (!isNonNegativeInteger(formData.price))
-        newErrors.price = "Price must be a non-negative integer";
+        newErrors.price = "السعر يجب أن يكون رقمًا صحيحًا وغير سالب";
       else if (priceNum > 50000)
-        newErrors.price = "Price cannot exceed 50,000 EGP";
+        newErrors.price = "السعر لا يمكن أن يتجاوز 50,000 ج.م";
 
-      if (!formData.rooms) newErrors.rooms = "Number of rooms is required";
+      if (!formData.rooms) newErrors.rooms = "عدد الغرف مطلوب";
       else if (!isNonNegativeInteger(formData.rooms))
-        newErrors.rooms = "Rooms must be non-negative integer";
-      else if (roomsNum > 8) newErrors.rooms = "Rooms cannot exceed 8";
+        newErrors.rooms = "عدد الغرف يجب أن يكون رقمًا صحيحًا وغير سالب";
+      else if (roomsNum > 8) newErrors.rooms = "عدد الغرف لا يمكن أن يتجاوز 8";
 
-      if (!formData.total_beds) newErrors.total_beds = "Total beds required";
+      if (!formData.kitchens) newErrors.kitchens = "عدد المطابخ مطلوب مطلوب";
+      else if (!isNonNegativeInteger(formData.kitchens))
+        newErrors.kitchens = "عدد المطابخ يجب أن يكون رقمًا صحيحًا وغير سالب";
+      else if (roomsNum > 8)
+        newErrors.kitchens = "عدد المطابخ لا يمكن أن يتجاوز 8";
+
+      if (!formData.area) newErrors.area = "المساحة مطلوبة";
+      else if (Number(formData.area) <= 0)
+        newErrors.area = "المساحة يجب أن تكون أكبر من 0";
+
+      if (!formData.total_beds) newErrors.total_beds = "إجمالي السراير مطلوب";
       else if (!isNonNegativeInteger(formData.total_beds))
-        newErrors.total_beds = "Total beds must be non-negative integer";
+        newErrors.total_beds =
+          "إجمالي السراير يجب أن يكون رقمًا صحيحًا وغير سالب";
       else if (totalBedsNum > 20)
-        newErrors.total_beds = "Total beds cannot exceed 20";
+        newErrors.total_beds = "إجمالي السراير لا يمكن أن يتجاوز 20";
 
       if (!formData.available_beds)
-        newErrors.available_beds = "Available beds required";
+        newErrors.available_beds = "السراير المتاحة مطلوبة";
       else if (!isNonNegativeInteger(formData.available_beds))
         newErrors.available_beds =
-          "Available beds must be non-negative integer";
+          "السراير المتاحة يجب أن تكون رقمًا صحيحًا وغير سالب";
       else if (availableBedsNum > totalBedsNum)
-        newErrors.available_beds = "Available beds cannot exceed total beds";
+        newErrors.available_beds =
+          "السراير المتاحة لا يمكن أن تكون أكبر من إجمالي السراير";
+
+      if (formData.floor_number && Number(formData.floor_number) < 0)
+        newErrors.floor_number = "رقم الدور لا يمكن أن يكون سالبًا";
     }
 
-    // --- Step 3 validation ---
     if (step === 3) {
       if (images.length === 0)
-        newErrors.images = "Please upload at least one image";
-      if (images.length > 20) newErrors.images = "Maximum 20 images allowed";
+        newErrors.images = "يجب إضافة صورة واحدة على الأقل";
+      if (images.length > 20) newErrors.images = "الحد الأقصى للصور هو 20 صورة";
     }
 
-    // --- WhatsApp number validation ---
     if (formData.whatsapp_number) {
       const phone = formData.whatsapp_number.trim();
       const egyptPhoneRegex = /^(?:\+20|20|0)?1[0125]\d{8}$/;
       if (!egyptPhoneRegex.test(phone)) {
-        newErrors.whatsapp_number = "Invalid WhatsApp number format";
+        newErrors.whatsapp_number =
+          "تنسيق رقم الواتساب غير صحيح (مثال: 01012345678 أو +201012345678)";
       }
     }
+
+    const numericFields = [
+      "price",
+      "rooms",
+      "bathrooms",
+      "kitchens",
+      "total_beds",
+      "available_beds",
+      "area",
+      "floor_number",
+    ];
+    numericFields.forEach((k) => {
+      const v = (formData as any)[k];
+      if (v !== "" && v !== null && v !== undefined) {
+        const n = Number(v);
+        if (isNaN(n)) newErrors[k] = "هذا الحقل يجب أن يحتوي على رقم صالح";
+        else if (n < 0) newErrors[k] = "لا يمكن أن يكون رقمًا سالبًا";
+      }
+    });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // --- Step navigation ---
   const nextStep = () => {
     if (validateStep()) setStep((prev) => Math.min(prev + 1, 3));
   };
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
-  // --- Submit form handler ---
+  const prevStep = () => {
+    setStep((prev) => Math.max(prev - 1, 1));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep()) return;
@@ -290,63 +317,69 @@ const AddApartment = () => {
     images.forEach((image) => data.append("images", image));
 
     try {
-      await axiosInstance.post("/api/v1/apartments/create", data);
+      const response = await axiosInstance.post(
+        "/api/v1/apartments/create",
+        data
+      );
       navigate("/dashboard?status=success");
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to create apartment");
+      setError(err.response?.data?.error || "فشل إنشاء الشقة");
     } finally {
       setIsLoading(false);
     }
   };
-
-  // --- Steps info ---
   const steps = [
     {
       number: 1,
-      title: "Basic Info",
-      tip: "Add an attractive title and detailed description.",
+      title: "المعلومات الأساسية",
+      tip: "استخدم عنوانًا جذابًا ووصفًا دقيقًا لجذب المستأجرين.",
     },
     {
       number: 2,
-      title: "Apartment Details",
-      tip: "Fill accurate details like rooms, area, and price.",
+      title: "تفاصيل العقار",
+      tip: "التفاصيل الدقيقة مثل عدد الغرف والمساحة تساعد الطلاب في اتخاذ قرارهم بشكل أسرع.",
     },
     {
       number: 3,
-      title: "Features & Images",
-      tip: "High-quality photos increase chances of renting faster.",
+      title: "المميزات والصور",
+      tip: "الصور عالية الجودة تزيد من فرص تأجير شقتك بنسبة كبيرة. أضف 5 صور على الأقل.",
     },
   ];
 
-  // --- JSX Render ---
   return (
     <>
       <Header />
       <div className="container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          {/* --- Left sidebar: Steps & Tips --- */}
+          {/* --- العمود الأيسر: شريط التقدم والنصائح --- */}
           <aside className="lg:col-span-1">
             <div className="sticky top-24 space-y-8">
-              {steps.map((s) => (
-                <div key={s.number} className="flex items-start">
-                  <div className="flex flex-col items-center mr-4"></div>
-                  <div className="pt-1 ml-3">
-                    <h3
-                      className={`font-semibold ${
-                        step === s.number ? "text-primary" : ""
-                      }`}
-                    >
-                      {s.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Step {s.number} of {steps.length}
-                    </p>
+              <div>
+                {steps.map((s, index) => (
+                  <div className="flex items-start">
+                    <div className="flex flex-col items-center mr-4">
+                      {/* الدائرة بتاعة الخطوة */}
+                    </div>
+                    <div className="pt-1 ml-3">
+                      {" "}
+                      {/* ← هنا أضفت مسافة */}
+                      <h3
+                        className={`font-semibold ${
+                          step === s.number ? "text-primary" : ""
+                        }`}
+                      >
+                        {s.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        الخطوة {s.number} من {steps.length}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
               <Card className="bg-muted/50 hidden lg:block">
                 <CardHeader>
-                  <CardTitle>Tip</CardTitle>
+                  <CardTitle>نصيحة</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
@@ -357,55 +390,47 @@ const AddApartment = () => {
             </div>
           </aside>
 
-          {/* --- Right side: Form --- */}
+          {/* --- العمود الأيمن: النموذج --- */}
           <main className="lg:col-span-3">
             <Card>
               <CardHeader>
                 <CardTitle className="text-3xl font-bold">
-                  Add New Apartment
+                  إضافة شقة جديدة
                 </CardTitle>
                 <CardDescription>{steps[step - 1].title}</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit}>
-                  {/* ================= Step 1: Basic Info ================= */}
                   {step === 1 && (
                     <div className="space-y-6 animate-in fade-in-50">
-                      {/* Title */}
                       <div className="space-y-2">
-                        <Label htmlFor="title">Title *</Label>
+                        <Label htmlFor="title">عنوان الإعلان *</Label>
                         <Input
                           id="title"
                           name="title"
                           value={formData.title}
                           onChange={handleInputChange}
-                          placeholder="Example: Fully furnished apartment near university"
+                          placeholder="مثال: شقة مفروشة بالكامل قرب الجامعة"
                         />
                         <p className="text-red-500 text-sm">{errors.title}</p>
                       </div>
-
-                      {/* Description */}
                       <div className="space-y-2">
-                        <Label htmlFor="description">Description *</Label>
+                        <Label htmlFor="description">وصف الشقة *</Label>
                         <Textarea
                           id="description"
                           name="description"
                           value={formData.description}
                           onChange={handleInputChange}
-                          placeholder="Write detailed description of the apartment..."
+                          placeholder="اكتب وصفاً تفصيلياً عن الشقة ومميزاتها..."
                           rows={5}
                         />
                         <p className="text-red-500 text-sm">
                           {errors.description}
                         </p>
                       </div>
-
-                      {/* Neighborhood & Address */}
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <Label htmlFor="neighborhood_id">
-                            Neighborhood *
-                          </Label>
+                          <Label htmlFor="neighborhood_id">المنطقة *</Label>
                           <Select
                             name="neighborhood_id"
                             onValueChange={(value) =>
@@ -414,7 +439,7 @@ const AddApartment = () => {
                             value={formData.neighborhood_id}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Select neighborhood" />
+                              <SelectValue placeholder="اختر منطقة" />
                             </SelectTrigger>
                             <SelectContent>
                               {neighborhoods.map((n) => (
@@ -428,84 +453,309 @@ const AddApartment = () => {
                             {errors.neighborhood_id}
                           </p>
                         </div>
-
                         <div className="space-y-2">
-                          <Label htmlFor="address">Detailed Address *</Label>
+                          <Label htmlFor="address">العنوان التفصيلي *</Label>
                           <Input
                             id="address"
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
-                            placeholder="Example: El-Gomhoria St, near pharmacy..."
+                            placeholder="مثال: شارع الجمهورية، بجوار صيدلية..."
                           />
                           <p className="text-red-500 text-sm">
                             {errors.address}
                           </p>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="search">ابحث عن الموقع</Label>
-                          <Input
-                            id="search"
-                            placeholder="اكتب اسم المدينة أو العنوان"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") handleSearch(); // اضغط Enter لتحديث الخريطة
-                            }}
-                          />
-                        </div>
-
-                        {/* Map picker */}
+                        {/* خريطة تحديد الموقع */}
                         <div className="space-y-2 mt-4">
-                          <Label>Pick location on map *</Label>
+                          <Label>حدد موقع الشقة على الخريطة *</Label>
                           <MapPicker
                             lat={lat}
                             lng={lng}
-                            onChange={(newLat, newLng) => {
-                              setLat(newLat);
-                              setLng(newLng);
-                            }}
+                            onChange={(lat, lng) => setLat(lat) & setLng(lng)}
                           />
                         </div>
                       </div>
                     </div>
                   )}
-
-                  {/* ================= Step 2: Apartment Details ================= */}
                   {step === 2 && (
                     <div className="space-y-8 animate-in fade-in-50">
-                      {/* Room, Area, Beds */}
-                      {/* ... (kept for brevity, same as your code) */}
+                      <div>
+                        <h3 className="font-semibold text-lg mb-4">
+                          الأبعاد والسعة
+                        </h3>
+                        <div className="grid md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                            <Label htmlFor="rooms">عدد الغرف *</Label>
+                            <Input
+                              id="rooms"
+                              name="rooms"
+                              type="number"
+                              value={formData.rooms}
+                              onChange={handleInputChange}
+                            />
+                            <p className="text-red-500 text-sm">
+                              {errors.rooms}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="bathrooms">عدد الحمامات</Label>
+                            <Input
+                              id="bathrooms"
+                              name="bathrooms"
+                              type="number"
+                              value={formData.bathrooms}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="kitchens">عدد المطابخ</Label>
+                            <Input
+                              id="kitchens"
+                              name="kitchens"
+                              type="number"
+                              value={formData.kitchens}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="area">المساحة (م²) *</Label>
+                            <Input
+                              id="area"
+                              name="area"
+                              type="number"
+                              value={formData.area}
+                              onChange={handleInputChange}
+                            />
+                            <p className="text-red-500 text-sm">
+                              {errors.area}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="total_beds">إجمالي السراير *</Label>
+                            <Input
+                              id="total_beds"
+                              name="total_beds"
+                              type="number"
+                              value={formData.total_beds}
+                              onChange={handleInputChange}
+                            />
+                            <p className="text-red-500 text-sm">
+                              {errors.total_beds}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="available_beds">
+                              السراير المتاحة *
+                            </Label>
+                            <Input
+                              id="available_beds"
+                              name="available_beds"
+                              type="number"
+                              value={formData.available_beds}
+                              onChange={handleInputChange}
+                            />
+                            <p className="text-red-500 text-sm">
+                              {errors.available_beds}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="floor_number">رقم الدور</Label>
+                            <Input
+                              id="floor_number"
+                              name="floor_number"
+                              type="number"
+                              value={formData.floor_number}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="font-semibold text-lg mb-4">
+                          التسعير والتواصل
+                        </h3>
+                        <div className="grid md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                            <Label htmlFor="price">السعر الشهري (جنيه) *</Label>
+                            <Input
+                              id="price"
+                              name="price"
+                              type="number"
+                              value={formData.price}
+                              onChange={handleInputChange}
+                            />
+                            <p className="text-red-500 text-sm">
+                              {errors.price}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="residence_type">نوع السكن</Label>
+                            <Select
+                              name="residence_type"
+                              onValueChange={(value) =>
+                                handleSelectChange("residence_type", value)
+                              }
+                              value={formData.residence_type}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="شقة كاملة">
+                                  شقة كاملة
+                                </SelectItem>
+                                <SelectItem value="غرفة">غرفة</SelectItem>
+                                <SelectItem value="إستوديو">إستوديو</SelectItem>
+                                <SelectItem value="سكن مشترك">
+                                  سكن مشترك
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="whatsapp_number">
+                              رقم واتساب للتواصل
+                            </Label>
+                            <Input
+                              id="whatsapp_number"
+                              name="whatsapp_number"
+                              type="tel"
+                              value={formData.whatsapp_number}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
-
-                  {/* ================= Step 3: Features & Images ================= */}
                   {step === 3 && (
                     <div className="space-y-8 animate-in fade-in-50">
-                      {/* Features & Upload Images */}
-                      {/* ... (kept for brevity, same as your code) */}
+                      <div>
+                        <h3 className="font-semibold text-lg mb-4">
+                          اختر المميزات المتوفرة
+                        </h3>
+
+                        {/* --- المميزات الأساسية --- */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {features.map((feature) => (
+                            <Card
+                              key={feature.id}
+                              onClick={() => handleFeatureSelect(feature.id)}
+                              className={`p-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
+                                formData[feature.id as keyof typeof formData]
+                                  ? "border-primary ring-2 ring-primary"
+                                  : "border-border"
+                              }`}
+                            >
+                              {feature.icon}
+                              <Label htmlFor={feature.id}>
+                                {feature.label}
+                              </Label>
+                            </Card>
+                          ))}
+                        </div>
+
+                        <h3 className="font-semibold text-lg mb-4">
+                          صور الشقة *
+                        </h3>
+                        <div
+                          onDrop={handleFileDrop}
+                          onDragOver={(e) => e.preventDefault()}
+                          onClick={() =>
+                            document.getElementById("images")?.click()
+                          } // لما تضغط يفتح اختيار الصور
+                          className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary"
+                        >
+                          <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                          <p className="mt-4 text-sm text-muted-foreground">
+                            اسحب وأفلت الصور هنا، أو انقر للاختيار
+                          </p>
+                          <Input
+                            id="images"
+                            type="file"
+                            multiple
+                            onChange={handleFileChange}
+                            className="hidden"
+                          />
+                        </div>
+
+                        <p className="text-red-500 text-sm mt-2">
+                          {errors.images}
+                        </p>
+                        {images.length > 0 && (
+                          <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                            {images.map((file, index) => (
+                              <div
+                                key={index}
+                                className="relative group aspect-square"
+                              >
+                                <img
+                                  src={URL.createObjectURL(file)}
+                                  alt={`preview ${index}`}
+                                  className="w-full h-full object-cover rounded-md"
+                                />
+                                <Button
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100"
+                                  onClick={() => removeImage(index)}
+                                >
+                                  <Trash2 size={14} />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {/* --- مميزات إضافية --- */}
+
+                      {/* --- ملاحظات المالك --- */}
+
+                      {/* --- نوع المستأجر المفضل --- */}
+                      <div className="mt-6">
+                        <Label htmlFor="preferred_tenant_type">
+                          نوع المستأجر المفضل
+                        </Label>
+                        <Select
+                          name="preferred_tenant_type"
+                          onValueChange={(value) =>
+                            handleSelectChange("preferred_tenant_type", value)
+                          }
+                          value={formData.preferred_tenant_type}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="شباب">شباب</SelectItem>
+                            <SelectItem value="بنات">بنات</SelectItem>
+                            <SelectItem value="عائلات">عائلات</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   )}
-
-                  {/* --- Step Navigation Buttons --- */}
+                  {/* --- زر السابق والتالي --- */}
                   <div className="mt-10 pt-6 border-t flex justify-between items-center">
                     <Button
                       type="button"
                       variant="ghost"
                       onClick={prevStep}
                       disabled={step === 1}
-                      className="flex flex-row-reverse gap-2"
+                      className="flex flex-row-reverse gap-2" // يخلي الأيقونة يمين مع مسافة
                     >
-                      Previous <ArrowRight size={18} />
+                      السابق <ArrowRight size={18} />
                     </Button>
 
                     {step < 3 && (
                       <Button
                         type="button"
                         onClick={nextStep}
-                        className="flex gap-2"
+                        className="flex gap-2" // يخلي الأيقونة شمال مع مسافة
                       >
-                        <ArrowLeft size={18} /> Next
+                        <ArrowLeft size={18} /> التالي
                       </Button>
                     )}
 
@@ -517,12 +767,12 @@ const AddApartment = () => {
                       >
                         {isLoading ? (
                           <>
-                            <Loader2 className="h-4 w-4 animate-spin" />{" "}
-                            Saving...
+                            <Loader2 className="h-4 w-4 animate-spin" /> جاري
+                            الحفظ...
                           </>
                         ) : (
                           <>
-                            <Upload size={18} /> Save & Publish
+                            <Upload size={18} /> حفظ ونشر الشقة
                           </>
                         )}
                       </Button>
