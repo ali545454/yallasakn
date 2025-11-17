@@ -192,8 +192,11 @@ const ApartmentDetails = () => {
         {/* ...existing code... */}
         {/* --- Main Content Grid --- */}
         {/* ...existing code... */}
-        {/* --- خريطة موقع الشقة --- */}
-        <section className="mt-16 mb-8">
+      </main>
+      <Footer />
+      {/* --- خريطة موقع الشقة في الأسفل --- */}
+      <section className="mt-8 mb-0 w-full px-0">
+        <div className="container mx-auto">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
             <MapPin className="w-6 h-6 text-primary" /> موقع الشقة على الخريطة
           </h3>
@@ -208,9 +211,8 @@ const ApartmentDetails = () => {
           ) : (
             <p className="text-gray-500">لا تتوفر إحداثيات لهذا السكن.</p>
           )}
-        </section>
-      </main>
-      <Footer />
+        </div>
+      </section>
     </div>
   );
 };
