@@ -96,6 +96,8 @@ const AddApartment = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchError, setSearchError] = useState<string | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -190,34 +192,41 @@ const AddApartment = () => {
     }
     setSearchError(null);
     setSearchLoading(true);
+    setSuggestions([]);
     try {
       const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
         query
-      )}&format=json&limit=1`;
+      )}&format=json&limit=5`;
       const res = await fetch(url, {
         headers: { "Accept-Language": "ar" },
       });
       const data = await res.json();
       if (data && data.length > 0) {
-        const item = data[0];
-        const newLat = Number(item.lat);
-        const newLng = Number(item.lon);
-        setLat(newLat);
-        setLng(newLng);
-        // optionally populate the address field with the returned display name
-        setFormData((prev) => ({
-          ...prev,
-          address: item.display_name || prev.address,
-        }));
+        setSuggestions(data);
+        setShowSuggestions(true);
         setSearchError(null);
       } else {
+        setSuggestions([]);
         setSearchError("لم يتم العثور على موقع مطابق");
       }
     } catch (err) {
       setSearchError("فشل في البحث. حاول مرة أخرى.");
+      setSuggestions([]);
     } finally {
       setSearchLoading(false);
     }
+    // عند اختيار اقتراح
+    const handleSuggestionClick = (item: any) => {
+      setLat(Number(item.lat));
+      setLng(Number(item.lon));
+      setFormData((prev) => ({
+        ...prev,
+        address: item.display_name || prev.address,
+      }));
+      setSearchQuery(item.display_name);
+      setShowSuggestions(false);
+      setSuggestions([]);
+    };
   };
 
   const removeImage = (index: number) => {
@@ -510,26 +519,63 @@ const AddApartment = () => {
                         <div className="space-y-2 mt-4">
                           <Label>حدد موقع الشقة على الخريطة *</Label>
 
-                          <div className="flex gap-2">
-                            <Input
-                              id="location_search"
-                              placeholder="ابحث عن مدينة أو عنوان..."
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  geocodeLocation(searchQuery);
-                                }
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              onClick={() => geocodeLocation(searchQuery)}
-                              disabled={searchLoading}
-                            >
-                              {searchLoading ? "...جاري البحث" : "ابحث"}
-                            </Button>
+                          <div className="flex flex-col gap-2 relative">
+                            <div className="flex gap-2">
+                              <Input
+                                id="location_search"
+                                placeholder="ابحث عن مدينة أو عنوان..."
+                                value={searchQuery}
+                                autoComplete="off"
+                                onChange={(e) => {
+                                  setSearchQuery(e.target.value);
+                                  if (e.target.value.length > 2) {
+                                    geocodeLocation(e.target.value);
+                                  } else {
+                                    setSuggestions([]);
+                                    setShowSuggestions(false);
+                                  }
+                                }}
+                                onFocus={() => {
+                                  if (suggestions.length > 0)
+                                    setShowSuggestions(true);
+                                }}
+                                onBlur={() => {
+                                  setTimeout(
+                                    () => setShowSuggestions(false),
+                                    150
+                                  );
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    geocodeLocation(searchQuery);
+                                  }
+                                }}
+                              />
+                              <Button
+                                type="button"
+                                onClick={() => geocodeLocation(searchQuery)}
+                                disabled={searchLoading}
+                              >
+                                {searchLoading ? "...جاري البحث" : "ابحث"}
+                              </Button>
+                            </div>
+                            {/* قائمة الاقتراحات */}
+                            {showSuggestions && suggestions.length > 0 && (
+                              <div className="absolute top-full left-0 right-0 bg-white border rounded shadow z-10 max-h-60 overflow-auto">
+                                {suggestions.map((item, idx) => (
+                                  <div
+                                    key={item.place_id || idx}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+                                    onMouseDown={() =>
+                                      handleSuggestionClick(item)
+                                    }
+                                  >
+                                    {item.display_name}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
 
                           {searchError && (
