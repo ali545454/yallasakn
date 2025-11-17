@@ -619,6 +619,13 @@ const AddApartment = () => {
                                 setLat(newLat);
                                 setLng(newLng);
                               }}
+                              onMapClick={(
+                                clickedLat: number,
+                                clickedLng: number
+                              ) => {
+                                setLat(clickedLat);
+                                setLng(clickedLng);
+                              }}
                             />
                           </div>
                         </div>
