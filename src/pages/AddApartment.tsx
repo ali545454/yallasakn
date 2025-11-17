@@ -538,7 +538,34 @@ const AddApartment = () => {
                             </p>
                           )}
 
-                          <div className="mt-3">
+                          <div className="mt-3 space-y-4">
+                            {/* إدخال يدوي للإحداثيات */}
+                            <div className="flex gap-4">
+                              <div className="flex-1">
+                                <Label htmlFor="latitude">خط العرض</Label>
+                                <Input
+                                  id="latitude"
+                                  type="number"
+                                  step="any"
+                                  value={lat}
+                                  onChange={(e) =>
+                                    setLat(Number(e.target.value))
+                                  }
+                                />
+                              </div>
+                              <div className="flex-1">
+                                <Label htmlFor="longitude">خط الطول</Label>
+                                <Input
+                                  id="longitude"
+                                  type="number"
+                                  step="any"
+                                  value={lng}
+                                  onChange={(e) =>
+                                    setLng(Number(e.target.value))
+                                  }
+                                />
+                              </div>
+                            </div>
                             <MapPicker
                               lat={lat}
                               lng={lng}
