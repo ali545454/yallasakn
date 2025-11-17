@@ -185,6 +185,7 @@ const AddApartment = () => {
     }
   };
 
+  // دالة جلب المواقع
   const geocodeLocation = async (query: string) => {
     if (!query || query.trim() === "") {
       setSearchError("من فضلك اكتب موقعًا للبحث");
@@ -205,6 +206,13 @@ const AddApartment = () => {
         setSuggestions(data);
         setShowSuggestions(true);
         setSearchError(null);
+        // تحديث الخريطة مباشرة بأول اقتراح
+        setLat(Number(data[0].lat));
+        setLng(Number(data[0].lon));
+        setFormData((prev) => ({
+          ...prev,
+          address: data[0].display_name || prev.address,
+        }));
       } else {
         setSuggestions([]);
         setSearchError("لم يتم العثور على موقع مطابق");
@@ -215,18 +223,19 @@ const AddApartment = () => {
     } finally {
       setSearchLoading(false);
     }
-    // عند اختيار اقتراح
-    const handleSuggestionClick = (item: any) => {
-      setLat(Number(item.lat));
-      setLng(Number(item.lon));
-      setFormData((prev) => ({
-        ...prev,
-        address: item.display_name || prev.address,
-      }));
-      setSearchQuery(item.display_name);
-      setShowSuggestions(false);
-      setSuggestions([]);
-    };
+  };
+
+  // عند اختيار اقتراح (خارج دالة geocodeLocation)
+  const handleSuggestionClick = (item: any) => {
+    setLat(Number(item.lat));
+    setLng(Number(item.lon));
+    setFormData((prev) => ({
+      ...prev,
+      address: item.display_name || prev.address,
+    }));
+    setSearchQuery(item.display_name);
+    setShowSuggestions(false);
+  };
   };
 
   const removeImage = (index: number) => {
@@ -519,62 +528,82 @@ const AddApartment = () => {
                         <div className="space-y-2 mt-4">
                           <Label>حدد موقع الشقة على الخريطة *</Label>
 
-                          <div className="flex flex-col gap-2 relative">
-                            <div className="flex gap-2">
-                              <Input
-                                id="location_search"
-                                placeholder="ابحث عن مدينة أو عنوان..."
-                                value={searchQuery}
-                                autoComplete="off"
-                                onChange={(e) => {
-                                  setSearchQuery(e.target.value);
-                                  if (e.target.value.length > 2) {
-                                    geocodeLocation(e.target.value);
-                                  } else {
-                                    setSuggestions([]);
-                                    setShowSuggestions(false);
-                                  }
-                                }}
-                                onFocus={() => {
-                                  if (suggestions.length > 0)
-                                    setShowSuggestions(true);
-                                }}
-                                onBlur={() => {
-                                  setTimeout(
-                                    () => setShowSuggestions(false),
-                                    150
-                                  );
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    geocodeLocation(searchQuery);
-                                  }
-                                }}
-                              />
-                              <Button
-                                type="button"
-                                onClick={() => geocodeLocation(searchQuery)}
-                                disabled={searchLoading}
-                              >
-                                {searchLoading ? "...جاري البحث" : "ابحث"}
-                              </Button>
+                          <div className="flex gap-6">
+                            <div className="flex-1 flex flex-col gap-2">
+                              <div className="flex gap-2">
+                                <Input
+                                  id="location_search"
+                                  placeholder="ابحث عن مدينة أو عنوان..."
+                                  value={searchQuery}
+                                  autoComplete="off"
+                                  onChange={(e) => {
+                                    setSearchQuery(e.target.value);
+                                    if (e.target.value.length > 2) {
+                                      geocodeLocation(e.target.value);
+                                    } else {
+                                      setSuggestions([]);
+                                      setShowSuggestions(false);
+                                    }
+                                  }}
+                                  onFocus={() => {
+                                    if (suggestions.length > 0)
+                                      setShowSuggestions(true);
+                                  }}
+                                  onBlur={() => {
+                                    setTimeout(
+                                      () => setShowSuggestions(false),
+                                      150
+                                    );
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      geocodeLocation(searchQuery);
+                                    }
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  onClick={() => geocodeLocation(searchQuery)}
+                                  disabled={searchLoading}
+                                >
+                                  {searchLoading ? "...جاري البحث" : "ابحث"}
+                                </Button>
+                              </div>
+                              {searchError && (
+                                <p className="text-red-500 text-sm mt-1">
+                                  {searchError}
+                                </p>
+                              )}
+                              <div className="mt-3">
+                                <MapPicker
+                                  lat={lat}
+                                  lng={lng}
+                                  onChange={(newLat, newLng) => {
+                                    setLat(newLat);
+                                    setLng(newLng);
+                                  }}
+                                  onMapClick={(clickedLat: number, clickedLng: number) => {
+                                    setLat(clickedLat);
+                                    setLng(clickedLng);
+                                  }}
+                                />
+                              </div>
                             </div>
-                            {/* قائمة الاقتراحات */}
+                            {/* قائمة الاقتراحات بجانب الخريطة */}
                             {showSuggestions && suggestions.length > 0 && (
-                              <div className="absolute top-full left-0 right-0 bg-white border rounded shadow z-10 max-h-60 overflow-auto">
+                              <aside className="w-72 bg-white border rounded shadow p-2 max-h-96 overflow-auto self-start">
+                                <h4 className="font-bold text-base mb-2">أماكن قريبة</h4>
                                 {suggestions.map((item, idx) => (
                                   <div
                                     key={item.place_id || idx}
-                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm"
-                                    onMouseDown={() =>
-                                      handleSuggestionClick(item)
-                                    }
+                                    className="px-2 py-2 cursor-pointer hover:bg-gray-100 text-sm rounded"
+                                    onMouseDown={() => handleSuggestionClick(item)}
                                   >
                                     {item.display_name}
                                   </div>
                                 ))}
-                              </div>
+                              </aside>
                             )}
                           </div>
 
@@ -584,50 +613,7 @@ const AddApartment = () => {
                             </p>
                           )}
 
-                          <div className="mt-3 space-y-4">
-                            {/* إدخال يدوي للإحداثيات */}
-                            <div className="flex gap-4">
-                              <div className="flex-1">
-                                <Label htmlFor="latitude">خط العرض</Label>
-                                <Input
-                                  id="latitude"
-                                  type="number"
-                                  step="any"
-                                  value={lat}
-                                  onChange={(e) =>
-                                    setLat(Number(e.target.value))
-                                  }
-                                />
-                              </div>
-                              <div className="flex-1">
-                                <Label htmlFor="longitude">خط الطول</Label>
-                                <Input
-                                  id="longitude"
-                                  type="number"
-                                  step="any"
-                                  value={lng}
-                                  onChange={(e) =>
-                                    setLng(Number(e.target.value))
-                                  }
-                                />
-                              </div>
-                            </div>
-                            <MapPicker
-                              lat={lat}
-                              lng={lng}
-                              onChange={(newLat, newLng) => {
-                                setLat(newLat);
-                                setLng(newLng);
-                              }}
-                              onMapClick={(
-                                clickedLat: number,
-                                clickedLng: number
-                              ) => {
-                                setLat(clickedLat);
-                                setLng(clickedLng);
-                              }}
-                            />
-                          </div>
+                          {/* تم حذف إدخال خطوط العرض والطول */}
                         </div>
                       </div>
                     </div>
