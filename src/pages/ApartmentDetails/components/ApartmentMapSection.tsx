@@ -1,6 +1,6 @@
 import React from "react";
 import { MapPin } from "lucide-react";
-import MapPicker from "../Map/MapPicker";
+import MapPicker from "@/components/Map/MapPicker";
 
 const ApartmentMapSection = ({ apartment }) => (
   <section className="mt-8 mb-0 w-full px-0">
