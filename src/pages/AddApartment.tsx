@@ -22,9 +22,35 @@ const AddApartment = () => {
       <Header />
       <div className="container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          <aside className="lg:col-span-1"></aside>
+          <aside className="lg:col-span-1">
+            <nav className="sticky top-24">
+              <ul className="space-y-4">
+                {steps.map((s) => (
+                  <li
+                    key={s.number}
+                    className={
+                      step === s.number
+                        ? "font-bold text-primary"
+                        : "text-gray-500"
+                    }
+                  >
+                    {s.title}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
           <main className="lg:col-span-3">
             <form onSubmit={handleSubmit}>
+              {errors && Object.keys(errors).length > 0 && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-red-700">
+                  <ul className="list-disc pl-5">
+                    {Object.entries(errors).map(([field, error]) => (
+                      <li key={field}>{String(error)}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {step === 1 && <Step1 />}
               {step === 2 && <Step2 />}
               {step === 3 && <Step3 />}
