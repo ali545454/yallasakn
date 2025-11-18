@@ -1,16 +1,27 @@
 import React from "react";
-import { Check } from "lucide-react";
+import {
+  Wifi,
+  Snowflake,
+  Wind,
+  CircleChevronUp,
+  Utensils,
+  WashingMachine,
+  Flame,
+  Truck,
+  CookingPot,
+  Check,
+} from "lucide-react";
 
 const featureIconMap = {
-  "واي فاي": require("lucide-react").Wifi,
-  تكييف: require("lucide-react").Snowflake,
-  بلكونة: require("lucide-react").Wind,
-  مصعد: require("lucide-react").CircleChevronUp,
-  مطبخ: require("lucide-react").Utensils,
-  غسالة: require("lucide-react").WashingMachine,
-  "غاز طبيعي": require("lucide-react").Flame,
-  "قريب من المواصلات": require("lucide-react").Truck,
-  "بوتجاز/فرن": require("lucide-react").CookingPot,
+  "واي فاي": Wifi,
+  تكييف: Snowflake,
+  بلكونة: Wind,
+  مصعد: CircleChevronUp,
+  مطبخ: Utensils,
+  غسالة: WashingMachine,
+  "غاز طبيعي": Flame,
+  "قريب من المواصلات": Truck,
+  "بوتجاز/فرن": CookingPot,
 };
 
 const ApartmentFeatures = ({ apartment }) => (
