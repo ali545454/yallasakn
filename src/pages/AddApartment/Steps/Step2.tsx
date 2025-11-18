@@ -1,5 +1,6 @@
 import React from "react";
-import { Label, Input } from "@/components/ui";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,
@@ -7,7 +8,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useFormState } from "@/hooks/useFormState";
+import { useFormState } from "../hooks/useFormState";
 
 const Step2 = () => {
   const { formData, handleInputChange, handleSelectChange } = useFormState();

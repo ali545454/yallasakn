@@ -1,7 +1,7 @@
 import React from "react";
 // Update the import path to the correct location of Label and Input components
-import { Label } from "@/components/ui/Label";
-import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectTrigger,

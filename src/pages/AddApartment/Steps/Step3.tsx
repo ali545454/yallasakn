@@ -1,8 +1,9 @@
 import React from "react";
-import { useFormState } from "@/hooks/useFormState";
+import { useFormState } from "../hooks/useFormState";
 import FeatureCard from "../Components/FeatureCard";
 import ImageUploader from "../Components/ImageUploader";
-import { Label } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const features = [
   { id: "has_wifi", label: "واي فاي" },
@@ -16,23 +17,41 @@ const features = [
 ];
 
 const Step3 = () => {
-  const { formData, handleFeatureSelect, images, handleFileChange, removeImage } = useFormState();
+  const {
+    formData,
+    handleFeatureSelect,
+    images,
+    handleFileChange,
+    removeImage,
+  } = useFormState();
 
   return (
     <div className="space-y-6">
       <h3>اختر المميزات المتوفرة</h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {features.map((f) => (
-          <FeatureCard key={f.id} feature={f} selected={formData[f.id]} onClick={() => handleFeatureSelect(f.id)} />
+          <FeatureCard
+            key={f.id}
+            feature={f}
+            selected={formData[f.id]}
+            onClick={() => handleFeatureSelect(f.id)}
+          />
         ))}
       </div>
 
       <h3>صور الشقة *</h3>
-      <ImageUploader images={images} handleFileChange={handleFileChange} removeImage={removeImage} />
+      <ImageUploader
+        images={images}
+        handleFileChange={handleFileChange}
+        removeImage={removeImage}
+      />
 
       <div>
         <Label htmlFor="preferred_tenant_type">نوع المستأجر المفضل</Label>
-        <select value={formData.preferred_tenant_type} onChange={(e) => formData.preferred_tenant_type = e.target.value}>
+        <select
+          value={formData.preferred_tenant_type}
+          onChange={(e) => (formData.preferred_tenant_type = e.target.value)}
+        >
           <option value="">اختر</option>
           <option value="شباب">شباب</option>
           <option value="بنات">بنات</option>

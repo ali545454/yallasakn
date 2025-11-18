@@ -22,9 +22,7 @@ const AddApartment = () => {
       <Header />
       <div className="container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          <aside className="lg:col-span-1">
-            {/* هنا ممكن تحط شريط التقدم أو نصائح */}
-          </aside>
+          <aside className="lg:col-span-1"></aside>
           <main className="lg:col-span-3">
             <form onSubmit={handleSubmit}>
               {step === 1 && <Step1 />}

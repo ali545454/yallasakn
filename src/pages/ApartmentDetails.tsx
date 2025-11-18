@@ -1,63 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Star,
-  Share2,
-  MapPin,
-  Bed,
-  Bath,
-  Ruler,
-  Wifi,
-  ChevronUp,
-  Check,
-  Utensils,
-  MessageCircle,
-  ImageIcon,
-  WashingMachine,
-  Snowflake,
-  Flame,
-  Wind,
-  Layers,
-  Hash,
-  Home,
-  Users,
-  Truck,
-  CookingPot,
-  ShieldCheck,
-  Calendar,
-  CircleChevronUp,
-  Building2,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import FavoriteButton from "@/components/FavoriteButton";
 import Loading from "@/components/Loading";
-import MapPicker from "../components/Map/MapPicker";
+import ApartmentHeader from "./ApartmentDetails/components/ApartmentHeader";
+import ApartmentImageGallery from "./ApartmentDetails/components/ApartmentImageGallery";
+import ApartmentSpecs from "./ApartmentDetails/components/ApartmentSpecs";
+import ApartmentFeatures from "./ApartmentDetails/components/ApartmentFeatures";
+import ApartmentExtraDetails from "./ApartmentDetails/components/ApartmentExtraDetails";
+import ApartmentContactCard from "./ApartmentDetails/components/ApartmentContactCard";
+import ApartmentMapSection from "./ApartmentDetails/components/ApartmentMapSection";
 export const API_URL =
   import.meta.env.VITE_API_URL ||
   `https://web-production-33f69.up.railway.app/`;
-
-const featureIconMap = {
-  "واي فاي": Wifi,
-  تكييف: Snowflake,
-  بلكونة: Wind,
-  مصعد: CircleChevronUp,
-  مطبخ: Utensils,
-  غسالة: WashingMachine,
-  "غاز طبيعي": Flame,
-  "قريب من المواصلات": Truck,
-  "بوتجاز/فرن": CookingPot,
-};
 
 const ApartmentDetails = () => {
   const { apartmentUuid } = useParams();
@@ -153,66 +108,43 @@ const ApartmentDetails = () => {
         لم يتم العثور على الشقة.
       </div>
     );
-  function getFloorName(floorNumber?: number | string) {
-    if (!floorNumber) return "غير محدد";
-    const floorMap: Record<number, string> = {
-      1: "الأول",
-      2: "الثاني",
-      3: "الثالث",
-      4: "الرابع",
-      5: "الخامس",
-      6: "السادس",
-      7: "السابع",
-      8: "الثامن",
-      9: "التاسع",
-      10: "العاشر",
-    };
-    return floorMap[Number(floorNumber)] || `${floorNumber}`;
-  }
-  const createdAt = apartment.createdAt ? new Date(apartment.createdAt) : null;
-
-  const isValidDate = createdAt && !isNaN(createdAt.getTime());
-
-  // Component for rendering key specs with icons
-  const KeySpec = ({ icon: Icon, label, value }) => (
-    <div className="flex items-center gap-3 text-gray-700">
-      <Icon className="w-6 h-6 text-primary" />
-      <div>
-        <p className="font-semibold">{value}</p>
-        <p className="text-sm text-gray-500">{label}</p>
-      </div>
-    </div>
-  );
 
   return (
     <div className="bg-gray-50/50">
       <Header />
       <main className="container mx-auto px-4 md:px-8 py-10">
-        {/* --- Header Section --- */}
-        {/* ...existing code... */}
-        {/* --- Main Content Grid --- */}
-        {/* ...existing code... */}
-      </main>
-      <Footer />
-      {/* --- خريطة موقع الشقة في الأسفل --- */}
-      <section className="mt-8 mb-0 w-full px-0">
-        <div className="container mx-auto">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <MapPin className="w-6 h-6 text-primary" /> موقع الشقة على الخريطة
-          </h3>
-          {apartment.latitude && apartment.longitude ? (
-            <div className="w-full h-96 rounded-xl overflow-hidden border">
-              <MapPicker
-                lat={Number(apartment.latitude)}
-                lng={Number(apartment.longitude)}
-                onChange={() => {}}
+        <ApartmentHeader apartment={apartment} handleShare={handleShare} />
+        <ApartmentImageGallery apartment={apartment} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-16 mt-12">
+          <div className="lg:col-span-2">
+            <h2 className="text-2xl font-semibold mb-2">
+              سكن كامل في {apartment.neighborhood}
+            </h2>
+            <p className="text-gray-500 mb-4">
+              مقدم بواسطة {apartment.owner?.fullName || "مالك معتمد"}
+            </p>
+            <ApartmentSpecs apartment={apartment} />
+            <section className="py-8 border-b">
+              <p className="text-gray-800 leading-loose">
+                {apartment.description}
+              </p>
+            </section>
+            <ApartmentFeatures apartment={apartment} />
+            <ApartmentExtraDetails apartment={apartment} />
+          </div>
+          <div className="lg:col-span-1 mt-8 lg:mt-0">
+            <div className="top-24">
+              <ApartmentContactCard
+                apartment={apartment}
+                getOwnerInitials={getOwnerInitials}
+                handleWhatsAppContact={handleWhatsAppContact}
               />
             </div>
-          ) : (
-            <p className="text-gray-500">لا تتوفر إحداثيات لهذا السكن.</p>
-          )}
+          </div>
         </div>
-      </section>
+      </main>
+      <Footer />
+      <ApartmentMapSection apartment={apartment} />
     </div>
   );
 };
