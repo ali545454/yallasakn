@@ -1,23 +1,23 @@
 // index.tsx
 
 import React from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Filter } from "lucide-react";
-import { useApartments } from "./Search/hooks/useApartments";
-import { useNeighborhoods } from "./Search/hooks/useNeighborhoods";
-import { useFilters } from "./Search/hooks/useFilters";
-import { useFilteredApartments } from "./Search/hooks/useFilteredApartments";
+import { Filter, Search as SearchIcon } from "lucide-react";
+import { useApartments } from "./hooks/useApartments";
+import { useNeighborhoods } from "./hooks/useNeighborhoods";
+import { useFilters } from "./hooks/useFilters";
+import { useFilteredApartments } from "./hooks/useFilteredApartments";
 import { useFavorites } from "@/context/FavoritesContext";
-import FilterPanel from "./Search/components/FilterPanel";
-import SearchBar from "./Search/components/SearchBar";
-import SortSelect from "./Search/components/SortSelect";
-import ApartmentCard from "./Search/components/ApartmentCard";
+import FilterPanel from "./components/FilterPanel";
+import SearchBar from "./components/SearchBar";
+import SortSelect from "./components/SortSelect";
+import ApartmentCard from "./components/ApartmentCard";
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
