@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { convertObjectKeysToCamelCase } from "../utils/convertKeys";
+import { Apartment } from "../../../types";
 
 export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 export const useApartments = () => {
-  const [apartments, setApartments] = useState<any[]>([]);
+  const [apartments, setApartments] = useState<Apartment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

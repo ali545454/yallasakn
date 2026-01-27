@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { stripTags } from "../../SignUp/utils/sanitize";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -17,7 +18,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch }: SearchBarProps) => (
       <Input
         placeholder="ابحث عن شقق..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => setSearchTerm(stripTags(e.target.value))}
         className="pr-12 h-12 text-right"
         onKeyPress={(e) => e.key === "Enter" && onSearch()}
       />

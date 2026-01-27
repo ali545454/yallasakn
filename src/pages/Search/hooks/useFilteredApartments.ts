@@ -1,49 +1,47 @@
 // hooks/useFilteredApartments.ts
 
 import { useState, useEffect } from "react";
+import { Apartment, FilterState } from "../../../types";
 
 export const useFilteredApartments = (
-  apartments: any[],
-  searchTerm: string,
-  selectedNeighborhood: string,
-  priceRange: [number, number],
-  bedrooms: string,
-  sortBy: string,
-  showVerifiedOnly: boolean
+  apartments: Apartment[],
+  filters: FilterState
 ) => {
-  const [filteredApartments, setFilteredApartments] = useState<any[]>([]);
+  const [filteredApartments, setFilteredApartments] = useState<Apartment[]>([]);
 
   useEffect(() => {
     let filtered = apartments;
 
-    if (searchTerm) {
+    if (filters.searchTerm) {
       filtered = filtered.filter(
         (apt) =>
-          apt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          apt.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          apt.neighborhood.toLowerCase().includes(searchTerm.toLowerCase())
+          apt.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+          apt.description.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+          apt.neighborhood.toLowerCase().includes(filters.searchTerm.toLowerCase())
       );
     }
-    if (selectedNeighborhood && selectedNeighborhood !== "all") {
+    if (filters.selectedNeighborhood && filters.selectedNeighborhood !== "all") {
       filtered = filtered.filter(
-        (apt) => apt.neighborhood === selectedNeighborhood
+        (apt) => apt.neighborhood === filters.selectedNeighborhood
       );
     }
-    filtered = filtered.filter(
-      (apt) => apt.price >= priceRange[0] && apt.price <= priceRange[1]
-    );
-    if (bedrooms && bedrooms !== "any") {
-      const bedCount = parseInt(bedrooms);
+    if (filters.priceRange) {
+      filtered = filtered.filter(
+        (apt) => apt.price >= filters.priceRange.min && apt.price <= filters.priceRange.max
+      );
+    }
+    if (filters.bedrooms && filters.bedrooms !== "any") {
+      const bedCount = parseInt(filters.bedrooms);
       if (bedCount < 4) {
         filtered = filtered.filter((apt) => apt.bedrooms === bedCount);
       } else {
         filtered = filtered.filter((apt) => apt.bedrooms >= 4);
       }
     }
-    if (showVerifiedOnly) {
+    if (filters.showVerifiedOnly) {
       filtered = filtered.filter((apt) => apt.isVerified);
     }
-    switch (sortBy) {
+    switch (filters.sortBy) {
       case "price-low":
         filtered.sort((a, b) => a.price - b.price);
         break;
@@ -62,15 +60,7 @@ export const useFilteredApartments = (
         break;
     }
     setFilteredApartments(filtered);
-  }, [
-    searchTerm,
-    selectedNeighborhood,
-    priceRange,
-    bedrooms,
-    sortBy,
-    showVerifiedOnly,
-    apartments,
-  ]);
+  }, [filters, apartments]);
 
   return { filteredApartments };
 };

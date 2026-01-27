@@ -1,18 +1,20 @@
 // components/ApartmentCard.tsx
 
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Ruler, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Apartment } from "../../../types";
 
 interface ApartmentCardProps {
-  apartment: any;
+  apartment: Apartment;
   isFavorite: boolean;
   onToggleFavorite: (id: string) => void;
 }
 
-const ApartmentCard = ({ apartment, isFavorite, onToggleFavorite }: ApartmentCardProps) => {
+const ApartmentCard = React.memo(({ apartment, isFavorite, onToggleFavorite }: ApartmentCardProps) => {
   const navigate = useNavigate();
 
   return (
@@ -25,6 +27,7 @@ const ApartmentCard = ({ apartment, isFavorite, onToggleFavorite }: ApartmentCar
           src={apartment.images?.[0] || "/placeholder.jpg"}
           alt={apartment.title}
           className="w-full h-48 object-cover"
+          loading="lazy"
         />
         <Button
           variant="ghost"
@@ -83,6 +86,8 @@ const ApartmentCard = ({ apartment, isFavorite, onToggleFavorite }: ApartmentCar
       </div>
     </Card>
   );
-};
+});
+
+ApartmentCard.displayName = "ApartmentCard";
 
 export default ApartmentCard;
