@@ -13,16 +13,16 @@ import { Separator } from "@/components/ui/separator";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { User } from "lucide-react";
-import { useFormState } from "./SignUp/hooks/useFormState";
-import { usePasswordStrength } from "./SignUp/hooks/usePasswordStrength";
-import { useValidation } from "./SignUp/hooks/useValidation";
-import { useSignUp } from "./SignUp/hooks/useSignUp";
-import UserTypeSelector from "./SignUp/components/UserTypeSelector";
-import BasicInfoFields from "./SignUp/components/BasicInfoFields";
-import PersonalInfoFields from "./SignUp/components/PersonalInfoFields";
-import StudentFields from "./SignUp/components/StudentFields";
-import PasswordFields from "./SignUp/components/PasswordFields";
-import TermsAndSubmit from "./SignUp/components/TermsAndSubmit";
+import { useFormState } from "./hooks/useFormState";
+import { usePasswordStrength } from "./hooks/usePasswordStrength";
+import { useValidation } from "./hooks/useValidation";
+import { useSignUp } from "./hooks/useSignUp";
+import UserTypeSelector from "./components/UserTypeSelector";
+import BasicInfoFields from "./components/BasicInfoFields";
+import PersonalInfoFields from "./components/PersonalInfoFields";
+import StudentFields from "./components/StudentFields";
+import PasswordFields from "./components/PasswordFields";
+import TermsAndSubmit from "./components/TermsAndSubmit";
 
 const SignUp = () => {
   const {
