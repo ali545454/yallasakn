@@ -19,6 +19,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useUser } from "../context/UserContext";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const API_URL =
   import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
@@ -120,6 +121,7 @@ const Header = () => {
 
         {/* === قائمة المستخدم (ديسكتوب) === */}
         <div className="hidden md:flex items-center gap-3">
+          <LanguageSwitcher />
           {isLoggedIn && user.role === "owner" && (
             <Link to="/add-apartment">
               <Button variant="ghost" size="sm">

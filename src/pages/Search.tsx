@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Loading from "@/components/Loading";
@@ -20,6 +21,8 @@ import SortSelect from "./Search/components/SortSelect";
 import ApartmentCard from "./Search/components/ApartmentCard";
 
 const SearchPage = () => {
+  const { t, i18n } = useTranslation();
+  console.log('SearchPage t function:', t('search.title'));
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -40,24 +43,25 @@ const SearchPage = () => {
     setShowVerifiedOnly,
   } = useFilters(searchParams);
 
-  const { filteredApartments } = useFilteredApartments(
-    apartments,
+  const filters = {
     searchTerm,
     selectedNeighborhood,
     priceRange,
     bedrooms,
     sortBy,
-    showVerifiedOnly
-  );
+    showVerifiedOnly,
+  };
+
+  const { filteredApartments } = useFilteredApartments(apartments, filters);
 
   const { favorites, toggleFavorite } = useFavorites();
 
-  const handleSearch = () => {
+  useEffect(() => {
     const params = new URLSearchParams();
     if (searchTerm) params.set("q", searchTerm);
     if (selectedNeighborhood) params.set("neighborhood", selectedNeighborhood);
     setSearchParams(params);
-  };
+  }, [searchTerm, selectedNeighborhood, setSearchParams]);
 
   if (isLoading) {
     return (
@@ -74,7 +78,7 @@ const SearchPage = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container py-8 text-center text-red-600">
-          <h1 className="text-3xl font-bold mb-4">حدث خطأ</h1>
+          <h1 className="text-3xl font-bold mb-4">{t('errors.unexpected')}</h1>
           <p>{error}</p>
         </div>
         <Footer />
@@ -83,16 +87,16 @@ const SearchPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div key={i18n.language} className="min-h-screen bg-background">
       <Header />
       <div className="container py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">البحث عن شقق</h1>
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
+          <h1 className="text-3xl font-bold mb-4">{t('search.title')}</h1>
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
           <div className="flex justify-between items-center">
             <p className="text-muted-foreground">
-              تم العثور على {filteredApartments.length} شقة
+              {t('search.foundApartments', { count: filteredApartments.length })}
             </p>
             <div className="flex items-center gap-4">
               <SortSelect sortBy={sortBy} setSortBy={setSortBy} />

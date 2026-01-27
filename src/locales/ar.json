@@ -1,0 +1,49 @@
+{
+  "common": {
+    "search": "بحث",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "profile": "الملف الشخصي",
+    "home": "الرئيسية",
+    "apartments": "الشقق",
+    "messages": "الرسائل",
+    "dashboard": "لوحة التحكم",
+    "addApartment": "إضافة شقة",
+    "help": "المساعدة",
+    "contact": "اتصل بنا",
+    "terms": "الشروط والأحكام",
+    "privacy": "سياسة الخصوصية",
+    "safety": "السلامة",
+    "cookies": "سياسة الكوكيز"
+  },
+  "search": {
+    "title": "البحث عن شقق",
+    "searchPlaceholder": "ابحث عن شقق...",
+    "foundApartments": "تم العثور على {{count}} شقة",
+    "filters": {
+      "priceRange": "النطاق السعري",
+      "neighborhood": "المنطقة",
+      "bedrooms": "عدد الغرف",
+      "verifiedOnly": "شقق موثقة فقط",
+      "any": "أي عدد",
+      "oneBedroom": "غرفة واحدة",
+      "twoBedrooms": "غرفتان",
+      "threeBedrooms": "ثلاث غرف",
+      "fourOrMore": "أربع غرف أو أكثر",
+      "allNeighborhoods": "جميع المناطق"
+    },
+    "sort": {
+      "newest": "الأحدث",
+      "priceLow": "السعر: من الأقل للأعلى",
+      "priceHigh": "السعر: من الأعلى للأقل",
+      "rating": "التقييم"
+    }
+  },
+  "errors": {
+    "unexpected": "حدث خطأ غير متوقع",
+    "tryAgain": "عذراً، حدث خطأ في التطبيق. يرجى المحاولة مرة أخرى.",
+    "details": "تفاصيل الخطأ",
+    "retry": "إعادة المحاولة"
+  }
+}

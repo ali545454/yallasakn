@@ -25,7 +25,7 @@ export interface Neighborhood {
 export interface FilterState {
   searchTerm: string;
   selectedNeighborhood: string;
-  priceRange: [number, number];
+  priceRange: { min: number; max: number };
   bedrooms: string;
   sortBy: string;
   showVerifiedOnly: boolean;

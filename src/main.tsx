@@ -1,6 +1,10 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import Loading from "@/components/Loading";
+import "./i18n";
 
-createRoot(document.getElementById("root")!).render(<App />);
+const initApp = async () => {
+  createRoot(document.getElementById("root")!).render(<App />);
+};
+
+initApp();

@@ -1,0 +1,49 @@
+{
+  "common": {
+    "search": "Search",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "profile": "Profile",
+    "home": "Home",
+    "apartments": "Apartments",
+    "messages": "Messages",
+    "dashboard": "Dashboard",
+    "addApartment": "Add Apartment",
+    "help": "Help",
+    "contact": "Contact",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "safety": "Safety",
+    "cookies": "Cookie Policy"
+  },
+  "search": {
+    "title": "Search Apartments",
+    "searchPlaceholder": "Search for apartments...",
+    "foundApartments": "Found {{count}} apartments",
+    "filters": {
+      "priceRange": "Price Range",
+      "neighborhood": "Neighborhood",
+      "bedrooms": "Bedrooms",
+      "verifiedOnly": "Verified only",
+      "any": "Any",
+      "oneBedroom": "1 bedroom",
+      "twoBedrooms": "2 bedrooms",
+      "threeBedrooms": "3 bedrooms",
+      "fourOrMore": "4+ bedrooms",
+      "allNeighborhoods": "All neighborhoods"
+    },
+    "sort": {
+      "newest": "Newest",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low",
+      "rating": "Rating"
+    }
+  },
+  "errors": {
+    "unexpected": "Unexpected Error",
+    "tryAgain": "Sorry, an error occurred in the application. Please try again.",
+    "details": "Error Details",
+    "retry": "Retry"
+  }
+}

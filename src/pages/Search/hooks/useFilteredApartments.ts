@@ -1,15 +1,13 @@
 // hooks/useFilteredApartments.ts
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { Apartment, FilterState } from "../../../types";
 
 export const useFilteredApartments = (
   apartments: Apartment[],
   filters: FilterState
 ) => {
-  const [filteredApartments, setFilteredApartments] = useState<Apartment[]>([]);
-
-  useEffect(() => {
+  const filteredApartments = useMemo(() => {
     let filtered = apartments;
 
     if (filters.searchTerm) {
@@ -59,8 +57,8 @@ export const useFilteredApartments = (
         );
         break;
     }
-    setFilteredApartments(filtered);
-  }, [filters, apartments]);
+    return filtered;
+  }, [apartments, filters]);
 
   return { filteredApartments };
 };
