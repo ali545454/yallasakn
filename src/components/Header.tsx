@@ -20,20 +20,24 @@ import {
 } from "@/components/ui/sheet";
 import { useUser } from "../context/UserContext";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslation } from 'react-i18next';
 
 const API_URL =
   import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
-const navLinks = [
-  { name: "الرئيسية", path: "/" },
-  { name: "بحث", path: "/search" },
-];
-
-const Header = () => {
-  const { user, logout } = useUser();
+  
+  const Header = () => {
+    const { user, logout } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const isLoggedIn = !!user;
+  const { t } = useTranslation();
+  const navLinks = [
+    { name: t('header.home'), path: "/" },
+    { name: t('header.search'), path: "/search" },
+    { name: t('header.contact'), path: "/contact" },
+    { name: t('header.help'), path: "/help" },
+  ];
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -74,23 +78,23 @@ const Header = () => {
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button variant="ghost" size="sm" className="flex items-center gap-1">
-        القائمة السريعة <ChevronDown className="h-4 w-4" />
+        {t('header.quickMenu')} <ChevronDown className="h-4 w-4" />
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="start" className="text-right">
       <DropdownMenuItem asChild>
         <Link to="/search" className="flex items-center gap-2">
-          <Search className="h-4 w-4" /> البحث
+          <Search className="h-4 w-4" /> {t('header.search')}
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <Link to="/support" className="flex items-center gap-2">
-          <HelpCircle className="h-4 w-4" /> الدعم
+          <HelpCircle className="h-4 w-4" /> {t('header.support')}
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <Link to="/privacy" className="flex items-center gap-2">
-          <Shield className="h-4 w-4" /> الخصوصية
+          <Shield className="h-4 w-4" /> {t('header.privacy')}
         </Link>
       </DropdownMenuItem>
     </DropdownMenuContent>
@@ -105,7 +109,7 @@ const Header = () => {
           <div className="relative w-full">
             <input
               type="search"
-              placeholder="ابحث عن منطقتك..."
+              placeholder={t('header.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full h-10 rounded-full border bg-gray-50 px-4 text-sm text-right pr-10 focus:ring-1 focus:ring-primary focus:outline-none"
@@ -125,7 +129,7 @@ const Header = () => {
           {isLoggedIn && user.role === "owner" && (
             <Link to="/add-apartment">
               <Button variant="ghost" size="sm">
-                أضف عقارك
+                {t('header.addApartment')}
               </Button>
             </Link>
           )}
@@ -156,7 +160,7 @@ const Header = () => {
                       to="/dashboard"
                       className="flex items-center justify-end gap-2"
                     >
-                      لوحة التحكم <Building className="h-4 w-4" />
+                      {t('header.dashboard')} <Building className="h-4 w-4" />
                     </Link>
                   </DropdownMenuItem>
                 )}
@@ -165,7 +169,7 @@ const Header = () => {
                     to="/profile"
                     className="flex items-center justify-end gap-2"
                   >
-                    حسابي <User className="h-4 w-4" />
+                    {t('header.profile')} <User className="h-4 w-4" />
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -173,7 +177,7 @@ const Header = () => {
                   onClick={handleLogout}
                   className="text-red-500 flex justify-end gap-2 cursor-pointer"
                 >
-                  تسجيل الخروج <LogOut className="h-4 w-4" />
+                  {t('header.logout')} <LogOut className="h-4 w-4" />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -181,11 +185,11 @@ const Header = () => {
             <div className="flex items-center gap-2">
               <Link to="/login">
                 <Button variant="ghost" size="sm">
-                  دخول
+                  {t('header.login')}
                 </Button>
               </Link>
               <Link to="/signup">
-                <Button size="sm">حساب جديد</Button>
+                <Button size="sm">{t('header.signup')}</Button>
               </Link>
             </div>
           )}
@@ -204,7 +208,7 @@ const Header = () => {
               className="w-72 flex flex-col text-right items-end"
             >
               <SheetHeader className="p-4 pt-6 w-full flex flex-col items-end">
-                <SheetTitle className="text-lg font-semibold">القائمة</SheetTitle>
+                <SheetTitle className="text-lg font-semibold">{t('header.menu')}</SheetTitle>
               </SheetHeader>
 
               <div className="flex-1 flex flex-col gap-4 w-full items-start overflow-y-auto">
@@ -222,11 +226,11 @@ const Header = () => {
                 ) : (
                   <div className="grid grid-cols-2 gap-2 border-b pb-4 w-full">
                     <Link to="/signup" className="w-full">
-                      <Button className="w-full">حساب جديد</Button>
+                      <Button className="w-full">{t('header.signup')}</Button>
                     </Link>
                     <Link to="/login" className="w-full">
                       <Button variant="outline" className="w-full">
-                        دخول
+                        {t('header.login')}
                       </Button>
                     </Link>
                   </div>
@@ -248,7 +252,7 @@ const Header = () => {
                       to="/dashboard"
                       className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
                     >
-                      لوحة التحكم
+                      {t('header.dashboard')}
                     </Link>
                   )}
                   {isLoggedIn && (
@@ -256,7 +260,7 @@ const Header = () => {
                       to="/profile"
                       className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
                     >
-                      حسابي
+                      {t('header.profile')}
                     </Link>
                   )}
                 </nav>
@@ -268,7 +272,7 @@ const Header = () => {
                   <Link to="/add-apartment">
                     <Button className="w-full">
                       <Plus className="h-4 w-4 ml-2" />
-                      أضف عقارك
+                      {t('header.addApartment')}
                     </Button>
                   </Link>
                 )}
@@ -278,7 +282,7 @@ const Header = () => {
                     className="w-full"
                     onClick={handleLogout}
                   >
-                    تسجيل الخروج
+                    {t('header.logout')}
                   </Button>
                 )}
               </div>

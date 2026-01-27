@@ -4,6 +4,7 @@ import axios from "axios";
 import { Search, MapPin, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 import {
   Select,
   SelectContent,
@@ -16,6 +17,7 @@ import {
 const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("");
   const [priceRange, setPriceRange] = useState("");
@@ -73,15 +75,15 @@ const HeroSection = () => {
 
       <div className="relative z-10 w-full max-w-4xl mx-auto text-center">
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight drop-shadow-lg">
-          سكنك المثالي في أسيوط بانتظارك
+          {t('home.heroTitle')}
         </h1>
         <p className="mt-4 text-lg text-white/90 max-w-2xl mx-auto drop-shadow-md">
-          استعرض أفضل الشقق الطلابية بسهولة وأمان. هل أنت صاحب سكن؟
+          {t('home.heroDescription')}
           <button
             onClick={handleAddApartment}
             className="font-bold text-primary hover:text-primary/80 transition mx-1 underline"
           >
-            أضف عقارك الآن
+            {t('home.addNow')}
           </button>
         </p>
 
@@ -92,7 +94,7 @@ const HeroSection = () => {
             <Search className="absolute right-4 h-5 w-5 text-gray-400" />
             <Input
               type="text"
-              placeholder="ابحث بالاسم أو المواصفات..."
+              placeholder={t('home.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full h-12 border-none rounded-full bg-transparent pr-12 text-right focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -108,10 +110,10 @@ const HeroSection = () => {
           >
             <SelectTrigger className="w-56 h-12 border-none bg-transparent justify-end gap-2 text-right focus:ring-0 focus:ring-offset-0">
               <MapPin className="h-5 w-5 text-gray-400 order-last" />
-              <SelectValue placeholder="اختر المنطقة" />
+              <SelectValue placeholder={t('home.selectNeighborhood')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">جميع المناطق</SelectItem>
+              <SelectItem value="all">{t('home.allNeighborhoods')}</SelectItem>
               {neighborhoods.map((neighborhood) => (
                 <SelectItem key={neighborhood} value={neighborhood}>
                   {neighborhood}
@@ -126,15 +128,15 @@ const HeroSection = () => {
           <Select value={priceRange} onValueChange={setPriceRange}>
             <SelectTrigger className="w-56 h-12 border-none bg-transparent justify-end gap-2 text-right focus:ring-0 focus:ring-offset-0">
               <DollarSign className="h-5 w-5 text-gray-400 order-last" />
-              <SelectValue placeholder="النطاق السعري" />
+              <SelectValue placeholder={t('home.priceRange')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">جميع الأسعار</SelectItem>
-              <SelectItem value="0-1000">أقل من 1000 جنيه</SelectItem>
-              <SelectItem value="1000-2000">1000 - 2000 جنيه</SelectItem>
-              <SelectItem value="2000-3000">2000 - 3000 جنيه</SelectItem>
-              <SelectItem value="3000-5000">3000 - 5000 جنيه</SelectItem>
-              <SelectItem value="5000+">أكثر من 5000 جنيه</SelectItem>
+              <SelectItem value="all">{t('home.allPrices')}</SelectItem>
+              <SelectItem value="0-1000">{t('home.lessThan1000')}</SelectItem>
+              <SelectItem value="1000-2000">{t('home.from1000To2000')}</SelectItem>
+              <SelectItem value="2000-3000">{t('home.from2000To3000')}</SelectItem>
+              <SelectItem value="3000-5000">{t('home.from3000To5000')}</SelectItem>
+              <SelectItem value="5000+">{t('home.moreThan5000')}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -145,7 +147,7 @@ const HeroSection = () => {
             className="w-12 h-12 rounded-full shadow-lg"
           >
             <Search className="h-5 w-5" />
-            <span className="sr-only">بحث</span>
+            <span className="sr-only">{t('home.search')}</span>
           </Button>
         </div>
 
@@ -157,7 +159,7 @@ const HeroSection = () => {
           <div className="relative">
             <Input
               type="text"
-              placeholder="ابحث عن منطقتك أو شقتك..."
+              placeholder={t('home.searchMobile')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full h-14 rounded-full bg-white pr-6 pl-16 text-right text-base"

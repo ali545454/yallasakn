@@ -9,13 +9,15 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import { useLoading } from "@/context/LoadingContext";
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
   const { showLoading, hideLoading } = useLoading();
-  const [loaded, setLoaded] = useState(false); // ✅ تعريف state
+  const [loaded, setLoaded] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    showLoading("جاري تحميل الصفحة...");
+    showLoading(t('home.loading'));
 
     const timer = setTimeout(() => {
       hideLoading();
