@@ -1,5 +1,20 @@
 // types/index.ts
 
+export interface User {
+  uuid: string;
+  full_name: string;
+  email: string;
+  phone?: string;
+  role: "student" | "owner" | "admin";
+  university?: string;
+  college?: string;
+  academic_year?: string;
+  avatar?: string;
+  apartments?: Apartment[];
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Apartment {
   uuid: string;
   title: string;
@@ -9,6 +24,8 @@ export interface Apartment {
   bathrooms: number;
   area: number;
   neighborhood: string;
+  address?: string;
+  main_image?: string;
   images?: string[];
   isVerified?: boolean;
   rating?: number;

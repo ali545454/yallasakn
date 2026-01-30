@@ -47,12 +47,32 @@ export const FavoritesProvider = ({
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
-  const toggleFavorite = (uuid: string) => {
+  const toggleFavorite = async (uuid: string) => {
+    const isCurrentlyFavorite = favorites.includes(uuid);
+    // Optimistically update the state
     setFavorites((prev) =>
       prev.includes(uuid)
         ? prev.filter((favId) => favId !== uuid)
         : [...prev, uuid]
     );
+
+    try {
+      if (isCurrentlyFavorite) {
+        // Remove from favorites
+        await axiosInstance.delete(`/api/v1/favorites/${uuid}`);
+      } else {
+        // Add to favorites
+        await axiosInstance.post(`/api/v1/favorites`, { apartment_uuid: uuid });
+      }
+    } catch (err) {
+      console.error("Failed to update favorite on server:", err);
+      // Revert the optimistic update
+      setFavorites((prev) =>
+        prev.includes(uuid)
+          ? prev.filter((favId) => favId !== uuid)
+          : [...prev, uuid]
+      );
+    }
   };
 
   return (

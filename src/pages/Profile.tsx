@@ -42,14 +42,17 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useUser } from "@/context/UserContext";
+import { useFavorites } from "@/context/FavoritesContext";
 import Loading from "@/components/Loading";
 import { Input } from "@/components/ui/input"; // For editing
+import { Label } from "@/components/ui/label"; // For labels
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"; // For better UX
+import { User as UserType } from "@/types";
 export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 // A small component for displaying info fields, making the main component cleaner
@@ -76,13 +79,15 @@ const Profile = () => {
     admin: "مشرف",
   };
 
-  const [userData, setUserData] = useState(user || null);
+  const [userData, setUserData] = useState<UserType | null>(user || null);
   const [isLoading, setIsLoading] = useState(!user);
   const [isEditing, setIsEditing] = useState(false);
-  const [tempData, setTempData] = useState({});
-  const [favorites, setFavorites] = useState([]);
+  const [tempData, setTempData] = useState<Partial<UserType>>({});
+  const [favoriteApartments, setFavoriteApartments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const apartmentsPerPage = 4; // Increased for better layout
+
+  const { favorites: favoriteUuids, toggleFavorite } = useFavorites();
 
   const hash = location.hash.replace("#", "");
   const [selectedTab, setSelectedTab] = useState(hash || "info");
@@ -128,21 +133,23 @@ const Profile = () => {
   // Fetch favorites data
   const fetchFavorites = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/v1//favorites`, {
+      const res = await axios.get(`${API_URL}/api/v1/favorites`, {
         withCredentials: true,
       });
-      setFavorites(res.data.apartments || []);
+      setFavoriteApartments(res.data.apartments || []);
     } catch (err) {
       console.error("Error fetching favorites:", err);
     }
   }, []);
 
   useEffect(() => {
-    if (userData) {
-      // Fetch favorites only after user data is available
+    if (userData && favoriteUuids.length > 0) {
+      // Fetch favorites only after user data is available and there are favorites
       fetchFavorites();
+    } else if (userData) {
+      setFavoriteApartments([]);
     }
-  }, [userData, fetchFavorites]);
+  }, [userData, favoriteUuids, fetchFavorites]);
 
   const handleEdit = () => {
     setTempData({
@@ -150,7 +157,7 @@ const Profile = () => {
       phone: userData?.phone || "",
       university: userData?.university || "",
       college: userData?.college || "",
-      year: userData?.year || "",
+      academic_year: userData?.academic_year || "",
     });
     setIsEditing(true);
   };
@@ -170,26 +177,15 @@ const Profile = () => {
       // Replace alert with a proper notification/toast component in a real app
     }
   };
-  const handleRemoveFavorite = async (apartmentUuid) => {
-    try {
-      await axios.delete(`${API_URL}/api/v1/favorites/remove/${apartmentUuid}`, {
-        withCredentials: true,
-      });
-      setFavorites((prev) => prev.filter((fav) => fav.uuid !== apartmentUuid));
-    } catch (err) {
-      console.error("Failed to remove favorite:", err);
-    }
-  };
-
   const handleCancel = () => setIsEditing(false);
   const handleInputChange = (field, value) =>
     setTempData((prev) => ({ ...prev, [field]: value }));
 
   // Derived state
-  const favoriteCount = favorites.length;
+  const favoriteCount = favoriteApartments.length;
   const apartmentsOwnedCount = userData?.apartments?.length || 0;
   const totalPages = Math.ceil(favoriteCount / apartmentsPerPage);
-  const paginatedFavorites = favorites.slice(
+  const paginatedFavorites = favoriteApartments.slice(
     (currentPage - 1) * apartmentsPerPage,
     currentPage * apartmentsPerPage
   );
@@ -340,43 +336,53 @@ const Profile = () => {
                 <CardContent className="space-y-6">
                   {isEditing ? (
                     <>
-                      <Input
-                        label="الاسم الكامل"
-                        value={tempData.full_name}
-                        onChange={(e) =>
-                          handleInputChange("full_name", e.target.value)
-                        }
-                      />
-                      <Input
-                        label="رقم الهاتف"
-                        value={tempData.phone}
-                        onChange={(e) =>
-                          handleInputChange("phone", e.target.value)
-                        }
-                      />
+                      <div>
+                        <Label>الاسم الكامل</Label>
+                        <Input
+                          value={tempData.full_name}
+                          onChange={(e) =>
+                            handleInputChange("full_name", e.target.value)
+                          }
+                        />
+                      </div>
+                      <div>
+                        <Label>رقم الهاتف</Label>
+                        <Input
+                          value={tempData.phone}
+                          onChange={(e) =>
+                            handleInputChange("phone", e.target.value)
+                          }
+                        />
+                      </div>
                       {userData.role === "student" && (
                         <>
-                          <Input
-                            label="الجامعة"
-                            value={tempData.university}
-                            onChange={(e) =>
-                              handleInputChange("university", e.target.value)
-                            }
-                          />
-                          <Input
-                            label="الكلية"
-                            value={tempData.college}
-                            onChange={(e) =>
-                              handleInputChange("college", e.target.value)
-                            }
-                          />
-                          <Input
-                            label="السنة الدراسية"
-                            value={tempData.year}
-                            onChange={(e) =>
-                              handleInputChange("year", e.target.value)
-                            }
-                          />
+                          <div>
+                            <Label>الجامعة</Label>
+                            <Input
+                              value={tempData.university}
+                              onChange={(e) =>
+                                handleInputChange("university", e.target.value)
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Label>الكلية</Label>
+                            <Input
+                              value={tempData.college}
+                              onChange={(e) =>
+                                handleInputChange("college", e.target.value)
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Label>السنة الدراسية</Label>
+                            <Input
+                              value={tempData.academic_year}
+                              onChange={(e) =>
+                                handleInputChange("academic_year", e.target.value)
+                              }
+                            />
+                          </div>
                         </>
                       )}
                     </>
@@ -407,7 +413,7 @@ const Profile = () => {
                           <InfoField
                             icon={<Calendar className="text-slate-400" />}
                             label="السنة"
-                            value={userData.academicYear}
+                            value={userData.academic_year}
                           />
                         </>
                       )}
@@ -535,7 +541,7 @@ const Profile = () => {
                       variant="destructive"
                       size="icon"
                       className="absolute top-2 right-2 z-10"
-                      onClick={() => handleRemoveFavorite(apt.uuid)}
+                      onClick={() => toggleFavorite(apt.uuid)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
