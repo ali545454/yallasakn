@@ -22,13 +22,13 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   error,
 }) => {
   return (
-    <div className="mt-10 pt-6 border-t flex justify-between items-center">
+    <div className="mt-10 pt-6 border-t border-gray-200 flex justify-between items-center bg-gray-50/50 rounded-lg p-4">
       <Button
         type="button"
         variant="ghost"
         onClick={onPrev}
         disabled={step === 1}
-        className="flex flex-row-reverse gap-2"
+        className="flex flex-row-reverse gap-2 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
       >
         السابق <ArrowRight size={18} />
       </Button>
@@ -37,7 +37,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         <Button
           type="button"
           onClick={onNext}
-          className="flex gap-2"
+          className="flex gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
         >
           <ArrowLeft size={18} /> التالي
         </Button>
@@ -48,7 +48,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           type="submit"
           disabled={isLoading}
           onClick={onSubmit}
-          className="flex gap-2"
+          className="flex gap-2 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50"
         >
           {isLoading ? (
             <>
@@ -62,7 +62,11 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         </Button>
       )}
 
-      {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
+      {error && (
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg shadow-md">
+          {error}
+        </div>
+      )}
     </div>
   );
 };

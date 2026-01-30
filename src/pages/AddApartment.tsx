@@ -67,7 +67,7 @@ const AddApartment = () => {
     images.forEach((image) => data.append("images", image));
     try {
       const response = await axiosInstance.post(
-        "/api/v1/apartments/create",
+        "/api/v1/apartments",
         data
       );
       navigate("/dashboard?status=success");
@@ -120,34 +120,38 @@ const AddApartment = () => {
   return (
     <>
       <Header />
-      <div className="container py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-          <ProgressSidebar currentStep={step} />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="container py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+            <ProgressSidebar currentStep={step} />
 
-          <main className="lg:col-span-3">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold">
-                  إضافة شقة جديدة
-                </CardTitle>
-                <CardDescription>{steps[step - 1].title}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit}>
-                  {renderStep()}
-                  <NavigationButtons
-                    step={step}
-                    totalSteps={3}
-                    isLoading={isLoading}
-                    onPrev={prevStep}
-                    onNext={nextStep}
-                    onSubmit={handleSubmit}
-                    error={error}
-                  />
-                </form>
-              </CardContent>
-            </Card>
-          </main>
+            <main className="lg:col-span-3">
+              <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+                  <CardTitle className="text-3xl font-bold flex items-center gap-3">
+                    🏠 إضافة شقة جديدة
+                  </CardTitle>
+                  <CardDescription className="text-blue-100">
+                    {steps[step - 1].title}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-8">
+                  <form onSubmit={handleSubmit}>
+                    {renderStep()}
+                    <NavigationButtons
+                      step={step}
+                      totalSteps={3}
+                      isLoading={isLoading}
+                      onPrev={prevStep}
+                      onNext={nextStep}
+                      onSubmit={handleSubmit}
+                      error={error}
+                    />
+                  </form>
+                </CardContent>
+              </Card>
+            </main>
+          </div>
         </div>
       </div>
       <Footer />
