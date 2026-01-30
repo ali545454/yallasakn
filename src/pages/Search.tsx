@@ -1,6 +1,6 @@
-// index.tsx
+// Search.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import Header from "@/components/Header";
@@ -169,7 +169,7 @@ const SearchPage = () => {
                   onClick={() => {
                     setSearchTerm("");
                     setSelectedNeighborhood("");
-                    setPriceRange([0, 10000]);
+                    setPriceRange({ min: 0, max: 10000 });
                     setBedrooms("");
                     setSortBy("newest");
                     setShowVerifiedOnly(false);
