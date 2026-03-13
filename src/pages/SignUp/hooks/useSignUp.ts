@@ -62,7 +62,32 @@ export const useSignUp = () => {
           navigate("/profile");
         }
       } else {
-        setError(data.message || "فشل التسجيل. برجاء المحاولة مرة أخرى.");
+        const serverMessage = data?.message || "";
+
+        const isDuplicateEmail =
+          response.status === 409 ||
+          /email.*(exists|used|already)/i.test(serverMessage) ||
+          /البريد/.test(serverMessage);
+        const isDuplicatePhone =
+          response.status === 409 ||
+          /phone.*(exists|used|already)/i.test(serverMessage) ||
+          /الرقم/.test(serverMessage);
+
+        if (isDuplicateEmail && isDuplicatePhone) {
+          setError(
+            "البريد الإلكتروني ورقم الهاتف مستخدمان بالفعل. حاول تسجيل الدخول أو استخدم بيانات أخرى."
+          );
+        } else if (isDuplicateEmail) {
+          setError(
+            "هذا البريد الإلكتروني مستخدم بالفعل. يرجى استخدام بريد آخر أو تسجيل الدخول."
+          );
+        } else if (isDuplicatePhone) {
+          setError(
+            "رقم الهاتف هذا مستخدم بالفعل. يرجى استخدام رقم آخر أو تسجيل الدخول."
+          );
+        } else {
+          setError(serverMessage || "فشل التسجيل. برجاء المحاولة مرة أخرى.");
+        }
       }
     } catch (err) {
       console.error("Error while registering:", err);
