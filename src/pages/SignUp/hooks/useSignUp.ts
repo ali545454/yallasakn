@@ -62,7 +62,7 @@ export const useSignUp = () => {
           navigate("/profile");
         }
       } else {
-        const serverMessage = data?.message || "";
+        const serverMessage = data?.message || data?.error || "";
 
         const isDuplicateEmail =
           response.status === 409 ||
@@ -78,9 +78,7 @@ export const useSignUp = () => {
             "البريد الإلكتروني ورقم الهاتف مستخدمان بالفعل. حاول تسجيل الدخول أو استخدم بيانات أخرى."
           );
         } else if (isDuplicateEmail) {
-          setError(
-            "هذا البريد الإلكتروني مستخدم بالفعل. يرجى استخدام بريد آخر أو تسجيل الدخول."
-          );
+          setError("البريد مسجل بالفعل");
         } else if (isDuplicatePhone) {
           setError(
             "رقم الهاتف هذا مستخدم بالفعل. يرجى استخدام رقم آخر أو تسجيل الدخول."
