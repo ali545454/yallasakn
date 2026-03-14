@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/sonner";
 import { MessageCircle } from "lucide-react";
 
 const ApartmentContactCard = ({
@@ -14,7 +15,10 @@ const ApartmentContactCard = ({
 
   const handleStartChat = () => {
     const ownerId = apartment?.owner?.id;
-    if (!ownerId) return;
+    if (!ownerId) {
+      toast.error("لا يمكن بدء المحادثة الآن. حاول لاحقًا.");
+      return;
+    }
 
     const ownerName = apartment.owner?.fullName || "";
     const apartmentId = apartment.uuid || apartment.id || "";
@@ -87,5 +91,5 @@ const ApartmentContactCard = ({
     </CardContent>
   </Card>
 );
-
+}
 export default ApartmentContactCard;
