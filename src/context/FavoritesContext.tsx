@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import axiosInstance from "@/utils/axiosInstance";
 
 type FavoriteApartmentApi = {
@@ -29,6 +23,7 @@ const parseFavoritesFromStorage = (): string[] => {
     const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
+
     return Array.isArray(parsed)
       ? parsed.filter((item): item is string => typeof item === "string")
       : [];
@@ -75,9 +70,7 @@ const fetchFavoritesFromServer = async () => {
     try {
       const response = await axiosInstance.get(endpoint);
       return extractFavoriteUuids(response.data);
-    } catch {
-      // try next endpoint variant
-    }
+    } catch {}
   }
 
   throw new Error("favorites_fetch_failed");
@@ -94,9 +87,7 @@ const addFavoriteOnServer = async (uuid: string) => {
     try {
       await attempt();
       return;
-    } catch {
-      // continue
-    }
+    } catch {}
   }
 
   throw new Error("favorites_add_failed");
@@ -116,9 +107,7 @@ const removeFavoriteOnServer = async (uuid: string) => {
     try {
       await attempt();
       return;
-    } catch {
-      // continue
-    }
+    } catch {}
   }
 
   throw new Error("favorites_remove_failed");
