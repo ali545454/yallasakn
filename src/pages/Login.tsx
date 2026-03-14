@@ -14,8 +14,6 @@ import {
   loginWithGoogle,
 } from "@/utils/auth";
 
-export const API_URL =
-  import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app`;
 
 const Login = () => {
   const { setUser } = useUser();

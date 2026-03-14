@@ -11,6 +11,7 @@ interface FavoritesContextType {
   toggleFavorite: (uuid: string) => Promise<void>;
   setFavorites: (favs: string[]) => void;
   isLoadingFavorites: boolean;
+  refetchFavorites: () => Promise<void>;
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
@@ -22,35 +23,117 @@ const parseFavoritesFromStorage = (): string[] => {
     const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+
+    return Array.isArray(parsed)
+      ? parsed.filter((item): item is string => typeof item === "string")
+      : [];
   } catch {
     return [];
   }
+};
+
+const extractFavoriteUuids = (data: unknown): string[] => {
+  if (
+    typeof data === "object" &&
+    data !== null &&
+    "apartments" in data &&
+    Array.isArray((data as { apartments?: unknown[] }).apartments)
+  ) {
+    return ((data as { apartments: FavoriteApartmentApi[] }).apartments || [])
+      .map((apt) => apt.uuid)
+      .filter(Boolean);
+  }
+
+  if (
+    typeof data === "object" &&
+    data !== null &&
+    "favorites" in data &&
+    Array.isArray((data as { favorites?: unknown[] }).favorites)
+  ) {
+    return ((data as { favorites: FavoriteApartmentApi[] }).favorites || [])
+      .map((apt) => apt.uuid)
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+const fetchFavoritesFromServer = async () => {
+  const endpoints = [
+    "/api/v1/favorites",
+    "/api/v1/favorites/",
+    "/api/v1/favorites/list",
+    "/api/v1/favorites/my",
+  ];
+
+  for (const endpoint of endpoints) {
+    try {
+      const response = await axiosInstance.get(endpoint);
+      return extractFavoriteUuids(response.data);
+    } catch {}
+  }
+
+  throw new Error("favorites_fetch_failed");
+};
+
+const addFavoriteOnServer = async (uuid: string) => {
+  const attempts: Array<() => Promise<unknown>> = [
+    () => axiosInstance.post("/api/v1/favorites", { apartment_uuid: uuid }),
+    () => axiosInstance.post("/api/v1/favorites/", { apartment_uuid: uuid }),
+    () => axiosInstance.post("/api/v1/favorites/add", { apartment_uuid: uuid }),
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      await attempt();
+      return;
+    } catch {}
+  }
+
+  throw new Error("favorites_add_failed");
+};
+
+const removeFavoriteOnServer = async (uuid: string) => {
+  const attempts: Array<() => Promise<unknown>> = [
+    () => axiosInstance.delete(`/api/v1/favorites/${uuid}`),
+    () =>
+      axiosInstance.delete("/api/v1/favorites", {
+        data: { apartment_uuid: uuid },
+      }),
+    () => axiosInstance.post("/api/v1/favorites/remove", { apartment_uuid: uuid }),
+  ];
+
+  for (const attempt of attempts) {
+    try {
+      await attempt();
+      return;
+    } catch {}
+  }
+
+  throw new Error("favorites_remove_failed");
 };
 
 export const FavoritesProvider = ({ children }: { children: React.ReactNode }) => {
   const [favorites, setFavorites] = useState<string[]>(() => parseFavoritesFromStorage());
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(true);
 
-  const syncFavoritesFromServer = useCallback(async () => {
+  const refetchFavorites = useCallback(async () => {
     try {
-      const res = await axiosInstance.get("/api/v1/favorites");
-      const apartments: FavoriteApartmentApi[] = Array.isArray(res.data?.apartments)
-        ? res.data.apartments
-        : [];
-      const favs = apartments.map((a) => a.uuid).filter(Boolean);
+      const favs = await fetchFavoritesFromServer();
       setFavorites(favs);
       localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favs));
     } catch {
       setFavorites(parseFavoritesFromStorage());
-    } finally {
-      setIsLoadingFavorites(false);
     }
   }, []);
 
   useEffect(() => {
-    syncFavoritesFromServer();
-  }, [syncFavoritesFromServer]);
+    const run = async () => {
+      await refetchFavorites();
+      setIsLoadingFavorites(false);
+    };
+    run();
+  }, [refetchFavorites]);
 
   useEffect(() => {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
@@ -67,10 +150,7 @@ export const FavoritesProvider = ({ children }: { children: React.ReactNode }) =
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const isFavorite = useCallback(
-    (uuid: string) => favorites.includes(uuid),
-    [favorites]
-  );
+  const isFavorite = useCallback((uuid: string) => favorites.includes(uuid), [favorites]);
 
   const toggleFavorite = useCallback(
     async (uuid: string) => {
@@ -82,9 +162,9 @@ export const FavoritesProvider = ({ children }: { children: React.ReactNode }) =
 
       try {
         if (isCurrentlyFavorite) {
-          await axiosInstance.delete(`/api/v1/favorites/${uuid}`);
+          await removeFavoriteOnServer(uuid);
         } else {
-          await axiosInstance.post(`/api/v1/favorites`, { apartment_uuid: uuid });
+          await addFavoriteOnServer(uuid);
         }
       } catch {
         setFavorites((prev) =>
@@ -97,7 +177,14 @@ export const FavoritesProvider = ({ children }: { children: React.ReactNode }) =
 
   return (
     <FavoritesContext.Provider
-      value={{ favorites, isFavorite, toggleFavorite, setFavorites, isLoadingFavorites }}
+      value={{
+        favorites,
+        isFavorite,
+        toggleFavorite,
+        setFavorites,
+        isLoadingFavorites,
+        refetchFavorites,
+      }}
     >
       {children}
     </FavoritesContext.Provider>
