@@ -14,7 +14,6 @@ import { useApartments } from "./Search/hooks/useApartments";
 import { useNeighborhoods } from "./Search/hooks/useNeighborhoods";
 import { useFilters } from "./Search/hooks/useFilters";
 import { useFilteredApartments } from "./Search/hooks/useFilteredApartments";
-import { useFavorites } from "@/context/FavoritesContext";
 import FilterPanel from "./Search/components/FilterPanel";
 import SearchBar from "./Search/components/SearchBar";
 import SortSelect from "./Search/components/SortSelect";
@@ -53,8 +52,6 @@ const SearchPage = () => {
   };
 
   const { filteredApartments } = useFilteredApartments(apartments, filters);
-
-  const { favorites, toggleFavorite } = useFavorites();
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -153,8 +150,6 @@ const SearchPage = () => {
                 <ApartmentCard
                   key={apartment.uuid}
                   apartment={apartment}
-                  isFavorite={favorites.includes(apartment.uuid)}
-                  onToggleFavorite={toggleFavorite}
                 />
               ))}
             </div>

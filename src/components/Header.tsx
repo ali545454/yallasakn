@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Search, Plus, LogOut, Menu, Building, HelpCircle, Shield , ChevronDown } from "lucide-react";
+import { User, Search, Plus, LogOut, Menu, Building, HelpCircle, Shield , ChevronDown, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -21,6 +21,7 @@ import {
 import { useUser } from "../context/UserContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from 'react-i18next';
+import { useFavorites } from "@/context/FavoritesContext";
 
 const API_URL =
   import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
@@ -32,6 +33,8 @@ const API_URL =
   const navigate = useNavigate();
   const isLoggedIn = !!user;
   const { t } = useTranslation();
+  const { favorites } = useFavorites();
+  const favoriteCount = favorites.length;
   const navLinks = [
     { name: t('header.home'), path: "/" },
     { name: t('header.search'), path: "/search" },
@@ -126,6 +129,18 @@ const API_URL =
         {/* === قائمة المستخدم (ديسكتوب) === */}
         <div className="hidden md:flex items-center gap-3">
           <LanguageSwitcher />
+          {isLoggedIn && (
+            <Link to="/profile#favorites" className="relative">
+              <Button variant="ghost" size="icon" aria-label="المفضلة">
+                <Heart className="h-5 w-5" />
+              </Button>
+              {favoriteCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-white">
+                  {favoriteCount}
+                </span>
+              )}
+            </Link>
+          )}
           {isLoggedIn && user.role === "owner" && (
             <Link to="/add-apartment">
               <Button variant="ghost" size="sm">
@@ -261,6 +276,14 @@ const API_URL =
                       className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
                     >
                       {t('header.profile')}
+                    </Link>
+                  )}
+                  {isLoggedIn && (
+                    <Link
+                      to="/profile#favorites"
+                      className="flex items-center justify-end gap-3 px-3 py-2 rounded-md hover:bg-muted"
+                    >
+                      المفضلة {favoriteCount > 0 ? `(${favoriteCount})` : ""}
                     </Link>
                   )}
                 </nav>

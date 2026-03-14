@@ -34,7 +34,7 @@ const ApartmentHeader = ({ apartment, handleShare }) => (
           <Share2 className="w-5 h-5" />
           <span className="font-medium">مشاركة</span>
         </Button>
-        <FavoriteButton apartment={apartment} />
+        <FavoriteButton apartmentUuid={apartment.uuid} />
       </div>
     </div>
   </section>
