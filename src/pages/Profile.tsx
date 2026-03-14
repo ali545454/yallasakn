@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import axiosInstance from "@/utils/axiosInstance";
 import { Edit3, Save, X, Heart, Home, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -82,14 +83,24 @@ const Profile = () => {
 
   // Fetch favorites data
   const fetchFavorites = useCallback(async () => {
-    try {
-      const res = await axios.get(`${API_URL}/api/v1/favorites`, {
-        withCredentials: true,
-      });
-      setFavoriteApartments(res.data.apartments || []);
-    } catch (err) {
-      console.error("Error fetching favorites:", err);
+    const endpoints = [
+      "/api/v1/favorites",
+      "/api/v1/favorites/",
+      "/api/v1/favorites/list",
+      "/api/v1/favorites/my",
+    ];
+
+    for (const endpoint of endpoints) {
+      try {
+        const res = await axiosInstance.get(endpoint);
+        setFavoriteApartments(res.data?.apartments || res.data?.favorites || []);
+        return;
+      } catch {
+        // continue to next endpoint variant
+      }
     }
+
+    setFavoriteApartments([]);
   }, []);
 
   useEffect(() => {
