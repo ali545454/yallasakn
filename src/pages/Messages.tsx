@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Send,
   Search,
@@ -10,7 +11,12 @@ import {
 } from "lucide-react";
 
 export default function MessagesPage() {
-  const [selectedChat, setSelectedChat] = useState<number | null>(null);
+  const location = useLocation();
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const ownerId = searchParams.get("ownerId");
+  const ownerName = searchParams.get("ownerName") || "المالك";
+
+  const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [messages, setMessages] = useState([
     { id: 1, sender: "me", text: "هل الشقة متاحة؟", time: "14:15", read: true },
     { id: 2, sender: "them", text: "أيوه متاحة يا فندم", time: "14:17", read: true },
@@ -19,26 +25,54 @@ export default function MessagesPage() {
   ]);
   const [inputValue, setInputValue] = useState("");
 
-  const mockChats = [
-    {
-      id: 1,
-      name: "Ahmed Owner",
-      lastMessage: "تمام، متى ممكن أعاين الشقة؟",
-      time: "14:22",
-      unread: 0,
-      avatar: "https://i.pravatar.cc/50?u=ahmed",
-      online: true,
-    },
-    {
-      id: 2,
-      name: "Mona Landlord",
-      lastMessage: "العنوان في الحي الرابع بجوار الجامعة.",
-      time: "13:10",
-      unread: 3,
-      avatar: "https://i.pravatar.cc/50?u=mona",
-      online: false,
-    },
-  ];
+  const ownerChatId = ownerId ? `owner-${ownerId}` : null;
+
+  const mockChats = useMemo(() => {
+    const defaultChats = [
+      {
+        id: "1",
+        name: "Ahmed Owner",
+        lastMessage: "تمام، متى ممكن أعاين الشقة؟",
+        time: "14:22",
+        unread: 0,
+        avatar: "https://i.pravatar.cc/50?u=ahmed",
+        online: true,
+      },
+      {
+        id: "2",
+        name: "Mona Landlord",
+        lastMessage: "العنوان في الحي الرابع بجوار الجامعة.",
+        time: "13:10",
+        unread: 3,
+        avatar: "https://i.pravatar.cc/50?u=mona",
+        online: false,
+      },
+    ];
+
+    if (!ownerChatId) return defaultChats;
+
+    return [
+      {
+        id: ownerChatId,
+        name: ownerName,
+        lastMessage: "ابدأ المحادثة مع المالك",
+        time: new Date().toLocaleTimeString("ar-EG", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        unread: 0,
+        avatar: "https://i.pravatar.cc/50?u=owner",
+        online: true,
+      },
+      ...defaultChats,
+    ];
+  }, [ownerChatId, ownerName]);
+
+  useEffect(() => {
+    if (ownerChatId) {
+      setSelectedChat(ownerChatId);
+    }
+  }, [ownerChatId]);
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;

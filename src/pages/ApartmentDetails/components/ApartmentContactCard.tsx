@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -8,8 +9,27 @@ const ApartmentContactCard = ({
   apartment,
   getOwnerInitials,
   handleWhatsAppContact,
-}) => (
-  <Card className="rounded-2xl shadow-lg border">
+}) => {
+  const navigate = useNavigate();
+
+  const handleStartChat = () => {
+    const ownerId = apartment?.owner?.id;
+    if (!ownerId) return;
+
+    const ownerName = apartment.owner?.fullName || "";
+    const apartmentId = apartment.uuid || apartment.id || "";
+
+    const params = new URLSearchParams({
+      ownerId: String(ownerId),
+      ownerName,
+      apartmentId,
+    });
+
+    navigate(`/messages?${params.toString()}`);
+  };
+
+  return (
+    <Card className="rounded-2xl shadow-lg border">
     <CardHeader>
       <CardTitle className="text-2xl">
         <span className="font-bold">{apartment.price} جنيه</span>
@@ -56,7 +76,7 @@ const ApartmentContactCard = ({
           variant="outline"
           size="lg"
           className="w-full h-12 text-lg"
-          disabled
+          onClick={handleStartChat}
         >
           <MessageCircle className="h-5 w-5 ml-2" /> ابدأ مراسلة
         </Button>

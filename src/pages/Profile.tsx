@@ -196,8 +196,11 @@ const Profile = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-slate-50" dir="rtl">
-        <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 bg-gradient-to-br from-slate-50 to-white min-h-screen">
+      <div
+        className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5"
+        dir="rtl"
+      >
+        <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
           {/* Profile Header Card */}
           <Card className="shadow-xl border-0 bg-gradient-to-r from-white via-slate-50 to-blue-50 rounded-2xl overflow-hidden">
             <CardContent className="p-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-right relative">
