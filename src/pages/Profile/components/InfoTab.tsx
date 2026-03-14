@@ -1,6 +1,5 @@
 import React from "react";
-import { Edit3, Save, X, User, Phone, University, BookOpen, Calendar, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { User, Phone, University, BookOpen, Calendar, Mail } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,9 +23,6 @@ interface InfoTabProps {
   userData: UserType;
   isEditing: boolean;
   tempData: Partial<UserType>;
-  onEdit: () => void;
-  onSave: () => Promise<void>;
-  onCancel: () => void;
   onInputChange: (field: string, value: string) => void;
 }
 
@@ -40,9 +36,6 @@ export default function InfoTab({
   userData,
   isEditing,
   tempData,
-  onEdit,
-  onSave,
-  onCancel,
   onInputChange,
 }: InfoTabProps) {
   const role = roleTitles[userData.role] || userData.role;
@@ -127,33 +120,6 @@ export default function InfoTab({
         <div className="border-t pt-6 mt-6 space-y-6">
           <InfoField icon={<Mail className="text-slate-400" />} label="البريد الإلكتروني" value={userData.email} />
           <InfoField icon={<User className="text-slate-400" />} label="الدور" value={role} />
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-3">
-          {!isEditing ? (
-            <Button
-              onClick={onEdit}
-              className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/80"
-            >
-              <Edit3 className="h-4 w-4" /> تعديل
-            </Button>
-          ) : (
-            <>
-              <Button
-                onClick={onSave}
-                className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600"
-              >
-                <Save className="h-4 w-4" /> حفظ
-              </Button>
-              <Button
-                variant="outline"
-                onClick={onCancel}
-                className="gap-2 border-2 hover:bg-slate-50 transition-all duration-300"
-              >
-                <X className="h-4 w-4" /> إلغاء
-              </Button>
-            </>
-          )}
         </div>
       </CardContent>
     </Card>

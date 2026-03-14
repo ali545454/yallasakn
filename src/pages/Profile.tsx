@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { Edit3, Save, X, Heart, Home, Mail, User, Phone, University, BookOpen, Calendar } from "lucide-react";
+import { Edit3, Save, X, Heart, Home, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -160,179 +160,179 @@ const Profile = () => {
         className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5"
         dir="rtl"
       >
-        <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-          {/* Profile Header Card */}
-          <Card className="shadow-xl border-0 bg-gradient-to-r from-white via-slate-50 to-blue-50 rounded-2xl overflow-hidden">
-            <CardContent className="p-8 flex flex-col md:flex-row items-center gap-8 text-center md:text-right relative">
-              {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-5">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary rounded-full -translate-y-16 translate-x-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary rounded-full translate-y-12 -translate-x-12"></div>
-              </div>
-
-              <div className="relative z-10">
-                <Avatar className="h-32 w-32 border-4 border-white shadow-2xl ring-4 ring-primary/10">
-                  <AvatarImage
-                    src={userData.role === "student" ? "https://cdn.pixabay.com/photo/2020/05/26/17/56/student-5224089_1280.jpg" : userData.avatar || ""}
-                    alt={userData.full_name}
-                    className="object-cover"
-                  />
-                  <AvatarFallback className="text-4xl bg-gradient-to-br from-primary to-secondary text-white font-bold">
-                    {userData.full_name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .slice(0, 2)
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="mt-2">
-                  <Badge variant="outline" className="bg-white/80 backdrop-blur-sm border-primary/20 text-primary font-medium">
-                    {roleMap[userData.role] || userData.role}
-                  </Badge>
+        <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+          <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
+            {/* Sidebar (Summary + Quick Actions) */}
+            <aside className="space-y-6">
+              <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-white to-blue-50/60">
+                <div className="absolute inset-0 opacity-20 pointer-events-none">
+                  <div className="absolute -top-10 -right-10 w-44 h-44 bg-primary/40 rounded-full blur-3xl"></div>
+                  <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-secondary/30 rounded-full blur-3xl"></div>
                 </div>
-              </div>
 
-              <div className="flex-1 space-y-4 relative z-10">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="text-center md:text-right">
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-                      {userData.full_name}
-                    </h1>
-                    <p className="text-xl text-slate-600 mt-1">
-                      {userData.university || "جامعة غير محددة"}
-                    </p>
+                <CardContent className="relative p-6 space-y-6">
+                  <div className="flex flex-col items-center text-center">
+                    <Avatar className="h-28 w-28 border-4 border-white shadow-2xl ring-4 ring-primary/20">
+                      <AvatarImage
+                        src={
+                          userData.role === "student"
+                            ? "https://cdn.pixabay.com/photo/2020/05/26/17/56/student-5224089_1280.jpg"
+                            : userData.avatar || ""
+                        }
+                        alt={userData.full_name}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-4xl bg-gradient-to-br from-primary to-secondary text-white font-bold">
+                        {userData.full_name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .slice(0, 2)
+                          .join("")}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="mt-4">
+                      <h1 className="text-2xl font-bold text-slate-900">
+                        {userData.full_name}
+                      </h1>
+                      <p className="text-sm text-slate-600 mt-1">
+                        {roleMap[userData.role] || userData.role}
+                      </p>
+                      <p className="text-sm text-slate-500 mt-1">
+                        {userData.university || "جامعة غير محددة"}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                      <Badge className="bg-white/80 backdrop-blur-sm border-primary/20 text-primary font-medium">
+                        {roleMap[userData.role] || userData.role}
+                      </Badge>
+                      {userData.role !== "student" && (
+                        <Badge className="bg-white/80 backdrop-blur-sm border-blue-200 text-blue-700 font-medium">
+                          {apartmentsOwnedCount} شقة
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                  <div className="hidden md:flex gap-3">
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-xl bg-white/70 p-4 shadow-sm border border-white/20">
+                      <p className="text-sm text-slate-500">المفضلة</p>
+                      <p className="mt-1 text-2xl font-semibold text-red-500">{favoriteCount}</p>
+                    </div>
+                    {userData.role !== "student" && (
+                      <div className="rounded-xl bg-white/70 p-4 shadow-sm border border-white/20">
+                        <p className="text-sm text-slate-500">الشقق</p>
+                        <p className="mt-1 text-2xl font-semibold text-blue-500">
+                          {apartmentsOwnedCount}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
                     {!isEditing ? (
-                      <Button onClick={handleEdit} className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/80">
+                      <Button
+                        onClick={handleEdit}
+                        className="w-full gap-2 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/80"
+                      >
                         <Edit3 className="h-4 w-4" /> تعديل الملف
                       </Button>
                     ) : (
-                      <>
-                        <Button onClick={handleSave} className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600">
+                      <div className="grid grid-cols-2 gap-3">
+                        <Button
+                          onClick={handleSave}
+                          className="gap-2 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-green-500 to-green-600"
+                        >
                           <Save className="h-4 w-4" /> حفظ
                         </Button>
                         <Button
                           variant="outline"
                           onClick={handleCancel}
-                          className="gap-2 border-2 hover:bg-slate-50 transition-all duration-300"
+                          className="gap-2 border-2 hover:bg-slate-50"
                         >
                           <X className="h-4 w-4" /> إلغاء
                         </Button>
-                      </>
+                      </div>
                     )}
                   </div>
-                </div>
-              </div>
 
-              <div className="flex gap-6 pt-6 md:pt-0 md:border-r md:pr-8 border-slate-200/50 relative z-10">
-                <div className="text-center bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-white/20">
-                  <p className="text-3xl font-bold text-red-500">
-                    {favoriteCount}
-                  </p>
-                  <p className="text-sm text-slate-600 font-medium">
-                    مفضلة
-                  </p>
-                </div>
-                {userData.role !== "student" && (
-                  <div className="text-center bg-white/60 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-white/20">
-                    <p className="text-3xl font-bold text-blue-500">
-                      {apartmentsOwnedCount}
-                    </p>
-                    <p className="text-sm text-slate-600 font-medium">معروضة</p>
+                  <div className="pt-4 border-t border-white/30 text-sm text-slate-600 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="font-medium">البريد</span>
+                      <span className="truncate">{userData.email}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">الهاتف</span>
+                      <span>{userData.phone || "-"}</span>
+                    </div>
                   </div>
-                )}
-              </div>
+                </CardContent>
+              </Card>
+            </aside>
 
-              <div className="flex md:hidden gap-3 w-full justify-center mt-6 relative z-10">
-                {!isEditing ? (
-                  <Button onClick={handleEdit} className="gap-2 w-full shadow-lg bg-gradient-to-r from-primary to-primary/80">
-                    <Edit3 className="h-4 w-4" /> تعديل
-                  </Button>
-                ) : (
-                  <>
-                    <Button onClick={handleSave} className="gap-2 flex-1 shadow-lg bg-gradient-to-r from-green-500 to-green-600">
-                      <Save className="h-4 w-4" /> حفظ
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleCancel}
-                      className="gap-2 flex-1 border-2 hover:bg-slate-50"
+            {/* Main Content */}
+            <section className="space-y-6">
+              <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+                <TabsList className="!flex flex-col lg:flex-row w-full gap-2 bg-slate-100/50 p-1 rounded-xl backdrop-blur-sm border border-white/20 shadow-sm">
+                  <TabsTrigger
+                    value="info"
+                    className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary"
+                  >
+                    <User className="h-4 w-4" />
+                    <span className="hidden sm:inline">المعلومات</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="favorites"
+                    className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-red-500"
+                  >
+                    <Heart className="h-4 w-4" />
+                    <span className="hidden sm:inline">المفضلة</span>
+                  </TabsTrigger>
+                  {userData.role !== "student" && (
+                    <TabsTrigger
+                      value="my-apartments"
+                      className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-500"
                     >
-                      <X className="h-4 w-4" /> إلغاء
-                    </Button>
-                  </>
+                      <Home className="h-4 w-4" />
+                      <span className="hidden sm:inline">شققي</span>
+                    </TabsTrigger>
+                  )}
+                </TabsList>
+
+                <TabsContent value="info" className="space-y-6">
+                  <InfoTab
+                    userData={userData}
+                    isEditing={isEditing}
+                    tempData={tempData}
+                    onInputChange={handleInputChange}
+                  />
+                </TabsContent>
+
+                {userData.role !== "student" && (
+                  <TabsContent value="my-apartments">
+                    <MyApartmentsTab
+                      userData={userData}
+                      apartmentsOwnedCount={apartmentsOwnedCount}
+                      navigate={navigate}
+                    />
+                  </TabsContent>
                 )}
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Tabs Navigation */}
-          <Tabs
-            value={selectedTab}
-            onValueChange={setSelectedTab}
-            className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-3 gap-2 bg-slate-100/50 p-1 rounded-xl backdrop-blur-sm border border-white/20 shadow-sm">
-              <TabsTrigger
-                value="info"
-                className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-primary"
-              >
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">المعلومات</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="favorites"
-                className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-red-500"
-              >
-                <Heart className="h-4 w-4" />
-                <span className="hidden sm:inline">المفضلة</span>
-              </TabsTrigger>
-              {userData.role !== "student" && (
-                <TabsTrigger
-                  value="my-apartments"
-                  className="flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-300 data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-500"
-                >
-                  <Home className="h-4 w-4" />
-                  <span className="hidden sm:inline">شققي</span>
-                </TabsTrigger>
-              )}
-            </TabsList>
-
-            <TabsContent value="info" className="space-y-6">
-              <InfoTab
-                userData={userData}
-                isEditing={isEditing}
-                tempData={tempData}
-                onEdit={handleEdit}
-                onSave={handleSave}
-                onCancel={handleCancel}
-                onInputChange={handleInputChange}
-              />
-            </TabsContent>
-
-            {userData.role !== "student" && (
-              <TabsContent value="my-apartments">
-                <MyApartmentsTab
-                  userData={userData}
-                  apartmentsOwnedCount={apartmentsOwnedCount}
-                  navigate={navigate}
-                />
-              </TabsContent>
-            )}
-
-            <TabsContent value="favorites">
-              <FavoritesTab
-                favoriteCount={favoriteCount}
-                paginatedFavorites={paginatedFavorites}
-                totalPages={totalPages}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                toggleFavorite={toggleFavorite}
-                navigate={navigate}
-              />
-            </TabsContent>
-          </Tabs>
+                <TabsContent value="favorites">
+                  <FavoritesTab
+                    favoriteCount={favoriteCount}
+                    paginatedFavorites={paginatedFavorites}
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    toggleFavorite={toggleFavorite}
+                    navigate={navigate}
+                  />
+                </TabsContent>
+              </Tabs>
+            </section>
+          </div>
         </main>
       </div>
       <Footer />
