@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { fetchAuthProfile } from "@/utils/auth";
 
 export type User = {
   id: number;
@@ -20,12 +21,14 @@ type UserContextType = {
   user: User | null;
   setUser: (user: User | null) => void;
   logout: () => void;
+  refreshProfile: () => Promise<User | null>;
 };
 
 const UserContext = createContext<UserContextType>({
   user: null,
   setUser: () => {},
   logout: () => {},
+  refreshProfile: async () => null,
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -36,10 +39,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     if (storedUser) setUserState(JSON.parse(storedUser));
   }, []);
 
-  const setUser = (user: User | null) => {
-    setUserState(user);
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+  const setUser = (nextUser: User | null) => {
+    setUserState(nextUser);
+    if (nextUser) {
+      localStorage.setItem("user", JSON.stringify(nextUser));
     } else {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
@@ -47,10 +50,20 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const refreshProfile = useCallback(async () => {
+    try {
+      const profile = await fetchAuthProfile();
+      setUser(profile);
+      return profile;
+    } catch {
+      return null;
+    }
+  }, []);
+
   const logout = () => setUser(null);
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{ user, setUser, logout, refreshProfile }}>
       {children}
     </UserContext.Provider>
   );

@@ -6,25 +6,24 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { MapPin, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import FavoriteButton from "@/components/FavoriteButton";
 
-// واجهة لبيانات الشقة
 interface Apartment {
   uuid: string;
   id: number;
   title: string;
   price: number;
-  neighborhood?: string;
+  neighborhood?: string | { name?: string };
   image?: string;
 }
 
-// مكون الهيكل العظمي (Skeleton) لعرضه أثناء التحميل
 const ApartmentSkeleton = () => (
-  <Card className="flex flex-col h-full shadow-md overflow-hidden">
-    <Skeleton className="w-full h-48" />
-    <div className="p-4 flex flex-col flex-grow">
-      <Skeleton className="h-6 w-3/4 mb-2" />
-      <Skeleton className="h-4 w-1/2 mb-4" />
-      <Skeleton className="h-6 w-1/3 mb-4" />
+  <Card className="flex h-full flex-col overflow-hidden shadow-md">
+    <Skeleton className="h-48 w-full" />
+    <div className="flex flex-grow flex-col p-4">
+      <Skeleton className="mb-2 h-6 w-3/4" />
+      <Skeleton className="mb-4 h-4 w-1/2" />
+      <Skeleton className="mb-4 h-6 w-1/3" />
       <div className="mt-auto">
         <Skeleton className="h-10 w-full" />
       </div>
@@ -39,7 +38,7 @@ const FeaturedApartments = () => {
 
   useEffect(() => {
     axios
-      .get("https://web-production-33f69.up.railway.app/api/v1/apartments/featured")
+      .get("/api/v1/apartments/featured")
       .then((res) => {
         setApartments(res.data);
       })
@@ -52,18 +51,18 @@ const FeaturedApartments = () => {
 
   return (
     <section className="container py-20">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+      <div className="mb-12 text-center">
+        <h2 className="text-3xl font-extrabold text-gray-900 md:text-4xl">
           شقق مختارة بعناية
         </h2>
-        <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="mx-auto mt-3 max-w-2xl text-lg text-muted-foreground">
           تصفح أفضل الشقق التي قمنا باختيارها لك، والتي تتميز بمواقعها وخدماتها
           الممتازة.
         </p>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <ApartmentSkeleton />
           <ApartmentSkeleton />
           <ApartmentSkeleton />
@@ -71,7 +70,7 @@ const FeaturedApartments = () => {
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {apartments.map((apt) => (
             <motion.div
               key={apt.id}
@@ -80,8 +79,8 @@ const FeaturedApartments = () => {
               transition={{ duration: 0.5 }}
               className="h-full"
             >
-              <Card className="flex flex-col h-full shadow-md hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden">
-                <div className="aspect-video overflow-hidden">
+              <Card className="flex h-full flex-col overflow-hidden rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl">
+                <div className="relative aspect-video overflow-hidden">
                   <img
                     src={
                       apt.image
@@ -92,21 +91,28 @@ const FeaturedApartments = () => {
                     }
                     alt={apt.title}
                   />
+                  <FavoriteButton
+                    apartmentUuid={apt.uuid}
+                    className="absolute right-2 top-2"
+                    iconClassName="h-4 w-4"
+                  />
                 </div>
-                <CardContent className="p-4 flex flex-col flex-grow">
-                  <h3 className="font-bold text-lg mb-2 h-14 line-clamp-2 text-right">
+                <CardContent className="flex flex-grow flex-col p-4">
+                  <h3 className="mb-2 h-14 line-clamp-2 text-right text-lg font-bold">
                     {apt.title}
                   </h3>
-                  <p className="flex items-center gap-1 text-muted-foreground text-sm mb-3 justify-end">
-                    {apt.neighborhood?.name || "حي غير محدد"}
+                  <p className="mb-3 flex items-center justify-end gap-1 text-sm text-muted-foreground">
+                    {typeof apt.neighborhood === "string"
+                      ? apt.neighborhood
+                      : apt.neighborhood?.name || "حي غير محدد"}
                     <MapPin className="h-4 w-4" />
                   </p>
-                  <p className="font-extrabold text-primary text-xl text-right mb-4">
+                  <p className="mb-4 text-right text-xl font-extrabold text-primary">
                     {apt.price} جنيه/شهرياً
                   </p>
                 </CardContent>
-                <CardFooter className="p-4 mt-auto">
-                  <Link to={`/apartments/${apt.uuid}`} className="w-full">
+                <CardFooter className="mt-auto p-4">
+                  <Link to={`/apartment/${apt.uuid}`} className="w-full">
                     <Button size="lg" className="w-full font-bold">
                       عرض التفاصيل <ArrowLeft className="mr-2 h-4 w-4" />
                     </Button>

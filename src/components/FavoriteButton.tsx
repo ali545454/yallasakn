@@ -1,23 +1,30 @@
+import type { MouseEvent } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/context/FavoritesContext";
 
-interface FavoriteButtonProps {
-  apartment: {
-    uuid: string; 
-    title?: string;
-    price?: number;
-    address?: string;
-  };
-}
+type FavoriteButtonProps = {
+  apartmentUuid: string;
+  className?: string;
+  iconClassName?: string;
+  activeClassName?: string;
+  inactiveClassName?: string;
+};
 
-const FavoriteButton = ({ apartment }: FavoriteButtonProps) => {
-  const { favorites, toggleFavorite } = useFavorites();
+const FavoriteButton = ({
+  apartmentUuid,
+  className = "",
+  iconClassName = "h-5 w-5",
+  activeClassName = "bg-red-100 text-red-600 hover:bg-red-200",
+  inactiveClassName = "bg-white/90 text-gray-600 hover:bg-white",
+}: FavoriteButtonProps) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorite = isFavorite(apartmentUuid);
 
-  const isFavorite = favorites.includes(apartment.uuid);
-
-  const handleToggle = () => {
-    toggleFavorite(apartment.uuid);
+  const handleToggle = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    await toggleFavorite(apartmentUuid);
   };
 
   return (
@@ -25,17 +32,10 @@ const FavoriteButton = ({ apartment }: FavoriteButtonProps) => {
       variant="ghost"
       size="icon"
       onClick={handleToggle}
-      className={`transition-colors p-2 rounded-full ${
-        isFavorite
-          ? "bg-red-100 hover:bg-red-200"
-          : "bg-primary text-white hover:bg-primary/80"
-      }`}
+      aria-label={favorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+      className={`rounded-full p-2 transition-colors ${favorite ? activeClassName : inactiveClassName} ${className}`}
     >
-      <Heart
-        className="w-5 h-5"
-        stroke={isFavorite ? "red" : "white"}
-        fill={isFavorite ? "red" : "none"}
-      />
+      <Heart className={`${iconClassName} ${favorite ? "fill-current" : ""}`} />
     </Button>
   );
 };
