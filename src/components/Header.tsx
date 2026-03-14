@@ -23,11 +23,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from 'react-i18next';
 import { useFavorites } from "@/context/FavoritesContext";
 
-const API_URL =
-  import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
-
-  
-  const Header = () => {
+const Header = () => {
     const { user, logout } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
@@ -51,7 +47,7 @@ const API_URL =
 
   const handleLogout = async () => {
     try {
-      await fetch(`${API_URL}/api/v1/auth/logout`, {
+      await fetch(`/api/v1/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

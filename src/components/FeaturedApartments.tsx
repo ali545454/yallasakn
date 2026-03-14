@@ -38,7 +38,7 @@ const FeaturedApartments = () => {
 
   useEffect(() => {
     axios
-      .get("https://web-production-33f69.up.railway.app/api/v1/apartments/featured")
+      .get("/api/v1/apartments/featured")
       .then((res) => {
         setApartments(res.data);
       })
