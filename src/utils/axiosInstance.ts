@@ -9,8 +9,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-<<<<<<< HEAD
-=======
 // Add Authorization header automatically if we have a token in localStorage
 axiosInstance.interceptors.request.use((config) => {
   const token = getToken();
@@ -23,5 +21,4 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
->>>>>>> 099a36b (token)
 export default axiosInstance;
