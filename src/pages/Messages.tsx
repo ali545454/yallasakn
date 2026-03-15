@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Search, ArrowRight, MessageCircle } from "lucide-react";
 import { useUser } from "@/context/UserContext";
+import { getAuthHeader } from "@/utils/auth";
 
 type Conversation = {
   id: string;
@@ -14,6 +15,7 @@ type Conversation = {
 
 type ChatMessage = {
   id: string;
+  backendId?: string;
   sender: "me" | "them";
   text: string;
   createdAt: string;
@@ -59,6 +61,7 @@ const requestJson = async (input: string, init?: RequestInit) => {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeader(),
       ...(init?.headers || {}),
     },
     ...init,
@@ -107,8 +110,11 @@ const normalizeMessage = (raw: any): ChatMessage => {
     senderValue === "owner" ||
     Boolean(raw.is_mine);
 
+  const backendId = raw.id ?? raw.message_id ?? null;
+
   return {
-    id: String(raw.id || raw.message_id || crypto.randomUUID()),
+    id: String(backendId ?? crypto.randomUUID()),
+    backendId: backendId ? String(backendId) : undefined,
     sender: isMe ? "me" : "them",
     text: raw.text || raw.message || raw.content || "",
     createdAt: raw.created_at || raw.sent_at || raw.timestamp || new Date().toISOString(),
@@ -118,6 +124,7 @@ const normalizeMessage = (raw: any): ChatMessage => {
 
 async function fetchConversations(): Promise<Conversation[]> {
   const data = await tryRequests<any>([
+    () => requestJson("/api/v1/conversations"),
     () => requestJson("/api/v1/chat/conversations"),
     () => requestJson("/chat/conversations"),
     () => requestJson("/api/v1/messages/conversations"),
@@ -163,10 +170,10 @@ async function startConversationWithOwner(params: StartConversationParams): Prom
   if (params.text) payload.text = params.text;
 
   const data = await tryRequests<any>([
+    () => requestJson("/api/v1/messages/start", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/api/v1/conversations", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/api/v1/chat/conversations", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/chat/conversations", { method: "POST", body: JSON.stringify(payload) }),
-    () => requestJson("/api/v1/messages/start", { method: "POST", body: JSON.stringify(payload) }),
   ]);
 
   const id = data?.conversation_id || data?.id || data?.conversation?.id;
@@ -176,8 +183,8 @@ async function startConversationWithOwner(params: StartConversationParams): Prom
 async function sendMessageApi(conversationId: string, text: string, senderId?: number | null) {
   const payload: Record<string, any> = {
     conversation_id: conversationId,
+    sender_id: senderId ?? undefined,
     text,
-    message: text,
   };
 
   if (senderId != null) {
@@ -227,10 +234,28 @@ export default function MessagesPage() {
     return data;
   }, []);
 
+  const markMessageAsRead = useCallback(async (messageId: string) => {
+    try {
+      await requestJson(`/api/v1/messages/${messageId}/read`, { method: "PUT" });
+    } catch {
+      // ignore failing read updates
+    }
+  }, []);
+
   const loadMessages = useCallback(async (conversationId: string) => {
     const rows = await fetchConversationMessages(conversationId);
-    setMessages(rows);
-  }, []);
+
+    // Mark incoming messages as read (backend requires explicit read update)
+    const updated = rows.map((m) => {
+      if (m.sender === "them" && !m.read && m.backendId) {
+        markMessageAsRead(m.backendId);
+        return { ...m, read: true };
+      }
+      return m;
+    });
+
+    setMessages(updated);
+  }, [markMessageAsRead]);
 
   useEffect(() => {
     let mounted = true;
