@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Search, ArrowRight, MessageCircle } from "lucide-react";
+import { useUser } from "@/context/UserContext";
 
 type Conversation = {
   id: string;
@@ -23,6 +24,12 @@ type OwnerBootParams = {
   ownerId: string | null;
   ownerName: string;
   apartmentId: string | null;
+};
+
+type StartConversationParams = OwnerBootParams & {
+  studentId?: number | null;
+  senderId?: number | null;
+  text?: string;
 };
 
 const buildOwnerConversationId = (ownerId: string) => `owner-${ownerId}`;
@@ -143,15 +150,20 @@ async function fetchConversationMessages(conversationId: string): Promise<ChatMe
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 }
 
-async function startConversationWithOwner(params: OwnerBootParams): Promise<string | null> {
+async function startConversationWithOwner(params: StartConversationParams): Promise<string | null> {
   if (!params.ownerId) return null;
 
-  const payload = {
+  const payload: Record<string, any> = {
     owner_id: Number(params.ownerId),
-    apartment_id: params.apartmentId,
   };
 
+  if (params.apartmentId) payload.apartment_id = params.apartmentId;
+  if (params.studentId != null) payload.student_id = Number(params.studentId);
+  if (params.senderId != null) payload.sender_id = Number(params.senderId);
+  if (params.text) payload.text = params.text;
+
   const data = await tryRequests<any>([
+    () => requestJson("/api/v1/conversations", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/api/v1/chat/conversations", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/chat/conversations", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/api/v1/messages/start", { method: "POST", body: JSON.stringify(payload) }),
@@ -161,19 +173,22 @@ async function startConversationWithOwner(params: OwnerBootParams): Promise<stri
   return id ? String(id) : null;
 }
 
-async function sendMessageApi(conversationId: string, text: string) {
-  const payload = {
-    message: text,
-    text,
-    content: text,
+async function sendMessageApi(conversationId: string, text: string, senderId?: number | null) {
+  const payload: Record<string, any> = {
     conversation_id: conversationId,
+    text,
+    message: text,
   };
+
+  if (senderId != null) {
+    payload.sender_id = Number(senderId);
+  }
 
   await tryRequests([
     () =>
       requestJson(`/api/v1/chat/conversations/${conversationId}/messages`, {
         method: "POST",
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify(payload),
       }),
     () => requestJson("/api/v1/chat/send", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/api/v1/messages", { method: "POST", body: JSON.stringify(payload) }),
@@ -193,6 +208,10 @@ export default function MessagesPage() {
   const ownerId = ownerParams.ownerId;
   const ownerName = ownerParams.ownerName;
   const apartmentId = ownerParams.apartmentId;
+
+  const { user } = useUser();
+  const studentId = user?.id ?? null;
+  const senderId = user?.id ?? null;
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
@@ -232,8 +251,14 @@ export default function MessagesPage() {
 
           if (existing) {
             nextSelected = existing.id;
-          } else {
-            const createdId = await startConversationWithOwner({ ownerId, ownerName, apartmentId });
+          } else if (studentId && senderId) {
+            const createdId = await startConversationWithOwner({
+              ownerId,
+              ownerName,
+              apartmentId,
+              studentId,
+              senderId,
+            });
             if (createdId) {
               nextSelected = createdId;
               setConversations((prev) => [
@@ -262,6 +287,20 @@ export default function MessagesPage() {
                 ...prev,
               ]);
             }
+          } else if (ownerId) {
+            const localId = buildOwnerConversationId(ownerId);
+            nextSelected = localId;
+            setConversations((prev) => [
+              {
+                id: localId,
+                ownerName: ownerName,
+                lastMessage: "",
+                lastMessageAt: null,
+                unreadCount: 0,
+                online: true,
+              },
+              ...prev,
+            ]);
           }
         }
 
@@ -290,7 +329,7 @@ export default function MessagesPage() {
     return () => {
       mounted = false;
     };
-  }, [ownerId, ownerName, apartmentId, loadConversations, loadMessages]);
+  }, [ownerId, ownerName, apartmentId, studentId, senderId, loadConversations, loadMessages]);
 
   useEffect(() => {
     if (!selectedConversationId || selectedConversationId.startsWith("owner-")) return;
@@ -329,6 +368,10 @@ export default function MessagesPage() {
   const handleSendMessage = async () => {
     const text = inputValue.trim();
     if (!text || !selectedConversationId || isSending) return;
+    if (!senderId) {
+      setError("يجب تسجيل الدخول لإرسال الرسائل.");
+      return;
+    }
 
     setIsSending(true);
     setError(null);
@@ -348,13 +391,21 @@ export default function MessagesPage() {
 
     try {
       if (conversationId.startsWith("owner-") && ownerId) {
-        const createdId = await startConversationWithOwner({ ownerId, ownerName, apartmentId });
+        const createdId = await startConversationWithOwner({
+          ownerId,
+          ownerName,
+          apartmentId,
+          studentId,
+          senderId,
+          text,
+        });
         if (!createdId) throw new Error("create_conversation_failed");
         conversationId = createdId;
         setSelectedConversationId(createdId);
+      } else {
+        await sendMessageApi(conversationId, text, senderId);
       }
 
-      await sendMessageApi(conversationId, text);
       await loadMessages(conversationId);
       await loadConversations();
     } catch {
