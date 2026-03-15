@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Users, Home, Building2, TrendingUp } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { API_URL } from "@/pages/ApartmentDetails";
+import { API_URL } from "@/lib/api";
 
 interface User {
   uuid: string; // UUID

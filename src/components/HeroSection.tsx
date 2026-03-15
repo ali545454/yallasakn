@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Search, MapPin, DollarSign } from "lucide-react";
+import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
@@ -13,8 +13,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// تم استعادة الطريقة الصحيحة لتعريف متغيرات البيئة في Vite
-const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 const HeroSection = () => {
   const { t } = useTranslation();
@@ -27,7 +25,7 @@ const HeroSection = () => {
   useEffect(() => {
     const fetchNeighborhoods = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/v1/neighborhoods`);
+        const res = await api.get("/neighborhoods");
         setNeighborhoods(res.data.map((n: any) => n.name));
       } catch (err) {
         console.error("Error fetching neighborhoods:", err);

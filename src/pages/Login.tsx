@@ -13,8 +13,7 @@ import {
   fetchAuthProfile,
   loginWithGoogle,
 } from "@/utils/auth";
-import { API_URL } from "./AdminLogin";
-
+import { API_URL } from "@/lib/api";
 
 const Login = () => {
   const { setUser } = useUser();
@@ -26,7 +25,6 @@ const Login = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-const API_URL = import.meta.env.VITE_API_URL || "https://web-production-33f69.up.railway.app";
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();

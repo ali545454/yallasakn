@@ -5,8 +5,7 @@ import { useUser } from "@/context/UserContext";
 import { FormData } from "./useFormState";
 import { sanitizePayload } from "../utils/sanitize";
 
-export const API_URL =
-  import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app`;
+import { API_URL } from "@/lib/api";
 
 export const useSignUp = () => {
   const navigate = useNavigate();

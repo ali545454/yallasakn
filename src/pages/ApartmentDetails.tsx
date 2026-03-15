@@ -10,9 +10,7 @@ import ApartmentFeatures from "./ApartmentDetails/components/ApartmentFeatures";
 import ApartmentExtraDetails from "./ApartmentDetails/components/ApartmentExtraDetails";
 import ApartmentContactCard from "./ApartmentDetails/components/ApartmentContactCard";
 import ApartmentMapSection from "./ApartmentDetails/components/ApartmentMapSection";
-export const API_URL =
-  import.meta.env.VITE_API_URL ||
-  `https://web-production-33f69.up.railway.app/`;
+import axiosInstance from "@/utils/axiosInstance";
 
 const ApartmentDetails = () => {
   const { apartmentUuid } = useParams();
@@ -25,32 +23,16 @@ const ApartmentDetails = () => {
       window.scrollTo(0, 0);
       setIsLoading(true);
       try {
-        // ✅ جلب بيانات الشقة مع التحقق من التوكن (إما ككوكي أو Authorization Header)
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API_URL}/api/v1/apartments/apartment/${apartmentUuid}`,
-          {
-            credentials: "include", // مهم عشان يرسل الكوكي لو موجود
-            headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-          }
+        // ✅ جلب بيانات الشقة مع التوكن المضمن تلقائياً عبر axiosInstance
+        const response = await axiosInstance.get(
+          `/api/v1/apartments/apartment/${apartmentUuid}`
         );
-        if (!response.ok) throw new Error("فشل في جلب بيانات الشقة");
-        const data = await response.json();
+        const data = response.data;
         setApartment(data);
 
         // ✅ Track view بعد ما نجيب بيانات الشقة
-        const trackHeaders: Record<string, string> = {
-          "Content-Type": "application/json",
-        };
-        if (token) {
-          trackHeaders.Authorization = `Bearer ${token}`;
-        }
-
-        await fetch(`${API_URL}/api/views/track/${apartmentUuid}`, {
-          method: "POST",
-          headers: trackHeaders,
-          credentials: "include", // مهم برضه
-          body: JSON.stringify({ user_id: data.user?.id || null }),
+        await axiosInstance.post(`/api/views/track/${apartmentUuid}`, {
+          user_id: data.user?.id || null,
         });
       } catch (err) {
         setError(err.message);

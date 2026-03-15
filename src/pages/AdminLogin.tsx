@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-export const API_URL = `https://web-production-33f69.up.railway.app`;
+import { API_URL } from "@/lib/api";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");

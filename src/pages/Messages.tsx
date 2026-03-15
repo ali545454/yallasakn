@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Search, ArrowRight, MessageCircle } from "lucide-react";
 import { useUser } from "@/context/UserContext";
-import { getAuthHeader } from "@/utils/auth";
+import { api } from "@/lib/api";
 
 type Conversation = {
   id: string;
@@ -48,34 +48,21 @@ const parseTime = (value?: string | null) => {
   }
 };
 
-const safeJson = async (res: Response) => {
-  try {
-    return await res.json();
-  } catch {
-    return null;
-  }
-};
-
 const requestJson = async (input: string, init?: RequestInit) => {
-  const response = await fetch(input, {
-    credentials: "include",
+  const method = init?.method?.toUpperCase() as "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | undefined;
+  const data = init?.body ? JSON.parse(String(init.body)) : undefined;
+
+  const response = await api.request({
+    url: input,
+    method,
+    data,
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeader(),
-      ...(init?.headers || {}),
+      ...(init?.headers as Record<string, string> | undefined),
     },
-    ...init,
   });
 
-  const data = await safeJson(response);
-
-  if (!response.ok) {
-    throw new Error(
-      (data && (data.error || data.message)) || `request_failed_${response.status}`
-    );
-  }
-
-  return data;
+  return response.data;
 };
 
 const tryRequests = async <T,>(factories: Array<() => Promise<T>>): Promise<T> => {
@@ -124,10 +111,9 @@ const normalizeMessage = (raw: any): ChatMessage => {
 
 async function fetchConversations(): Promise<Conversation[]> {
   const data = await tryRequests<any>([
-    () => requestJson("/api/v1/conversations"),
-    () => requestJson("/api/v1/chat/conversations"),
+    () => requestJson("/conversations"),
     () => requestJson("/chat/conversations"),
-    () => requestJson("/api/v1/messages/conversations"),
+    () => requestJson("/messages/conversations"),
   ]);
 
   const rows = data?.conversations || data?.data || data || [];
@@ -143,9 +129,8 @@ async function fetchConversations(): Promise<Conversation[]> {
 
 async function fetchConversationMessages(conversationId: string): Promise<ChatMessage[]> {
   const data = await tryRequests<any>([
-    () => requestJson(`/api/v1/chat/conversations/${conversationId}/messages`),
     () => requestJson(`/chat/conversations/${conversationId}/messages`),
-    () => requestJson(`/api/v1/messages/${conversationId}`),
+    () => requestJson(`/messages/${conversationId}`),
   ]);
 
   const rows = data?.messages || data?.data || data || [];
@@ -170,9 +155,8 @@ async function startConversationWithOwner(params: StartConversationParams): Prom
   if (params.text) payload.text = params.text;
 
   const data = await tryRequests<any>([
-    () => requestJson("/api/v1/messages/start", { method: "POST", body: JSON.stringify(payload) }),
-    () => requestJson("/api/v1/conversations", { method: "POST", body: JSON.stringify(payload) }),
-    () => requestJson("/api/v1/chat/conversations", { method: "POST", body: JSON.stringify(payload) }),
+    () => requestJson("/messages/start", { method: "POST", body: JSON.stringify(payload) }),
+    () => requestJson("/conversations", { method: "POST", body: JSON.stringify(payload) }),
     () => requestJson("/chat/conversations", { method: "POST", body: JSON.stringify(payload) }),
   ]);
 
@@ -193,12 +177,12 @@ async function sendMessageApi(conversationId: string, text: string, senderId?: n
 
   await tryRequests([
     () =>
-      requestJson(`/api/v1/chat/conversations/${conversationId}/messages`, {
+      requestJson(`/chat/conversations/${conversationId}/messages`, {
         method: "POST",
         body: JSON.stringify(payload),
       }),
-    () => requestJson("/api/v1/chat/send", { method: "POST", body: JSON.stringify(payload) }),
-    () => requestJson("/api/v1/messages", { method: "POST", body: JSON.stringify(payload) }),
+    () => requestJson("/chat/send", { method: "POST", body: JSON.stringify(payload) }),
+    () => requestJson("/messages", { method: "POST", body: JSON.stringify(payload) }),
   ]);
 }
 
@@ -236,7 +220,7 @@ export default function MessagesPage() {
 
   const markMessageAsRead = useCallback(async (messageId: string) => {
     try {
-      await requestJson(`/api/v1/messages/${messageId}/read`, { method: "PUT" });
+      await requestJson(`/messages/${messageId}/read`, { method: "PUT" });
     } catch {
       // ignore failing read updates
     }

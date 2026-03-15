@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { FormDataType, API_URL } from "./constants";
+import { api } from "@/lib/api";
+import { FormDataType } from "./constants";
 
 export const useFormState = () => {
   const [step, setStep] = useState(1);
@@ -42,9 +43,8 @@ export const useFormState = () => {
   useEffect(() => {
     const fetchNeighborhoods = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/v1/neighborhoods`);
-        const data = await res.json();
-        setNeighborhoods(data);
+        const res = await api.get("/neighborhoods");
+        setNeighborhoods(res.data);
       } catch (err) {
         console.error("خطأ في جلب الأحياء:", err);
       }

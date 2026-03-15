@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_URL } from "@/pages/ApartmentDetails";
+import { api } from "@/lib/api";
 import { Card } from "@/components/ui/card";
 
 interface Conversation {
@@ -16,15 +16,8 @@ export default function ConversationsList() {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/chat/conversations`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        setConversations(data.conversations || []);
+        const res = await api.get("/chat/conversations");
+        setConversations(res.data.conversations || []);
       } catch (err) {
         console.error("Error fetching conversations:", err);
       }

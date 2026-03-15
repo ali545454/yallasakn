@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import { convertObjectKeysToCamelCase } from "../utils/convertKeys";
 import { Apartment } from "../../../types";
-
-export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
+import { api } from "@/lib/api";
 
 export const useApartments = () => {
   const [apartments, setApartments] = useState<Apartment[]>([]);
@@ -14,10 +13,8 @@ export const useApartments = () => {
   useEffect(() => {
     const fetchApartments = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/v1/apartments/all_apartments`);
-        if (!response.ok) throw new Error("فشل جلب البيانات من الخادم");
-        const data = await response.json();
-        const formattedData = convertObjectKeysToCamelCase(data);
+        const response = await api.get("/apartments/all_apartments");
+        const formattedData = convertObjectKeysToCamelCase(response.data);
         setApartments(formattedData);
       } catch (err: any) {
         setError(err.message);

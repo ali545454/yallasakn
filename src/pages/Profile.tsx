@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import axiosInstance from "@/utils/axiosInstance";
 import { Edit3, Save, X, Heart, Home, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,6 @@ import InfoTab from "./Profile/components/InfoTab";
 import MyApartmentsTab from "./Profile/components/MyApartmentsTab";
 import FavoritesTab from "./Profile/components/FavoritesTab";
 import { User as UserType } from "@/types";
-export const API_URL = import.meta.env.VITE_API_URL || `https://web-production-33f69.up.railway.app/`;
 
 const Profile = () => {
   const { user, setUser } = useUser();
@@ -66,9 +64,7 @@ const Profile = () => {
 
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/v1/auth/profile`, {
-          withCredentials: true,
-        });
+        const response = await axiosInstance.get("/api/v1/auth/profile");
         setUserData(response.data);
         setUser(response.data);
       } catch (err) {
@@ -125,10 +121,9 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.patch(
-        `${API_URL}/api/v1/auth/profile/update`,
-        tempData,
-        { withCredentials: true }
+      const response = await axiosInstance.patch(
+        "/api/v1/auth/profile/update",
+        tempData
       );
       setUserData(response.data);
       setUser(response.data);
