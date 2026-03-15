@@ -31,14 +31,6 @@ const Login = () => {
     setIsLoading(true);
     setError(null);
 
-<<<<<<< HEAD
-    try {
-      const response = await fetch(`/api/v1/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password, role: userType }),
-=======
   try {
     const response = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: "POST",
@@ -72,7 +64,6 @@ const Login = () => {
         method: "GET",
         credentials: "include",
         headers: checkHeaders,
->>>>>>> 099a36b (token)
       });
 
       const data = await response.json();
