@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import axiosInstance from "@/utils/axiosInstance";
 import type { User } from "@/context/UserContext";
 
@@ -37,4 +38,54 @@ export const extractApiErrorMessage = (error: unknown, fallback: string) => {
   }
   if (error instanceof Error) return error.message;
   return fallback;
+=======
+// src/utils/auth.ts
+
+export const TOKEN_KEY = "token";
+export const UUID_KEY = "uuid";
+
+export const getToken = (): string | null => {
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+};
+
+export const setToken = (token: string) => {
+  try {
+    localStorage.setItem(TOKEN_KEY, token);
+  } catch {
+    // ignore
+  }
+};
+
+export const clearToken = () => {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    // ignore
+  }
+};
+
+export const setUUID = (uuid: string) => {
+  try {
+    localStorage.setItem(UUID_KEY, uuid);
+  } catch {
+    // ignore
+  }
+};
+
+export const clearUUID = () => {
+  try {
+    localStorage.removeItem(UUID_KEY);
+  } catch {
+    // ignore
+  }
+};
+
+export const getAuthHeader = () => {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+>>>>>>> 099a36b (token)
 };

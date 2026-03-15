@@ -31,12 +31,48 @@ const Login = () => {
     setIsLoading(true);
     setError(null);
 
+<<<<<<< HEAD
     try {
       const response = await fetch(`/api/v1/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ email, password, role: userType }),
+=======
+  try {
+    const response = await fetch(`${API_URL}/api/v1/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // مهم عشان الكوكي يترسل
+      body: JSON.stringify({ email, password, role: userType }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "فشل تسجيل الدخول. تحقق من بياناتك.");
+    }
+
+    if (data.user && data.user.uuid) {
+      // حفظ التوكن حتى نقدر نبعت Authorization header في ال Requests المحمية
+      if (data.access_token) {
+        localStorage.setItem("token", data.access_token);
+      }
+      localStorage.setItem("uuid", data.user.uuid);
+
+      setUser(data.user);
+
+      // ✅ فورًا بعد تسجيل الدخول، اعمل check للكويكي
+      const checkHeaders: Record<string, string> = {};
+      if (data.access_token) {
+        checkHeaders.Authorization = `Bearer ${data.access_token}`;
+      }
+
+      const checkResponse = await fetch(`${API_URL}/api/v1/auth/check`, {
+        method: "GET",
+        credentials: "include",
+        headers: checkHeaders,
+>>>>>>> 099a36b (token)
       });
 
       const data = await response.json();

@@ -54,6 +54,14 @@ export const useSignUp = () => {
       const data = await response.json();
       console.log("Response:", data);
 
+      const token = data.access_token || data.token;
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+      if (data.user?.uuid) {
+        localStorage.setItem("uuid", data.user.uuid);
+      }
+
       if (response.ok && data.user) {
         setUser(data.user);
         if (data.user.role === "student") {
