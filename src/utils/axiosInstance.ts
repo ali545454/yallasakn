@@ -2,7 +2,7 @@
 import axios from "axios";
 import { getToken } from "./auth";
 
-const baseURL = import.meta.env.VITE_API_URL || "";
+const baseURL = import.meta.env.VITE_API_URL || "https://web-production-33f69.up.railway.app";
 
 const axiosInstance = axios.create({
   baseURL,
