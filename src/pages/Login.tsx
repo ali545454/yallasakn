@@ -13,6 +13,7 @@ import {
   fetchAuthProfile,
   loginWithGoogle,
 } from "@/utils/auth";
+import { API_URL } from "./AdminLogin";
 
 
 const Login = () => {
@@ -25,63 +26,42 @@ const Login = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+const API_URL = import.meta.env.VITE_API_URL || "https://web-production-33f69.up.railway.app";
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError(null);
 
   try {
     const response = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // مهم عشان الكوكي يترسل
+      credentials: "include",
       body: JSON.stringify({ email, password, role: userType }),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || "فشل تسجيل الدخول. تحقق من بياناتك.");
-    }
+    if (!response.ok) throw new Error(data.error || "فشل تسجيل الدخول.");
 
-    if (data.user && data.user.uuid) {
-      // حفظ التوكن حتى نقدر نبعت Authorization header في ال Requests المحمية
-      if (data.access_token) {
-        localStorage.setItem("token", data.access_token);
-      }
+    if (data.user?.uuid) {
+      if (data.access_token) localStorage.setItem("token", data.access_token);
       localStorage.setItem("uuid", data.user.uuid);
-
       setUser(data.user);
-
-      // ✅ فورًا بعد تسجيل الدخول، اعمل check للكويكي
-      const checkHeaders: Record<string, string> = {};
-      if (data.access_token) {
-        checkHeaders.Authorization = `Bearer ${data.access_token}`;
-      }
-
-      const checkResponse = await fetch(`${API_URL}/api/v1/auth/check`, {
-        method: "GET",
-        credentials: "include",
-        headers: checkHeaders,
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "فشل تسجيل الدخول. تحقق من بياناتك.");
-      }
 
       const profile = await fetchAuthProfile();
       setUser(profile ?? data.user ?? null);
+
       const role = (profile?.role || data.user?.role) as "student" | "owner" | undefined;
       navigate(role === "owner" ? "/dashboard" : "/profile");
-    } catch (err) {
-      setError(extractApiErrorMessage(err, "حدث خطأ ما، حاول مرة أخرى."));
-    } finally {
-      setIsLoading(false);
     }
-  };
-
+  } catch (err) {
+    setError(extractApiErrorMessage(err, "حدث خطأ ما، حاول مرة أخرى."));
+  } finally {
+    setIsLoading(false);
+  }
+};
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
       setError("تعذر الحصول على رمز Google. حاول مرة أخرى.");
