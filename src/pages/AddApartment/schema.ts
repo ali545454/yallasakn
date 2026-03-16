@@ -16,72 +16,47 @@ export const addApartmentSchema = z
     address: z.string().min(1, "العنوان التفصيلي مطلوب"),
 
     price: z
-      .string()
-      .min(1, "السعر مطلوب")
-      .transform((val) => Number(val))
-      .refine((val) => Number.isInteger(val) && val >= 0, {
-        message: "السعر يجب أن يكون رقمًا صحيحًا وغير سالب",
-      })
+      .coerce.number()
+      .int("السعر يجب أن يكون رقمًا صحيحًا وغير سالب")
+      .min(0, "السعر يجب أن يكون رقمًا صحيحًا وغير سالب")
       .max(50000, "السعر لا يمكن أن يتجاوز 50,000 ج.م"),
 
     rooms: z
-      .string()
-      .min(1, "عدد الغرف مطلوب")
-      .transform((val) => Number(val))
-      .refine((val) => Number.isInteger(val) && val >= 0, {
-        message: "عدد الغرف يجب أن يكون رقمًا صحيحًا وغير سالب",
-      })
+      .coerce.number()
+      .int("عدد الغرف يجب أن يكون رقمًا صحيحًا وغير سالب")
+      .min(0, "عدد الغرف يجب أن يكون رقمًا صحيحًا وغير سالب")
       .max(8, "عدد الغرف لا يمكن أن يتجاوز 8"),
 
     bathrooms: z
-      .string()
-      .optional()
-      .transform((val) => (val === undefined || val === "" ? 0 : Number(val)))
-      .refine((val) => Number.isInteger(val) && val >= 0, {
-        message: "عدد الحمامات يجب أن يكون رقمًا صحيحًا وغير سالب",
-      }),
+      .preprocess((val) => (val === undefined || val === "" ? 0 : val), z.coerce.number())
+      .int("عدد الحمامات يجب أن يكون رقمًا صحيحًا وغير سالب")
+      .min(0, "عدد الحمامات يجب أن يكون رقمًا صحيحًا وغير سالب"),
 
     kitchens: z
-      .string()
-      .min(1, "عدد المطابخ مطلوب")
-      .transform((val) => Number(val))
-      .refine((val) => Number.isInteger(val) && val >= 0, {
-        message: "عدد المطابخ يجب أن يكون رقمًا صحيحًا وغير سالب",
-      })
+      .coerce.number()
+      .int("عدد المطابخ يجب أن يكون رقمًا صحيحًا وغير سالب")
+      .min(0, "عدد المطابخ يجب أن يكون رقمًا صحيحًا وغير سالب")
       .max(8, "عدد المطابخ لا يمكن أن يتجاوز 8"),
 
     total_beds: z
-      .string()
-      .min(1, "إجمالي السراير مطلوب")
-      .transform((val) => Number(val))
-      .refine((val) => Number.isInteger(val) && val >= 0, {
-        message: "إجمالي السراير يجب أن يكون رقمًا صحيحًا وغير سالب",
-      })
+      .coerce.number()
+      .int("إجمالي السراير يجب أن يكون رقمًا صحيحًا وغير سالب")
+      .min(0, "إجمالي السراير يجب أن يكون رقمًا صحيحًا وغير سالب")
       .max(20, "إجمالي السراير لا يمكن أن يتجاوز 20"),
 
     available_beds: z
-      .string()
-      .min(1, "السراير المتاحة مطلوبة")
-      .transform((val) => Number(val))
-      .refine((val) => Number.isInteger(val) && val >= 0, {
-        message: "السراير المتاحة يجب أن تكون رقمًا صحيحًا وغير سالب",
-      }),
+      .coerce.number()
+      .int("السراير المتاحة يجب أن تكون رقمًا صحيحًا وغير سالب")
+      .min(0, "السراير المتاحة يجب أن تكون رقمًا صحيحًا وغير سالب"),
 
     area: z
-      .string()
-      .min(1, "المساحة مطلوبة")
-      .transform((val) => Number(val))
-      .refine((val) => val > 0, {
-        message: "المساحة يجب أن تكون أكبر من 0",
-      }),
+      .coerce.number()
+      .gt(0, "المساحة يجب أن تكون أكبر من 0"),
 
     floor_number: z
-      .string()
-      .optional()
-      .transform((val) => (val === undefined || val === "" ? 0 : Number(val)))
-      .refine((val) => Number.isInteger(val) && val >= 0, {
-        message: "رقم الدور لا يمكن أن يكون سالبًا",
-      }),
+      .preprocess((val) => (val === undefined || val === "" ? 0 : val), z.coerce.number())
+      .int("رقم الدور لا يمكن أن يكون سالبًا")
+      .min(0, "رقم الدور لا يمكن أن يكون سالبًا"),
 
     whatsapp_number: z
       .string()
