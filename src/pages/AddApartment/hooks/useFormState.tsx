@@ -39,14 +39,27 @@ export const useFormState = () => {
   const [neighborhoods, setNeighborhoods] = useState<
     { id: number; name: string }[]
   >([]);
+  const [neighborhoodsLoading, setNeighborhoodsLoading] = useState(true);
+  const [neighborhoodsError, setNeighborhoodsError] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchNeighborhoods = async () => {
+      setNeighborhoodsLoading(true);
+      setNeighborhoodsError(null);
       try {
         const res = await api.get("/neighborhoods");
         setNeighborhoods(res.data);
-      } catch (err) {
+      } catch (err: any) {
         console.error("خطأ في جلب الأحياء:", err);
+        setNeighborhoodsError(
+          err?.response?.data?.message ||
+            err?.message ||
+            "فشل في جلب الأحياء، يرجى المحاولة لاحقًا"
+        );
+      } finally {
+        setNeighborhoodsLoading(false);
       }
     };
     fetchNeighborhoods();
@@ -105,6 +118,8 @@ export const useFormState = () => {
     images,
     setImages,
     neighborhoods,
+    neighborhoodsLoading,
+    neighborhoodsError,
     handleInputChange,
     handleSelectChange,
     handleCheckboxChange,

@@ -5,8 +5,18 @@ const DEFAULT_API_URL = "https://web-production-33f69.up.railway.app";
 
 const ensureHttps = (url: string) => url.replace(/^http:\/\//i, "https://");
 
-// Reads from env, falls back to default, and forces HTTPS to avoid mixed-content issues.
-export const API_URL = ensureHttps((import.meta.env.VITE_API_URL || DEFAULT_API_URL).trim()).replace(/\/+$/, "");
+// In dev, we prefer using the same origin (e.g. via proxy) unless an explicit env var is set.
+const getDefaultApiUrl = () => {
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return DEFAULT_API_URL;
+};
+
+// Reads from env, falls back to current origin (if available), and forces HTTPS to avoid mixed-content issues.
+export const API_URL = ensureHttps(
+  (import.meta.env.VITE_API_URL || getDefaultApiUrl()).trim()
+).replace(/\/+$/, "");
 export const API_V1_URL = `${API_URL}/api/v1`;
 
 // Axios instance for v1 API endpoints.

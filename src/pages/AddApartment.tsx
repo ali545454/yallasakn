@@ -34,6 +34,8 @@ const AddApartment = () => {
     formData,
     images,
     neighborhoods,
+    neighborhoodsLoading,
+    neighborhoodsError,
     handleInputChange,
     handleSelectChange,
     handleFeatureSelect,
@@ -45,7 +47,8 @@ const AddApartment = () => {
   const { validateStep } = useValidation(formData, step, images, setErrors);
 
   const nextStep = () => {
-    if (validateStep()) setStep((prev) => Math.min(prev + 1, steps.length));
+    validateStep();
+    setStep((prev) => Math.min(prev + 1, steps.length));
   };
 
   const prevStep = () => {
@@ -87,6 +90,8 @@ const AddApartment = () => {
             formData={formData}
             errors={errors}
             neighborhoods={neighborhoods}
+            neighborhoodsLoading={neighborhoodsLoading}
+            neighborhoodsError={neighborhoodsError}
             handleInputChange={handleInputChange}
             handleSelectChange={handleSelectChange}
           />

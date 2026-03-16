@@ -17,6 +17,8 @@ interface Step1Props {
   formData: FormDataType;
   errors: Record<string, string>;
   neighborhoods: { id: number; name: string }[];
+  neighborhoodsLoading: boolean;
+  neighborhoodsError: string | null;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSelectChange: (name: string, value: string) => void;
 }
@@ -25,6 +27,8 @@ const Step1: React.FC<Step1Props> = ({
   formData,
   errors,
   neighborhoods,
+  neighborhoodsLoading,
+  neighborhoodsError,
   handleInputChange,
   handleSelectChange,
 }) => {
@@ -88,19 +92,39 @@ const Step1: React.FC<Step1Props> = ({
                 name="neighborhood_id"
                 onValueChange={(value) => handleSelectChange("neighborhood_id", value)}
                 value={formData.neighborhood_id}
+                disabled={neighborhoodsLoading}
               >
-                <SelectTrigger className="border-2 focus:border-blue-500 transition-colors duration-200">
-                  <SelectValue placeholder="اختر منطقة" />
+                <SelectTrigger className="border-2 focus:border-green-500 transition-colors duration-200" placeholder="اختر منطقة">
+                  <SelectValue
+                    placeholder={
+                      neighborhoodsLoading ? "تحميل الأحياء..." : "اختر منطقة"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {neighborhoods.map((n) => (
-                    <SelectItem key={n.id} value={String(n.id)}>
-                      {n.name}
+                  {neighborhoodsLoading ? (
+                    <SelectItem value="" disabled>
+                      جارٍ التحميل...
                     </SelectItem>
-                  ))}
+                  ) : neighborhoods.length ? (
+                    neighborhoods.map((n) => (
+                      <SelectItem key={n.id} value={String(n.id)}>
+                        {n.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="" disabled>
+                      لا توجد أحياء متاحة
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
               <p className="text-red-500 text-sm">{errors.neighborhood_id}</p>
+              {neighborhoodsError && (
+                <p className="text-sm text-yellow-700 mt-1">
+                  {neighborhoodsError}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="address" className="text-sm font-semibold text-slate-700">
