@@ -1,37 +1,32 @@
 import React from "react";
+import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, FileText, Tag } from "lucide-react";
-import { FormDataType } from "../constants";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AddApartmentFormValues } from "../schema";
 
 interface Step1Props {
-  formData: FormDataType;
-  errors: Record<string, string>;
   neighborhoods: { id: number; name: string }[];
   neighborhoodsLoading: boolean;
   neighborhoodsError: string | null;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  handleSelectChange: (name: string, value: string) => void;
 }
 
 const Step1: React.FC<Step1Props> = ({
-  formData,
-  errors,
   neighborhoods,
   neighborhoodsLoading,
   neighborhoodsError,
-  handleInputChange,
-  handleSelectChange,
 }) => {
+  const { control } = useFormContext<AddApartmentFormValues>();
+
   return (
     <div className="space-y-8 animate-in fade-in-50">
       <Card className="border border-slate-200 shadow-md bg-white">
@@ -42,36 +37,45 @@ const Step1: React.FC<Step1Props> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm font-semibold text-slate-700">
-              عنوان الإعلان *
-            </Label>
-            <Input
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              placeholder="مثال: شقة مفروشة بالكامل قرب الجامعة"
-              className="border-2 focus:border-blue-500 transition-colors duration-200"
-            />
-            <p className="text-red-500 text-sm">{errors.title}</p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description" className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              وصف الشقة *
-            </Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="اكتب وصفاً تفصيلياً عن الشقة ومميزاتها..."
-              rows={5}
-              className="border-2 focus:border-blue-500 transition-colors duration-200 resize-none"
-            />
-            <p className="text-red-500 text-sm">{errors.description}</p>
-          </div>
+          <FormField
+            control={control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>عنوان الإعلان *</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="مثال: شقة مفروشة بالكامل قرب الجامعة"
+                    className="border-2 focus:border-blue-500 transition-colors duration-200"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  وصف الشقة *
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    rows={5}
+                    placeholder="اكتب وصفاً تفصيلياً عن الشقة ومميزاتها..."
+                    className="border-2 focus:border-blue-500 transition-colors duration-200 resize-none"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </CardContent>
       </Card>
 
@@ -84,62 +88,71 @@ const Step1: React.FC<Step1Props> = ({
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="neighborhood_id" className="text-sm font-semibold text-slate-700">
-                المنطقة *
-              </Label>
-              <Select
-                name="neighborhood_id"
-                onValueChange={(value) => handleSelectChange("neighborhood_id", value)}
-                value={formData.neighborhood_id}
-                disabled={neighborhoodsLoading}
-              >
-                <SelectTrigger className="border-2 focus:border-green-500 transition-colors duration-200" placeholder="اختر منطقة">
-                  <SelectValue
-                    placeholder={
-                      neighborhoodsLoading ? "تحميل الأحياء..." : "اختر منطقة"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {neighborhoodsLoading ? (
-                    <SelectItem value="" disabled>
-                      جارٍ التحميل...
-                    </SelectItem>
-                  ) : neighborhoods.length ? (
-                    neighborhoods.map((n) => (
-                      <SelectItem key={n.id} value={String(n.id)}>
-                        {n.name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="" disabled>
-                      لا توجد أحياء متاحة
-                    </SelectItem>
+            <FormField
+              control={control}
+              name="neighborhood_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>المنطقة *</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) => field.onChange(value)}
+                      disabled={neighborhoodsLoading}
+                    >
+                      <SelectTrigger className="border-2 focus:border-green-500 transition-colors duration-200">
+                        <SelectValue
+                          placeholder={
+                            neighborhoodsLoading ? "تحميل الأحياء..." : "اختر منطقة"
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {neighborhoodsLoading ? (
+                          <SelectItem value="" disabled>
+                            جارٍ التحميل...
+                          </SelectItem>
+                        ) : neighborhoods.length ? (
+                          neighborhoods.map((n) => (
+                            <SelectItem key={n.id} value={String(n.id)}>
+                              {n.name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="" disabled>
+                            لا توجد أحياء متاحة
+                          </SelectItem>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                  {neighborhoodsError && (
+                    <p className="text-sm text-yellow-700 mt-1">
+                      {neighborhoodsError}
+                    </p>
                   )}
-                </SelectContent>
-              </Select>
-              <p className="text-red-500 text-sm">{errors.neighborhood_id}</p>
-              {neighborhoodsError && (
-                <p className="text-sm text-yellow-700 mt-1">
-                  {neighborhoodsError}
-                </p>
+                </FormItem>
               )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="address" className="text-sm font-semibold text-slate-700">
-                العنوان التفصيلي *
-              </Label>
-              <Input
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="مثال: شارع الجمهورية، بجوار صيدلية..."
-                className="border-2 focus:border-blue-500 transition-colors duration-200"
-              />
-              <p className="text-red-500 text-sm">{errors.address}</p>
-            </div>
+            />
+
+            <FormField
+              control={control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>العنوان التفصيلي *</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="مثال: شارع الجمهورية، بجوار صيدلية..."
+                      className="border-2 focus:border-blue-500 transition-colors duration-200"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         </CardContent>
       </Card>

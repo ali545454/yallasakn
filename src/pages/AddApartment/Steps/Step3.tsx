@@ -1,55 +1,36 @@
 import React from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Upload, Trash2, Star, Camera } from "lucide-react";
-import { FormDataType, features } from "../constants";
+import { useFormContext } from "react-hook-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Star } from "lucide-react";
+import { AddApartmentFormValues } from "../schema";
+import { features } from "../constants";
 
-interface Step3Props {
-  formData: FormDataType;
-  errors: Record<string, string>;
-  images: File[];
-  handleFeatureSelect: (featureId: keyof FormDataType) => void;
-  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleFileDrop: (e: React.DragEvent<HTMLDivElement>) => void;
-  removeImage: (index: number) => void;
-  handleSelectChange: (name: string, value: string) => void;
-}
+const Step3: React.FC = () => {
+  const { watch, setValue } = useFormContext<AddApartmentFormValues>();
 
-const Step3: React.FC<Step3Props> = ({
-  formData,
-  errors,
-  images,
-  handleFeatureSelect,
-  handleFileChange,
-  handleFileDrop,
-  removeImage,
-  handleSelectChange,
-}) => {
+  const toggleFeature = (featureId: keyof AddApartmentFormValues) => {
+    const current = watch(featureId) as boolean | undefined;
+    setValue(featureId, !current, { shouldValidate: true, shouldTouch: true });
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in-50">
       <Card className="border border-slate-200 shadow-md bg-white">
-        <div className="p-6">
-          <h3 className="font-semibold text-lg mb-6 flex items-center gap-3 text-blue-800">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-3 text-blue-800">
             <Star className="h-6 w-6" />
             اختر المميزات المتوفرة
-          </h3>
-
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {features.map((feature) => {
-              const isSelected = formData[feature.id as keyof typeof formData];
+              const isSelected = watch(feature.id as keyof AddApartmentFormValues);
               return (
                 <button
                   key={feature.id}
                   type="button"
-                  onClick={() => handleFeatureSelect(feature.id)}
+                  onClick={() => toggleFeature(feature.id as keyof AddApartmentFormValues)}
                   className={`p-4 flex flex-col items-center justify-center gap-2 rounded-lg transition-all duration-300 border ${
                     isSelected
                       ? "border-blue-600 bg-blue-50 shadow-md ring-2 ring-blue-200"
@@ -70,7 +51,7 @@ const Step3: React.FC<Step3Props> = ({
               );
             })}
           </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );

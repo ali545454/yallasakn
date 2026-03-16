@@ -8,7 +8,6 @@ interface NavigationButtonsProps {
   isLoading: boolean;
   onPrev: () => void;
   onNext: () => void;
-  onSubmit: () => void;
   error?: string | null;
 }
 
@@ -18,7 +17,6 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   isLoading,
   onPrev,
   onNext,
-  onSubmit,
   error,
 }) => {
   return (
@@ -47,7 +45,6 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         <Button
           type="submit"
           disabled={isLoading}
-          onClick={onSubmit}
           className="flex gap-2 bg-green-600 text-white hover:bg-green-700 transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
         >
           {isLoading ? (
