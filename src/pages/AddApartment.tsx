@@ -46,8 +46,14 @@ const AddApartment = () => {
 
   const { validateStep } = useValidation(formData, step, images, setErrors);
 
+  const safeValidateStep = () => {
+    if (typeof validateStep === "function") return validateStep();
+    console.warn("validateStep is not a function", validateStep);
+    return true;
+  };
+
   const nextStep = () => {
-    validateStep();
+    safeValidateStep();
     setStep((prev) => Math.min(prev + 1, steps.length));
   };
 
@@ -57,7 +63,7 @@ const AddApartment = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep()) return;
+    if (!safeValidateStep()) return;
 
     setIsLoading(true);
     setError(null);

@@ -35,7 +35,13 @@ export const apiRoot = axios.create({
 // Note: this is used by all API requests in the app.
 import { getToken } from "@/utils/auth";
 
+const forceHttps = (value?: string) =>
+  value ? value.replace(/^http:\/\//i, "https://") : value;
+
 api.interceptors.request.use((config) => {
+  config.baseURL = forceHttps(config.baseURL);
+  config.url = forceHttps(config.url);
+
   const token = getToken();
   if (token) {
     config.headers = {
@@ -47,6 +53,9 @@ api.interceptors.request.use((config) => {
 });
 
 apiRoot.interceptors.request.use((config) => {
+  config.baseURL = forceHttps(config.baseURL);
+  config.url = forceHttps(config.url);
+
   const token = getToken();
   if (token) {
     config.headers = {
