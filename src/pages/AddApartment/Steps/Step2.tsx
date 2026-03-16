@@ -27,9 +27,9 @@ const Step2: React.FC<Step2Props> = ({
 }) => {
   return (
     <div className="space-y-8 animate-in fade-in-50">
-      <Card className="border-0 shadow-md bg-gradient-to-r from-purple-50 to-pink-50">
+      <Card className="border border-slate-200 shadow-md bg-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-purple-800">
+          <CardTitle className="flex items-center gap-3 text-blue-800">
             <Home className="h-6 w-6" />
             الأبعاد والسعة
           </CardTitle>
@@ -37,7 +37,7 @@ const Step2: React.FC<Step2Props> = ({
         <CardContent>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="rooms" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="rooms" className="text-sm font-semibold text-slate-700">
                 عدد الغرف *
               </Label>
               <Input
@@ -46,12 +46,12 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.rooms}
                 onChange={handleInputChange}
-                className="border-2 focus:border-purple-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
               <p className="text-red-500 text-sm">{errors.rooms}</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="bathrooms" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="bathrooms" className="text-sm font-semibold text-slate-700">
                 عدد الحمامات
               </Label>
               <Input
@@ -60,11 +60,11 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.bathrooms}
                 onChange={handleInputChange}
-                className="border-2 focus:border-purple-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="kitchens" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="kitchens" className="text-sm font-semibold text-slate-700">
                 عدد المطابخ
               </Label>
               <Input
@@ -73,11 +73,11 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.kitchens}
                 onChange={handleInputChange}
-                className="border-2 focus:border-purple-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="area" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+              <Label htmlFor="area" className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                 <Ruler className="h-4 w-4" />
                 المساحة (م²) *
               </Label>
@@ -87,12 +87,12 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.area}
                 onChange={handleInputChange}
-                className="border-2 focus:border-purple-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
               <p className="text-red-500 text-sm">{errors.area}</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="total_beds" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="total_beds" className="text-sm font-semibold text-slate-700">
                 إجمالي السراير *
               </Label>
               <Input
@@ -101,12 +101,12 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.total_beds}
                 onChange={handleInputChange}
-                className="border-2 focus:border-purple-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
               <p className="text-red-500 text-sm">{errors.total_beds}</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="available_beds" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="available_beds" className="text-sm font-semibold text-slate-700">
                 السراير المتاحة *
               </Label>
               <Input
@@ -115,12 +115,12 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.available_beds}
                 onChange={handleInputChange}
-                className="border-2 focus:border-purple-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
               <p className="text-red-500 text-sm">{errors.available_beds}</p>
             </div>
             <div className="space-y-2 md:col-span-3">
-              <Label htmlFor="floor_number" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="floor_number" className="text-sm font-semibold text-slate-700">
                 رقم الدور
               </Label>
               <Input
@@ -129,16 +129,16 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.floor_number}
                 onChange={handleInputChange}
-                className="border-2 focus:border-purple-500 transition-colors duration-200 md:w-1/3"
+                className="border-2 focus:border-blue-500 transition-colors duration-200 md:w-1/3"
               />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border-0 shadow-md bg-gradient-to-r from-green-50 to-teal-50">
+      <Card className="border border-slate-200 shadow-md bg-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-green-800">
+          <CardTitle className="flex items-center gap-3 text-blue-800">
             <DollarSign className="h-6 w-6" />
             التسعير والتواصل
           </CardTitle>
@@ -146,7 +146,7 @@ const Step2: React.FC<Step2Props> = ({
         <CardContent>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="price" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="price" className="text-sm font-semibold text-slate-700">
                 السعر الشهري (جنيه) *
               </Label>
               <Input
@@ -155,12 +155,12 @@ const Step2: React.FC<Step2Props> = ({
                 type="number"
                 value={formData.price}
                 onChange={handleInputChange}
-                className="border-2 focus:border-green-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
               <p className="text-red-500 text-sm">{errors.price}</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="residence_type" className="text-sm font-semibold text-gray-700">
+              <Label htmlFor="residence_type" className="text-sm font-semibold text-slate-700">
                 نوع السكن
               </Label>
               <Select
@@ -168,7 +168,7 @@ const Step2: React.FC<Step2Props> = ({
                 onValueChange={(value) => handleSelectChange("residence_type", value)}
                 value={formData.residence_type}
               >
-                <SelectTrigger className="border-2 focus:border-green-500 transition-colors duration-200">
+                <SelectTrigger className="border-2 focus:border-blue-500 transition-colors duration-200">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -180,7 +180,7 @@ const Step2: React.FC<Step2Props> = ({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="whatsapp_number" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+              <Label htmlFor="whatsapp_number" className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                 <Phone className="h-4 w-4" />
                 رقم واتساب للتواصل
               </Label>
@@ -190,7 +190,7 @@ const Step2: React.FC<Step2Props> = ({
                 type="tel"
                 value={formData.whatsapp_number}
                 onChange={handleInputChange}
-                className="border-2 focus:border-green-500 transition-colors duration-200"
+                className="border-2 focus:border-blue-500 transition-colors duration-200"
               />
             </div>
           </div>

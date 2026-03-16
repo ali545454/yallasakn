@@ -22,13 +22,13 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   error,
 }) => {
   return (
-    <div className="mt-10 pt-6 border-t border-gray-200 flex justify-between items-center bg-gray-50/50 rounded-lg p-4">
+    <div className="mt-10 pt-6 border-t border-slate-200 flex justify-between items-center bg-white rounded-lg p-4">
       <Button
         type="button"
-        variant="ghost"
+        variant="outline"
         onClick={onPrev}
         disabled={step === 1}
-        className="flex flex-row-reverse gap-2 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+        className="flex flex-row-reverse gap-2 text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200"
       >
         السابق <ArrowRight size={18} />
       </Button>
@@ -37,7 +37,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
         <Button
           type="button"
           onClick={onNext}
-          className="flex gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg"
+          className="flex gap-2 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow-md"
         >
           <ArrowLeft size={18} /> التالي
         </Button>
@@ -48,7 +48,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           type="submit"
           disabled={isLoading}
           onClick={onSubmit}
-          className="flex gap-2 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50"
+          className="flex gap-2 bg-green-600 text-white hover:bg-green-700 transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
         >
           {isLoading ? (
             <>

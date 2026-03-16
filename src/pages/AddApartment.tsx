@@ -16,6 +16,7 @@ import { steps } from "./AddApartment/constants";
 import Step1 from "./AddApartment/Steps/Step1";
 import Step2 from "./AddApartment/Steps/Step2";
 import Step3 from "./AddApartment/Steps/Step3";
+import Step4 from "./AddApartment/Steps/Step4";
 import ProgressSidebar from "./AddApartment/Components/ProgressSidebar";
 import NavigationButtons from "./AddApartment/Components/NavigationButtons";
 
@@ -44,7 +45,7 @@ const AddApartment = () => {
   const { validateStep } = useValidation(formData, step, images, setErrors);
 
   const nextStep = () => {
-    if (validateStep()) setStep((prev) => Math.min(prev + 1, 3));
+    if (validateStep()) setStep((prev) => Math.min(prev + 1, steps.length));
   };
 
   const prevStep = () => {
@@ -67,7 +68,7 @@ const AddApartment = () => {
     images.forEach((image) => data.append("images", image));
     try {
       const response = await axiosInstance.post(
-        "/api/v1/apartments",
+        "/api/v1/apartments/create",
         data
       );
       navigate("/dashboard?status=success");
@@ -112,6 +113,18 @@ const AddApartment = () => {
             handleSelectChange={handleSelectChange}
           />
         );
+      case 4:
+        return (
+          <Step4
+            formData={formData}
+            errors={errors}
+            images={images}
+            handleFileChange={handleFileChange}
+            handleFileDrop={handleFileDrop}
+            removeImage={removeImage}
+            handleSelectChange={handleSelectChange}
+          />
+        );
       default:
         return null;
     }
@@ -120,14 +133,14 @@ const AddApartment = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-slate-50">
         <div className="container py-12">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
             <ProgressSidebar currentStep={step} />
 
             <main className="lg:col-span-3">
-              <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+              <Card className="shadow-xl border border-slate-200 bg-white">
+                <CardHeader className="bg-blue-600 text-white rounded-t-lg">
                   <CardTitle className="text-3xl font-bold flex items-center gap-3">
                     🏠 إضافة شقة جديدة
                   </CardTitle>
@@ -140,7 +153,7 @@ const AddApartment = () => {
                     {renderStep()}
                     <NavigationButtons
                       step={step}
-                      totalSteps={3}
+                      totalSteps={steps.length}
                       isLoading={isLoading}
                       onPrev={prevStep}
                       onNext={nextStep}

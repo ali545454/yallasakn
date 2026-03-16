@@ -75,7 +75,7 @@ export const useValidation = (
         newErrors.floor_number = "رقم الدور لا يمكن أن يكون سالبًا";
     }
 
-    if (step === 3) {
+    if (step === 4) {
       if (images.length === 0)
         newErrors.images = "يجب إضافة صورة واحدة على الأقل";
       if (images.length > 20) newErrors.images = "الحد الأقصى للصور هو 20 صورة";
